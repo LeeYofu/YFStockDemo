@@ -17,7 +17,7 @@
 #define kMonthKlineUrl @"https://goldfishspot.qdztrk.com/goldfishfinance/quotation/echartData?bCode=SH0001&dType=MONTH&count=500&quota=MA"
 
 
-@interface StockDetailViewController () <YFStockDataSource>
+@interface StockDetailViewController () <YFStockDataSource, StockDetailFullScreenViewControllerDelegate>
 
 @property (nonatomic, strong) NSMutableArray *timeLineDatas;
 @property (nonatomic, strong) NSMutableArray *dayDatas;
@@ -26,6 +26,7 @@
 @property (nonatomic, assign) BOOL canAutoRotate;
 
 @property (nonatomic, strong) YFStock *stock;
+@property (nonatomic, strong) StockDetailFullScreenViewController *fullScreenVC;
 @property (nonatomic, strong) UIView *fullScreenView;
 
 @end
@@ -258,11 +259,10 @@
     if (self.fullScreenView == nil) {
         
         StockDetailFullScreenViewController *fullScreenVC = [StockDetailFullScreenViewController new];
+        fullScreenVC.delegate = self;
+        self.fullScreenVC = fullScreenVC;
         self.fullScreenView = fullScreenVC.view;
         [self.view addSubview:self.fullScreenView];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitFullScreen)];
-        [self.fullScreenView addGestureRecognizer:tap];
     }
 }
 
@@ -273,6 +273,11 @@
         [self.fullScreenView removeFromSuperview];
         self.fullScreenView = nil;
     }
+}
+
+- (void)stockDetailFullScreenViewControllerExitButtonDidClicked {
+    
+    [self exitFullScreen];
 }
 
 

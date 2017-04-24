@@ -14,6 +14,14 @@
 
 @implementation BaseViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    // 默认设置状态栏颜色
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];

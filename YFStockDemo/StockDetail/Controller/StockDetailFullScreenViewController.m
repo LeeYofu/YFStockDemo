@@ -65,18 +65,18 @@
     UIButton *fullScreenButton = [UIButton buttonWithType:UIButtonTypeCustom];
     fullScreenButton.frame = CGRectMake(self.view.width - 45, 0, 45, 45);
     fullScreenButton.backgroundColor = kBlueColor;
-    [fullScreenButton addTarget:self action:@selector(fullScreenButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    [fullScreenButton addTarget:self action:@selector(exitFullScreen) forControlEvents:UIControlEventTouchUpInside];
     [topBgView addSubview:fullScreenButton];
 }
 
-- (void)fullScreenButtonDidClicked {
+- (void)exitFullScreen {
     
     [YFStock_Variable setIsFullScreen:NO];
     
-    [self dismissViewControllerAnimated:NO completion:^{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(stockDetailFullScreenViewControllerExitButtonDidClicked)]) {
         
-    }];
-
+        [self.delegate stockDetailFullScreenViewControllerExitButtonDidClicked];
+    }
 }
 
 #pragma mark - 网络请求
@@ -231,12 +231,5 @@
     return _monthDatas;
 }
 
-
-//#pragma mark - 转向
-//
-//- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-//    
-//    return UIInterfaceOrientationMaskLandscapeRight;
-//}
 
 @end

@@ -401,7 +401,6 @@
         [self drawShowMALabelTextWithSelectedKLineModel:self.dataHandler.drawKLineModels.lastObject];
     }
     
-    
     // 将选中的model传给stock，用于topbarmaskview的数据展示
     if (self.delegate && [self.delegate respondsToSelector:@selector(YFStockKLine:didSelectedKLineModel:)]) {
         
@@ -457,7 +456,6 @@
     }
 }
 
-
 #pragma mark - 代理方法
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
@@ -479,7 +477,6 @@
 //        
 //        self.lastContentOffsetX = scrollView.contentOffset.x;
 //    }
-
 }
 
 - (void)YFStock_TopBar:(YFStock_TopBar *)topBar didSelectedItemAtIndex:(NSInteger)index {

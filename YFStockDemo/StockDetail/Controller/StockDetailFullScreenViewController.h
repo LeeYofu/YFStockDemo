@@ -8,6 +8,16 @@
 
 #import "BaseViewController.h"
 
+@protocol StockDetailFullScreenViewControllerDelegate <NSObject>
+
+@optional
+
+- (void)stockDetailFullScreenViewControllerExitButtonDidClicked;
+
+@end
+
 @interface StockDetailFullScreenViewController : BaseViewController
+
+@property (nonatomic, weak) id<StockDetailFullScreenViewControllerDelegate> delegate;
 
 @end
