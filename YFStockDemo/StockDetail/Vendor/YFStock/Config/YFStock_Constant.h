@@ -87,6 +87,28 @@
 #define kStockTopBarSelectedFontColor kCustomRGBColor(245, 184, 0, 1.0f)
 
 
+#pragma mark - 参数
+#define kStock_MA_5_N 5
+#define kStock_MA_10_N 10
+#define kStock_MA_20_N 20
+#define kStock_MA_30_N 30
+
+#define kStock_MACD_SHORT 12
+#define kStock_MACD_LONG 26
+#define kStock_MACD_MID 9
+
+#define kStock_KDJ_N 9
+
+#define kStock_RSI_6_N 6
+#define kStock_RSI_12_N 12
+#define kStock_RSI_24_N 24
+
+#define kStock_BOLL_K 2
+#define kStock_BOLL_N 20
+
+
+
+
 #pragma mark - 枚举 **********  **********
 
 // 线的类型

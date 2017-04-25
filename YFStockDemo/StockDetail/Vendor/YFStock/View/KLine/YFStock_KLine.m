@@ -459,24 +459,13 @@
 #pragma mark - 代理方法
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    // 1
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        
-//    });
     [self setNeedsDisplay];
     
-    // 2
-//    CGFloat difV = ABS(scrollView.contentOffset.x - self.lastContentOffsetX);
-//    
-//    if (difV >= [YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]) {
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            
-//            [self setNeedsDisplay];
-//        });
-//        
-//        self.lastContentOffsetX = scrollView.contentOffset.x;
-//    }
+    
+    if (self.scrollView.contentOffset.x <= 0) {
+        
+        NSLog(@"滚动最左边了，需要请求新的数据");
+    }
 }
 
 - (void)YFStock_TopBar:(YFStock_TopBar *)topBar didSelectedItemAtIndex:(NSInteger)index {

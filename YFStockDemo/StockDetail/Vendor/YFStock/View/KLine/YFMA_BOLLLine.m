@@ -67,11 +67,18 @@
     
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
-    CGPoint firstPoint = [self.drawKLineModels.firstObject MA_5PositionPoint];
+    // start index
+    NSInteger startIndex = 0;
+    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_MA_5_N - 1) {
+        
+        startIndex = kStock_MA_5_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
+    }
+    
+    CGPoint firstPoint = [self.drawKLineModels[startIndex] MA_5PositionPoint];
     NSAssert(!isnan(firstPoint.x) && !isnan(firstPoint.y), @"出现NAN值：MA画线");
     CGContextMoveToPoint(self.context, firstPoint.x, firstPoint.y);
     
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count ; idx++) {
+    for (NSInteger idx = startIndex + 1; idx < self.drawKLineModels.count ; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] MA_5PositionPoint];
         CGContextAddLineToPoint(self.context, point.x, point.y);
@@ -86,11 +93,18 @@
     
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
-    CGPoint firstPoint = [self.drawKLineModels.firstObject MA_10PositionPoint];
+    // start index
+    NSInteger startIndex = 0;
+    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_MA_10_N - 1) {
+        
+        startIndex = kStock_MA_10_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
+    }
+    
+    CGPoint firstPoint = [self.drawKLineModels[startIndex] MA_10PositionPoint];
     NSAssert(!isnan(firstPoint.x) && !isnan(firstPoint.y), @"出现NAN值：MA画线");
     CGContextMoveToPoint(self.context, firstPoint.x, firstPoint.y);
     
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count ; idx++) {
+    for (NSInteger idx = startIndex + 1; idx < self.drawKLineModels.count ; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] MA_10PositionPoint];
         CGContextAddLineToPoint(self.context, point.x, point.y);
@@ -105,11 +119,18 @@
     
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
-    CGPoint firstPoint = [self.drawKLineModels.firstObject MA_20PositionPoint];
+    // start index
+    NSInteger startIndex = 0;
+    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_MA_20_N - 1) {
+        
+        startIndex = kStock_MA_20_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
+    }
+    
+    CGPoint firstPoint = [self.drawKLineModels[startIndex] MA_20PositionPoint];
     NSAssert(!isnan(firstPoint.x) && !isnan(firstPoint.y), @"出现NAN值：MA画线");
     CGContextMoveToPoint(self.context, firstPoint.x, firstPoint.y);
     
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count ; idx++) {
+    for (NSInteger idx = startIndex + 1; idx < self.drawKLineModels.count ; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] MA_20PositionPoint];
         CGContextAddLineToPoint(self.context, point.x, point.y);

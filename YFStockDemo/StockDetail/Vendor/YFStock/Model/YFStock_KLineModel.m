@@ -8,6 +8,7 @@
 
 #import "YFStock_KLineModel.h"
 #import "MJExtension.h"
+#import "YFStock_Header.h"
 
 @interface YFStock_KLineModel()
 
@@ -33,6 +34,7 @@
         
         _preModel = self.preAllModelArray.lastObject;
     }
+    
     return _preModel;
 }
 
@@ -56,12 +58,21 @@
     }
 }
 
+- (NSNumber *)index {
+    
+    if (! _index) {
+        
+        _index = [NSNumber numberWithInteger:self.preAllModelArray.count];
+    }
+    return _index;
+}
+
 #pragma mark MA
 - (NSNumber *)MA_5 {
     
     if (! _MA_5) {
         
-        _MA_5 = [NSNumber numberWithFloat:[self getMAWithN:5]];
+        _MA_5 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_5_N]];
     }
     return _MA_5;
 }
@@ -70,7 +81,7 @@
     
     if (! _MA_10) {
         
-        _MA_10 = [NSNumber numberWithFloat:[self getMAWithN:10]];;
+        _MA_10 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_10_N]];;
     }
     return _MA_10;
 }
@@ -79,7 +90,7 @@
     
     if (! _MA_20) {
         
-        _MA_20 = [NSNumber numberWithFloat:[self getMAWithN:20]];;
+        _MA_20 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_20_N]];;
     }
     return _MA_20;
 }
@@ -88,7 +99,7 @@
     
     if (! _MA_30) {
         
-        _MA_30 = [NSNumber numberWithFloat:[self getMAWithN:30]];;
+        _MA_30 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_30_N]];;
     }
     return _MA_30;
 }
@@ -98,7 +109,7 @@
     
     if (! _MACD_DIF) {
         
-        _MACD_DIF = [NSNumber numberWithFloat:([self getEMAWithN:12] - [self getEMAWithN:26])];
+        _MACD_DIF = [NSNumber numberWithFloat:([self getEMAWithN:kStock_MACD_SHORT] - [self getEMAWithN:kStock_MACD_LONG])];
     }
     return _MACD_DIF;
 }
@@ -106,8 +117,9 @@
 - (NSNumber *)MACD_DEA {
     
     if (! _MACD_DEA) {
-        
-        _MACD_DEA = [NSNumber numberWithFloat:(self.preModel.MACD_DEA.floatValue * 0.8 + self.MACD_DIF.floatValue * 0.2)];
+
+//        _MACD_DEA = [NSNumber numberWithFloat:(self.preModel.MACD_DEA.floatValue * 0.8 + self.MACD_DIF.floatValue * 0.2)];
+        _MACD_DEA = [NSNumber numberWithFloat:(self.MACD_DIF.floatValue * 2 + self.preModel.MACD_DEA.floatValue * (kStock_MACD_MID - 1)) / (kStock_MACD_MID + 1)];
     }
     return _MACD_DEA;
 }
@@ -135,7 +147,7 @@
     
     if (! _KDJ_K) {
         
-        _KDJ_K = [NSNumber numberWithFloat:(2.0 / 3.0 * self.preModel.KDJ_K.floatValue + 1.0 / 3.0 * [self getRSVWithN:9])];
+        _KDJ_K = [NSNumber numberWithFloat:(2.0 / 3.0 * self.preModel.KDJ_K.floatValue + 1.0 / 3.0 * [self getRSVWithN:kStock_KDJ_N])];
     }
     return _KDJ_K;
 }
@@ -163,7 +175,7 @@
     
     if (! _RSI_6) {
         
-        CGFloat RS = [self getRSWithN:6];
+        CGFloat RS = [self getRSWithN:kStock_RSI_6_N];
         _RSI_6 = [NSNumber numberWithFloat:(100 * RS / (1 + RS))];
     }
     return _RSI_6;
@@ -173,7 +185,7 @@
     
     if (! _RSI_12) {
         
-        CGFloat RS = [self getRSWithN:12];
+        CGFloat RS = [self getRSWithN:kStock_RSI_12_N];
         _RSI_12 = [NSNumber numberWithFloat:(100 * RS / (1 + RS))];
     }
     return _RSI_12;
@@ -183,7 +195,7 @@
     
     if (! _RSI_24) {
         
-        CGFloat RS = [self getRSWithN:24];
+        CGFloat RS = [self getRSWithN:kStock_RSI_24_N];
         _RSI_24 = [NSNumber numberWithFloat:(100 * RS / (1 + RS))];
     }
     return _RSI_24;
@@ -194,7 +206,7 @@
     
     if (! _BOLL_UPPER) {
         
-        _BOLL_UPPER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue + 2 * [self getMDWithN:(20 - 1)])];
+        _BOLL_UPPER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue + kStock_BOLL_K * [self getMDWithN:(kStock_BOLL_N - 1)])];
     }
     return _BOLL_UPPER;
 }
@@ -203,7 +215,7 @@
     
     if (! _BOLL_MID) {
         
-        _BOLL_MID = [NSNumber numberWithFloat:([self getMAWithN:(20 - 1)])];
+        _BOLL_MID = [NSNumber numberWithFloat:([self getMAWithN:(kStock_BOLL_N - 1)])];
     }
     return _BOLL_MID;
 }
@@ -212,7 +224,7 @@
     
     if (! _BOLL_LOWER) {
         
-        _BOLL_LOWER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue - 2 * [self getMDWithN:(20 - 1)])];
+        _BOLL_LOWER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue - kStock_BOLL_K * [self getMDWithN:(kStock_BOLL_N - 1)])];
     }
     return _BOLL_LOWER;
 }
@@ -277,9 +289,9 @@
     
     CGFloat value = 0;
     
-    if (self.preAllModelArray.count >= 8) {
+    if (self.preAllModelArray.count >= (N - 1)) {
         
-        NSArray *tempKLineModelArray = [self.preAllModelArray subarrayWithRange:NSMakeRange(self.preAllModelArray.count - 8, 8)];
+        NSArray *tempKLineModelArray = [self.preAllModelArray subarrayWithRange:NSMakeRange(self.preAllModelArray.count - (N - 1), (N - 1))];
         CGFloat maxPrice =  [[[tempKLineModelArray valueForKeyPath:@"highPrice"] valueForKeyPath:@"@max.floatValue"] floatValue];
         
         value = maxPrice > self.highPrice.floatValue ? maxPrice : self.highPrice.floatValue;
@@ -296,9 +308,9 @@
     
     CGFloat value = 10000000;
     
-    if (self.preAllModelArray.count >= 8) {
+    if (self.preAllModelArray.count >= (N - 1)) {
         
-        NSArray *tempKLineModelArray = [self.preAllModelArray subarrayWithRange:NSMakeRange(self.preAllModelArray.count - 8, 8)];
+        NSArray *tempKLineModelArray = [self.preAllModelArray subarrayWithRange:NSMakeRange(self.preAllModelArray.count - (N - 1), (N - 1))];
         CGFloat minPrice =  [[[tempKLineModelArray valueForKeyPath:@"lowPrice"] valueForKeyPath:@"@min.floatValue"] floatValue];
         
         value = minPrice < self.lowPrice.floatValue ? minPrice : self.lowPrice.floatValue;
@@ -349,7 +361,12 @@
             B += closePricePadding;
         }
     }
+    
+    if (B == 0) {
         
+        B = MAXFLOAT;
+    }
+    
     RS = ABS(A / B);
     
     return RS;
@@ -372,7 +389,7 @@
     NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
     
     [tempArray addObject:self];
-    
+        
     CGFloat sum = 0;
     for (YFStock_KLineModel *model in tempArray) {
         

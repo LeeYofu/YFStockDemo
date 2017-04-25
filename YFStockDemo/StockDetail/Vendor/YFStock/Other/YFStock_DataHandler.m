@@ -361,7 +361,6 @@
         model.MA_20PositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.MA_20.floatValue - self.minKLineValue) / KLineUnitValue));
         model.MA_30PositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.MA_30.floatValue - self.minKLineValue) / KLineUnitValue));
 
-        
 #pragma mark - MACD
         model.MACD_DIFPositionPoint = CGPointMake(xPosition, model.MACD_DIF.floatValue / MACDLineUnitValue + volumeViewHeight * 0.5);
         model.MACD_DEAPositionPoint = CGPointMake(xPosition, model.MACD_DEA.floatValue / MACDLineUnitValue + volumeViewHeight * 0.5);
@@ -374,14 +373,16 @@
         model.KDJ_JPositionPoint = CGPointMake(xPosition, KDJLineMaxY - (model.KDJ_J.floatValue - self.KDJMinValue) / KDJLineUnitValue);
         
 #pragma mark - RSI
-        model.RSI_6PositionPoint = CGPointMake(xPosition, RSILineMaxY - (model.RSI_6.floatValue - self.RSIMinValue) / RSILineUnitValue);
-        model.RSI_12PositionPoint = CGPointMake(xPosition, RSILineMaxY - (model.RSI_12.floatValue - self.RSIMinValue) / RSILineUnitValue);
-        model.RSI_24PositionPoint = CGPointMake(xPosition, RSILineMaxY - (model.RSI_24.floatValue - self.RSIMinValue) / RSILineUnitValue);
-
+        model.RSI_6PositionPoint = CGPointMake(xPosition, ABS(RSILineMaxY - (model.RSI_6.floatValue - self.RSIMinValue) / RSILineUnitValue));
+        model.RSI_12PositionPoint = CGPointMake(xPosition, ABS(RSILineMaxY - (model.RSI_12.floatValue - self.RSIMinValue) / RSILineUnitValue));
+        model.RSI_24PositionPoint = CGPointMake(xPosition, ABS(RSILineMaxY - (model.RSI_24.floatValue - self.RSIMinValue) / RSILineUnitValue));
+        
 #pragma mark - BOLL
         model.BOLL_UpperPositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.BOLL_UPPER.floatValue - self.minKLineValue) / KLineUnitValue));
         model.BOLL_MidPositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.BOLL_MID.floatValue - self.minKLineValue) / KLineUnitValue));
         model.BOLL_LowerPositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.BOLL_LOWER.floatValue - self.minKLineValue) / KLineUnitValue));
+        
+        
         
         
         [tempDrawKLineModels addObject:model];

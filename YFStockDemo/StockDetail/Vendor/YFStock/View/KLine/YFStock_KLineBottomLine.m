@@ -204,11 +204,19 @@
     // RSI_6
     CGContextSetStrokeColorWithColor(self.context, kStockMA5LineColor.CGColor);
     CGContextSetLineWidth(self.context, kStockMALineWidth);
-    CGPoint RSI_6Point = [self.drawKLineModels.firstObject RSI_6PositionPoint];
+
+    // start index
+    NSInteger startIndex_6 = 0;
+    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_RSI_6_N - 1) {
+        
+        startIndex_6 = kStock_RSI_6_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
+    }
+    
+    CGPoint RSI_6Point = [self.drawKLineModels[startIndex_6] RSI_6PositionPoint];
     NSAssert(!isnan(RSI_6Point.x) && !isnan(RSI_6Point.y), @"出现NAN值：MA画线");
     CGContextMoveToPoint(self.context, RSI_6Point.x, RSI_6Point.y);
     
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
+    for (NSInteger idx = startIndex_6 + 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] RSI_6PositionPoint];
         CGContextAddLineToPoint(self.context, point.x, point.y);
@@ -218,11 +226,19 @@
     // RSI_12
     CGContextSetStrokeColorWithColor(self.context, kStockMA10LineColor.CGColor);
     CGContextSetLineWidth(self.context, kStockMALineWidth);
-    CGPoint RSI_12Point = [self.drawKLineModels.firstObject RSI_12PositionPoint];
+    
+    // start index
+    NSInteger startIndex_12 = 0;
+    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_RSI_12_N - 1) {
+        
+        startIndex_12 = kStock_RSI_12_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
+    }
+    
+    CGPoint RSI_12Point = [self.drawKLineModels[startIndex_12] RSI_12PositionPoint];
     NSAssert(!isnan(RSI_12Point.x) && !isnan(RSI_12Point.y), @"出现NAN值：MA画线");
     CGContextMoveToPoint(self.context, RSI_12Point.x, RSI_12Point.y);
     
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
+    for (NSInteger idx = startIndex_12 + 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] RSI_12PositionPoint];
         CGContextAddLineToPoint(self.context, point.x, point.y);
@@ -232,11 +248,19 @@
     // RSI_24
     CGContextSetStrokeColorWithColor(self.context, kStockMA20LineColor.CGColor);
     CGContextSetLineWidth(self.context, kStockMALineWidth);
-    CGPoint RSI_24Point = [self.drawKLineModels.firstObject RSI_24PositionPoint];
+    
+    // start index
+    NSInteger startIndex_24 = 0;
+    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_RSI_24_N - 1) {
+        
+        startIndex_24 = kStock_RSI_24_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
+    }
+    
+    CGPoint RSI_24Point = [self.drawKLineModels[startIndex_24] RSI_24PositionPoint];
     NSAssert(!isnan(RSI_24Point.x) && !isnan(RSI_24Point.y), @"出现NAN值：MA画线");
     CGContextMoveToPoint(self.context, RSI_24Point.x, RSI_24Point.y);
     
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
+    for (NSInteger idx = startIndex_24 + 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] RSI_24PositionPoint];
         CGContextAddLineToPoint(self.context, point.x, point.y);

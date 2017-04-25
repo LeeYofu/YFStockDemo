@@ -26,6 +26,7 @@
 // 自己用算法计算的（如果后台返回相同意义字段，使用后台的覆盖就好，就不会走取值的懒加载方法了）
 @property (nonatomic, strong) NSArray *preAllModelArray; // 必须要赋值！！！！！！【需要用 copy，否则数组还是会跟着改变】
 @property (nonatomic, strong) YFStock_KLineModel *preModel;
+@property (nonatomic, strong) NSNumber *index;
 
 // MA相关(5, 10, 20, 30)
 @property (nonatomic, strong) NSNumber *MA_5;
