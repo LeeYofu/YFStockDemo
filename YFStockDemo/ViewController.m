@@ -22,6 +22,7 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame =  CGRectMake(20, 100, 100, 45);
     button.backgroundColor = [UIColor redColor];
+    [button setTitle:@"上证指数" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(buttonDidClicked) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
 }

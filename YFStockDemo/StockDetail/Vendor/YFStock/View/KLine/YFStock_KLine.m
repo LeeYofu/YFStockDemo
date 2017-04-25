@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSMutableArray *bottomRightValueLabels;
 @property (nonatomic, strong) YFStock_DataHandler *dataHandler; // dataHandler
 @property (nonatomic, assign) YFStockBottomBarIndex bottomBarIndex;
+@property (nonatomic, assign) CGFloat lastPinchScale;
 
 @property (nonatomic, strong) YFStock_ScrollView *scrollView; // scrollView
 @property (nonatomic, strong) YFStock_KLineView *KLineView; // 真正的K线view
@@ -198,15 +199,15 @@
     
         if (!_maskView || _maskView.isHidden) { // 不是 长按 等状态
             
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                
+//            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            
                 // 处理耗时操作的代码块...
                 // 更新需要绘制的模型
                 [self updateDrawKLineModels];
-                
+            
                 // 通知主线程刷新
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
+            
                     // 回调或者说是通知主线程刷新，
                     // 更新背景线
                     [self.scrollView drawWithDataHandler:self.dataHandler KLineViewHeight:self.KLineView.height bottomViewY:self.bottomView.y];
@@ -226,7 +227,7 @@
                     // 绘制左上角展示MA数值的Label
                     [self drawShowMALabelTextWithSelectedKLineModel:self.dataHandler.drawKLineModels.lastObject];
                 });
-            });
+//            });
         }
     }
 }
@@ -415,9 +416,12 @@
     
     CGFloat difValue = pinch.scale - oldScale;
     
-    if(ABS(difValue) > kStockKLineScaleBound) {
+    if(1) { // ABS(difValue) > kStockKLineScaleBound
         
-        if(pinch.numberOfTouches == 2) { // security
+        BOOL isMinScale = pinch.scale < 1.0 && [YFStock_Variable KLineWidth] == kStockKlineMinWidth;
+        BOOL isMaxScale = pinch.scale > 1.0 && [YFStock_Variable KLineWidth] == kStockKlineMaxWidth;
+        
+        if(pinch.numberOfTouches == 2 && !isMinScale && !isMaxScale) { // security
             
             // 2.获取捏合中心点 -> 捏合中心点距离scrollviewcontent左侧的距离
             CGPoint p1 = [pinch locationOfTouch:0 inView:self.scrollView];
@@ -428,16 +432,31 @@
             CGFloat oldLeftArrCount = ABS(centerX / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]));
             
             // 4.缩放重绘
-            CGFloat newLineWidth = [YFStock_Variable KLineWidth] * (difValue > 0 ? (1.03) : (0.97));
+//            CGFloat newLineWidth = [YFStock_Variable KLineWidth] * (difValue > 0 ? (1.03) : (0.97));
+            
+            CGFloat newLineWidth = 0;
+            
+            CGFloat scalePadding = pinch.scale - self.lastPinchScale;
+            if (scalePadding > 0) {
+                
+                newLineWidth = [YFStock_Variable KLineWidth] + 0.4;
+            } else if (scalePadding < 0) {
+                
+                newLineWidth = [YFStock_Variable KLineWidth] - 0.4;
+            } else {
+                
+                newLineWidth = [YFStock_Variable KLineWidth];
+            }
+            
             [YFStock_Variable setKLineWidth:newLineWidth];
             
-            [self updateScrollViewContentWidth];
+//            [self updateScrollViewContentWidth];
             
             // 5.计算更新宽度后捏合中心点距离klineView最左侧（x = 0）的距离
-            CGFloat newLeftDistance = oldLeftArrCount * ([YFStock_Variable KLineWidth] +[YFStock_Variable KLineGap]);
+            CGFloat newLeftDistance = oldLeftArrCount * ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]);
             
             // 6.设置scrollview的contentoffset = (5) - (2);
-            if (self.allKLineModels.count * newLineWidth + (self.allKLineModels.count - 1) * [YFStock_Variable KLineGap] > self.scrollView.bounds.size.width ) {
+            if (self.allKLineModels.count * [YFStock_Variable KLineWidth] + (self.allKLineModels.count - 1) * [YFStock_Variable KLineGap] > self.scrollView.bounds.size.width) {
                 
                 CGFloat newOffsetX = newLeftDistance - (centerX - self.scrollView.contentOffset.x);
                 self.scrollView.contentOffset = CGPointMake(newOffsetX > 0 ? newOffsetX : 0 , self.scrollView.contentOffset.y);
@@ -453,7 +472,27 @@
             // 间接调用重绘方法
             [self setNeedsDisplay];
         }
+        
+#warning <#message#>
+        // scrollView 滚动 0425
+        if (pinch.state == UIGestureRecognizerStateBegan) {
+            
+            self.lastPinchScale = 1.0f;
+            self.scrollView.scrollEnabled = NO;
+        }
+        
+        if (pinch.state == UIGestureRecognizerStateChanged) {
+            
+            self.lastPinchScale = pinch.scale;
+        }
+        
+        if (pinch.state == UIGestureRecognizerStateEnded) {
+            
+            self.lastPinchScale = 1.0f;
+            self.scrollView.scrollEnabled = YES;
+        }
     }
+    
 }
 
 #pragma mark - 代理方法

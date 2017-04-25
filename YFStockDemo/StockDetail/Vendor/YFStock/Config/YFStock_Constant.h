@@ -25,7 +25,7 @@
 
 // K线的最大、最小宽度
 #define kStockKlineMinWidth 3
-#define kStockKlineMaxWidth 20
+#define kStockKlineMaxWidth 30
 #define kStockKlineDefaultWidth 5
 
 // K线的最大最小间距

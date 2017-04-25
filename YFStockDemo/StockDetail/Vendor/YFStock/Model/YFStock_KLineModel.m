@@ -357,7 +357,7 @@
     for (YFStock_KLineModel *model in tempArray) {
         
         CGFloat closePricePadding = model.closePrice.floatValue - model.preModel.closePrice.floatValue;
-        
+
         if (closePricePadding >= 0) {
             
             A += closePricePadding;

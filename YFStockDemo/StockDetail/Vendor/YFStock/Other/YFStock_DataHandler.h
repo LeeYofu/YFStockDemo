@@ -15,20 +15,19 @@
 @interface YFStock_DataHandler : NSObject
 
 #pragma mark - property
+// TimeLine
+@property (nonatomic, assign) CGFloat maxTimeLineValue;
+@property (nonatomic, assign) CGFloat minTimeLineValue;
+@property (nonatomic, assign) CGFloat avgTimeLineValue;
+@property (nonatomic, assign) CGFloat avgTimeLinePositionY;
+@property (nonatomic, strong) NSArray <YFStock_TimeLineModel *> *drawTimeLineModels;
+
 // KLine
 @property (nonatomic, assign) CGFloat maxKLineValue; // 都是实际原始值，不是坐标值
 @property (nonatomic, assign) CGFloat minKLineValue;
 @property (nonatomic, assign) CGFloat maxVolumeLineValue;
 @property (nonatomic, assign) CGFloat minVolumeLineValue;
 @property (nonatomic, strong) NSArray <YFStock_KLineModel *> *drawKLineModels;
-
-
-// TimeLine
-@property (nonatomic, assign) CGFloat maxTimeLineValue; 
-@property (nonatomic, assign) CGFloat minTimeLineValue;
-@property (nonatomic, assign) CGFloat avgTimeLineValue;
-@property (nonatomic, assign) CGFloat avgTimeLinePositionY;
-@property (nonatomic, strong) NSArray <YFStock_TimeLineModel *> *drawTimeLineModels;
 
 // MACD
 @property (nonatomic, assign) CGFloat MACDMaxValue;
