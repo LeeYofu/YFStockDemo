@@ -199,6 +199,22 @@
     CGContextStrokePath(self.context);
 }
 
+- (NSInteger)getStartIndexWithDrawKLineModels:(NSArray <YFStock_KLineModel *> *)drawKLineModels N:(NSInteger)N {
+    
+    NSInteger startIndex = 0;
+    
+    if ([drawKLineModels.firstObject index].integerValue <= N - 1) {
+        
+        startIndex = N - 1 - [drawKLineModels.firstObject index].integerValue;
+    }
+    if (startIndex > drawKLineModels.count - 1) {
+        
+        startIndex = drawKLineModels.count - 1;
+    }
+    
+    return startIndex;
+}
+
 - (void)drawRSI {
     
     // RSI_6
@@ -206,11 +222,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
 
     // start index
-    NSInteger startIndex_6 = 0;
-    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_RSI_6_N - 1) {
-        
-        startIndex_6 = kStock_RSI_6_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
-    }
+    NSInteger startIndex_6 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_6_N];
     
     CGPoint RSI_6Point = [self.drawKLineModels[startIndex_6] RSI_6PositionPoint];
     NSAssert(!isnan(RSI_6Point.x) && !isnan(RSI_6Point.y), @"出现NAN值：MA画线");
@@ -228,11 +240,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     // start index
-    NSInteger startIndex_12 = 0;
-    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_RSI_12_N - 1) {
-        
-        startIndex_12 = kStock_RSI_12_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
-    }
+    NSInteger startIndex_12 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_12_N];
     
     CGPoint RSI_12Point = [self.drawKLineModels[startIndex_12] RSI_12PositionPoint];
     NSAssert(!isnan(RSI_12Point.x) && !isnan(RSI_12Point.y), @"出现NAN值：MA画线");
@@ -250,11 +258,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     // start index
-    NSInteger startIndex_24 = 0;
-    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_RSI_24_N - 1) {
-        
-        startIndex_24 = kStock_RSI_24_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
-    }
+    NSInteger startIndex_24 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_24_N];
     
     CGPoint RSI_24Point = [self.drawKLineModels[startIndex_24] RSI_24PositionPoint];
     NSAssert(!isnan(RSI_24Point.x) && !isnan(RSI_24Point.y), @"出现NAN值：MA画线");

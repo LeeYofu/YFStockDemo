@@ -15,7 +15,7 @@
 #define kDayKlineUrl @"https://goldfishspot.qdztrk.com/goldfishfinance/quotation/echartData?bCode=SH0001&dType=DAY&count=500&quota=MA"
 #define kWeekKlineUrl @"https://goldfishspot.qdztrk.com/goldfishfinance/quotation/echartData?bCode=SH0001&dType=WEEK&count=500&quota=MA"
 #define kMonthKlineUrl @"https://goldfishspot.qdztrk.com/goldfishfinance/quotation/echartData?bCode=SH0001&dType=MONTH&count=500&quota=MA"
-
+#define kYearKLineUrl @"https://goldfishspot.qdztrk.com/goldfishfinance/quotation/echartData?bCode=SH0001&dType=YEAR&count=500&quota=MA"
 
 @interface StockDetailViewController () <YFStockDataSource, StockDetailFullScreenViewControllerDelegate>
 
@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSMutableArray *dayDatas;
 @property (nonatomic, strong) NSMutableArray *weekDatas;
 @property (nonatomic, strong) NSMutableArray *monthDatas;
+@property (nonatomic, strong) NSMutableArray *yearDatas;
 @property (nonatomic, assign) BOOL canAutoRotate;
 
 @property (nonatomic, strong) YFStock *stock;
@@ -140,6 +141,21 @@
     }];
 }
 
+- (void)requestYearK {
+    
+    [YFNetworkRequest getWithSubUrl:kYearKLineUrl parameters:nil sucess:^(NSURLSessionDataTask *task, id responseObject) {
+        
+        NSArray *resultBeanArray = responseObject[@"resultBean"];
+        self.yearDatas = (NSMutableArray *)resultBeanArray;
+        
+        [self.stock draw];
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        
+        NSLog(@"error = %@", error);
+    }];
+}
+
 #pragma mark - dataSource
 - (void)YFStock:(YFStock *)stock didSelectedStockLineTypeAtIndex:(YFStockTopBarIndex)index {
     
@@ -155,6 +171,10 @@
     } else if (index == YFStockTopBarIndex_MonthK) { // month
         
         [self requestMonthK];
+    }
+    else if (index == YFStockTopBarIndex_YearK) { // year
+        
+        [self requestYearK];
     } else { // other
         
     }
@@ -174,6 +194,10 @@
     } else if (index == YFStockTopBarIndex_MonthK) { // month
         
         return self.monthDatas;
+    }
+    else if (index == YFStockTopBarIndex_YearK) { // year
+        
+        return self.yearDatas;
     } else { // other
         
         return @[];
@@ -316,6 +340,15 @@
         _monthDatas = [NSMutableArray new];
     }
     return _monthDatas;
+}
+
+- (NSMutableArray *)yearDatas {
+    
+    if (_yearDatas == nil) {
+        
+        _yearDatas = [NSMutableArray new];
+    }
+    return _yearDatas;
 }
 
 

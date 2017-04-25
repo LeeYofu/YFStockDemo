@@ -81,7 +81,7 @@
     
     if (! _MA_10) {
         
-        _MA_10 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_10_N]];;
+        _MA_10 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_10_N]];
     }
     return _MA_10;
 }
@@ -90,7 +90,7 @@
     
     if (! _MA_20) {
         
-        _MA_20 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_20_N]];;
+        _MA_20 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_20_N]];
     }
     return _MA_20;
 }
@@ -99,7 +99,7 @@
     
     if (! _MA_30) {
         
-        _MA_30 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_30_N]];;
+        _MA_30 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_30_N]];
     }
     return _MA_30;
 }
@@ -118,7 +118,6 @@
     
     if (! _MACD_DEA) {
 
-//        _MACD_DEA = [NSNumber numberWithFloat:(self.preModel.MACD_DEA.floatValue * 0.8 + self.MACD_DIF.floatValue * 0.2)];
         _MACD_DEA = [NSNumber numberWithFloat:(self.MACD_DIF.floatValue * 2 + self.preModel.MACD_DEA.floatValue * (kStock_MACD_MID - 1)) / (kStock_MACD_MID + 1)];
     }
     return _MACD_DEA;
@@ -253,6 +252,12 @@
     MA = [[[tempArray valueForKeyPath:@"closePrice"] valueForKeyPath:@"@avg.floatValue"] floatValue];
     
     tempArray = nil;
+    
+    //
+//    if (self.index.integerValue <= N - 1 - 1) {
+//
+//        MA = 0;
+//    }
     
     return MA;
 }

@@ -139,6 +139,7 @@ typedef NS_ENUM(NSInteger, YFStockBottomBarIndex) {
     YFStockBottomBarIndex_RSI,
 };
 
+// MA/BOLL类型
 typedef NS_ENUM(NSInteger, YFStockKLineLineType) {
     
     YFStockKLineLineType_MA,

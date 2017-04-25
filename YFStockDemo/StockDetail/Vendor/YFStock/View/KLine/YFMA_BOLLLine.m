@@ -61,6 +61,22 @@
     [self drawMA_20];
 }
 
+- (NSInteger)getStartIndexWithDrawKLineModels:(NSArray <YFStock_KLineModel *> *)drawKLineModels N:(NSInteger)N {
+    
+    NSInteger startIndex = 0;
+    
+    if ([drawKLineModels.firstObject index].integerValue <= N - 1) {
+        
+        startIndex = N - 1 - [drawKLineModels.firstObject index].integerValue;
+    }
+    if (startIndex > drawKLineModels.count - 1) {
+        
+        startIndex = drawKLineModels.count - 1;
+    }
+    
+    return startIndex;
+}
+
 - (void)drawMA_5 {
     
     CGContextSetStrokeColorWithColor(self.context, kStockMA5LineColor.CGColor);
@@ -68,11 +84,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     // start index
-    NSInteger startIndex = 0;
-    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_MA_5_N - 1) {
-        
-        startIndex = kStock_MA_5_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
-    }
+    NSInteger startIndex = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_MA_5_N];
     
     CGPoint firstPoint = [self.drawKLineModels[startIndex] MA_5PositionPoint];
     NSAssert(!isnan(firstPoint.x) && !isnan(firstPoint.y), @"出现NAN值：MA画线");
@@ -94,11 +106,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     // start index
-    NSInteger startIndex = 0;
-    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_MA_10_N - 1) {
-        
-        startIndex = kStock_MA_10_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
-    }
+    NSInteger startIndex = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_MA_10_N];
     
     CGPoint firstPoint = [self.drawKLineModels[startIndex] MA_10PositionPoint];
     NSAssert(!isnan(firstPoint.x) && !isnan(firstPoint.y), @"出现NAN值：MA画线");
@@ -120,11 +128,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     // start index
-    NSInteger startIndex = 0;
-    if ([self.drawKLineModels.firstObject index].integerValue <= kStock_MA_20_N - 1) {
-        
-        startIndex = kStock_MA_20_N - 1 - [self.drawKLineModels.firstObject index].integerValue;
-    }
+    NSInteger startIndex = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_MA_20_N];
     
     CGPoint firstPoint = [self.drawKLineModels[startIndex] MA_20PositionPoint];
     NSAssert(!isnan(firstPoint.x) && !isnan(firstPoint.y), @"出现NAN值：MA画线");
