@@ -96,8 +96,6 @@
 #define kStock_BOLL_K 2
 #define kStock_BOLL_N 20
 
-// ------  ------
-
 #define kStock_MACD_SHORT 12
 #define kStock_MACD_LONG 26
 #define kStock_MACD_MID 9
@@ -114,6 +112,9 @@
 #define kStock_WR_2_N 6
 
 #define kStock_CCI_N 14
+
+#define kStock_DMA_SHORT 10
+#define kStock_DMA_LONG 50
 
 
 #pragma mark - 枚举 **********  **********

@@ -281,6 +281,16 @@
     
     self.WRMaxValue = MAX(maxWR_1, maxWR_2);
     self.WRMinValue = MIN(minWR_1, minWR_2);
+    
+    // DMA
+    CGFloat maxDDD = [[[drawKLineModelArray valueForKeyPath:@"DDD"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxAMA = [[[drawKLineModelArray valueForKeyPath:@"AMA"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minDDD = [[[drawKLineModelArray valueForKeyPath:@"DDD"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minAMA= [[[drawKLineModelArray valueForKeyPath:@"AMA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.DMAMaxValue = MAX(maxDDD, maxAMA);
+    self.DMAMinValue = MIN(minDDD, minAMA);
 
     // CCI
     CGFloat maxCCI = [[[drawKLineModelArray valueForKeyPath:@"CCI"] valueForKeyPath:@"@max.floatValue"] floatValue];
@@ -342,6 +352,12 @@
     CGFloat WRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
     CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (WRLineMaxY - WRLineMinY); // 原始值 / 坐标值
     if (WRLineUnitValue == 0) WRLineUnitValue = 0.01f;
+    
+    // DMA
+    CGFloat DMALineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat DMALineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
+    CGFloat DMALineUnitValue = (self.DMAMaxValue - self.DMAMinValue) / (DMALineMaxY - DMALineMinY); // 原始值 / 坐标值
+    if (DMALineUnitValue == 0) DMALineUnitValue = 0.01f;
     
     // CCI
     CGFloat CCILineMinY = kStockVolumeLineViewVolumeLineMinY;
@@ -450,7 +466,11 @@
 #pragma mark - WR
         model.WR_1PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_1.floatValue - self.WRMinValue) / WRLineUnitValue));
         model.WR_2PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_2.floatValue - self.WRMinValue) / WRLineUnitValue));
-       
+        
+#pragma mark - DMA
+        model.DDDPositionPoint = CGPointMake(xPosition, ABS(DMALineMaxY - (model.DDD.floatValue - self.DMAMinValue) / DMALineUnitValue));
+        model.AMAPositionPoint = CGPointMake(xPosition, ABS(DMALineMaxY - (model.AMA.floatValue - self.DMAMinValue) / DMALineUnitValue));
+
 #pragma mark - CCI
         model.CCIPositionPoint = CGPointMake(xPosition, ABS(CCILineMaxY - (model.CCI.floatValue - self.CCIMinValue) / CCILineUnitValue));
         

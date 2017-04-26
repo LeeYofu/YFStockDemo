@@ -279,6 +279,28 @@
     return _WR_2;
 }
 
+#pragma mark DMA
+- (NSNumber *)DDD {
+    
+    if (! _DDD) {
+        
+        CGFloat DDD = [self getMAWithN:kStock_DMA_SHORT] - [self getMAWithN:kStock_DMA_LONG];
+        _DDD = [NSNumber numberWithFloat:DDD];
+    }
+    return _DDD;
+}
+
+- (NSNumber *)AMA {
+    
+    if (! _AMA) {
+        
+        CGFloat DDD_MA = [self getDDD_MAWithN:kStock_DMA_SHORT];
+        _AMA = [NSNumber numberWithFloat:DDD_MA];
+    }
+    return _AMA;
+}
+
+
 #pragma mark CCI
 - (NSNumber *)CCI {
     
@@ -616,5 +638,41 @@
     
     return AVEDEV;
 }
+
+- (CGFloat)getDDD_MAWithN:(NSInteger)N {
+    
+    CGFloat MA = 0;
+    
+    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
+    if (startIndex < 0) {
+        
+        startIndex = 0;
+    }
+    if (startIndex > self.preAllModelArray.count - 1) {
+        
+        startIndex = self.preAllModelArray.count - 1;
+    }
+    
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
+    
+    [tempArray addObject:self];
+    
+    CGFloat sumDDD = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sumDDD += model.DDD.floatValue;
+    }
+    
+    //
+    //    if (self.index.integerValue <= N - 1 - 1) {
+    //
+    //        MA = 0;
+    //    }
+    
+    MA = sumDDD / (N * 1.0);
+    
+    return MA;
+}
+
 
 @end

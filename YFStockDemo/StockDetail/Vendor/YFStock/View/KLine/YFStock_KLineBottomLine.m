@@ -72,6 +72,11 @@
             [self drawWR];
         }
             break;
+        case YFStockBottomBarIndex_DMA:
+        {
+            [self drawDMA];
+        }
+            break;
         case YFStockBottomBarIndex_CCI:
         {
             [self drawCCI];
@@ -388,6 +393,47 @@
     for (NSInteger idx = startIndex_WR_2 + 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] WR_2PositionPoint];
+        CGContextAddLineToPoint(self.context, point.x, point.y);
+    }
+    CGContextStrokePath(self.context);
+
+}
+
+- (void)drawDMA {
+    
+    // DDD
+    CGContextSetStrokeColorWithColor(self.context, kStockMA5LineColor.CGColor);
+    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    
+    // start index
+    NSInteger startIndex_DDD = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_SHORT];
+    
+    CGPoint DDD_Point = [self.drawKLineModels[startIndex_DDD] DDDPositionPoint];
+    NSAssert(!isnan(DDD_Point.x) && !isnan(DDD_Point.y), @"出现NAN值：MA画线");
+    CGContextMoveToPoint(self.context, DDD_Point.x, DDD_Point.y);
+    
+    for (NSInteger idx = startIndex_DDD + 1; idx < self.drawKLineModels.count; idx++) {
+        
+        CGPoint point = [self.drawKLineModels[idx] DDDPositionPoint];
+        CGContextAddLineToPoint(self.context, point.x, point.y);
+    }
+    CGContextStrokePath(self.context);
+    
+    
+    // AMA
+    CGContextSetStrokeColorWithColor(self.context, kStockMA10LineColor.CGColor);
+    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    
+    // start index
+    NSInteger startIndex_AMA = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_SHORT];
+    
+    CGPoint AMAPoint = [self.drawKLineModels[startIndex_AMA] AMAPositionPoint];
+    NSAssert(!isnan(AMAPoint.x) && !isnan(AMAPoint.y), @"出现NAN值：MA画线");
+    CGContextMoveToPoint(self.context, AMAPoint.x, AMAPoint.y);
+    
+    for (NSInteger idx = startIndex_AMA + 1; idx < self.drawKLineModels.count; idx++) {
+        
+        CGPoint point = [self.drawKLineModels[idx] AMAPositionPoint];
         CGContextAddLineToPoint(self.context, point.x, point.y);
     }
     CGContextStrokePath(self.context);

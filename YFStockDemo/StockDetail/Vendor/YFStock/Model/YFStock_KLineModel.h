@@ -68,6 +68,9 @@
 // CCI(14)
 @property (nonatomic, strong) NSNumber *CCI;
 
+// DMA(10, 50)
+@property (nonatomic, strong) NSNumber *DDD;
+@property (nonatomic, strong) NSNumber *AMA;
 
 
 // =============================================================
@@ -113,6 +116,9 @@
 
 @property (nonatomic, assign) CGPoint WR_1PositionPoint;
 @property (nonatomic, assign) CGPoint WR_2PositionPoint;
+
+@property (nonatomic, assign) CGPoint DDDPositionPoint;
+@property (nonatomic, assign) CGPoint AMAPositionPoint;
 
 @property (nonatomic, assign) CGPoint CCIPositionPoint;
 

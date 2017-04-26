@@ -53,6 +53,10 @@
 @property (nonatomic, assign) CGFloat WRMaxValue;
 @property (nonatomic, assign) CGFloat WRMinValue;
 
+// DMA
+@property (nonatomic, assign) CGFloat DMAMaxValue;
+@property (nonatomic, assign) CGFloat DMAMinValue;
+
 // CCI
 @property (nonatomic, assign) CGFloat CCIMaxValue;
 @property (nonatomic, assign) CGFloat CCIMinValue;
