@@ -41,6 +41,18 @@
 @property (nonatomic, assign) CGFloat RSIMaxValue;
 @property (nonatomic, assign) CGFloat RSIMinValue;
 
+// ARBR
+@property (nonatomic, assign) CGFloat ARBRMaxValue;
+@property (nonatomic, assign) CGFloat ARBRMinValue;
+
+// OBV
+@property (nonatomic, assign) CGFloat OBVMaxValue;
+@property (nonatomic, assign) CGFloat OBVMinValue;
+
+// WR
+@property (nonatomic, assign) CGFloat WRMaxValue;
+@property (nonatomic, assign) CGFloat WRMinValue;
+
 
 #pragma mark - method
 // 初始化

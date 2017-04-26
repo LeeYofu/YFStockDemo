@@ -104,6 +104,34 @@
     return _MA_30;
 }
 
+#pragma mark BOLL
+- (NSNumber *)BOLL_UPPER {
+    
+    if (! _BOLL_UPPER) {
+        
+        _BOLL_UPPER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue + kStock_BOLL_K * [self getMDWithN:(kStock_BOLL_N - 1)])];
+    }
+    return _BOLL_UPPER;
+}
+
+- (NSNumber *)BOLL_MID {
+    
+    if (! _BOLL_MID) {
+        
+        _BOLL_MID = [NSNumber numberWithFloat:([self getMAWithN:(kStock_BOLL_N - 1)])];
+    }
+    return _BOLL_MID;
+}
+
+- (NSNumber *)BOLL_LOWER {
+    
+    if (! _BOLL_LOWER) {
+        
+        _BOLL_LOWER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue - kStock_BOLL_K * [self getMDWithN:(kStock_BOLL_N - 1)])];
+    }
+    return _BOLL_LOWER;
+}
+
 #pragma mark MACD
 - (NSNumber *)MACD_DIF {
     
@@ -200,32 +228,55 @@
     return _RSI_24;
 }
 
-#pragma mark BOLL
-- (NSNumber *)BOLL_UPPER {
+#pragma mark ARBR
+- (NSNumber *)ARBR_AR {
     
-    if (! _BOLL_UPPER) {
+    if (! _ARBR_AR) {
         
-        _BOLL_UPPER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue + kStock_BOLL_K * [self getMDWithN:(kStock_BOLL_N - 1)])];
+        _ARBR_AR = [NSNumber numberWithFloat:[self getARWithN:kStock_ARBR_N]];
     }
-    return _BOLL_UPPER;
+    return _ARBR_AR;
 }
 
-- (NSNumber *)BOLL_MID {
+- (NSNumber *)ARBR_BR {
     
-    if (! _BOLL_MID) {
+    if (! _ARBR_BR) {
         
-        _BOLL_MID = [NSNumber numberWithFloat:([self getMAWithN:(kStock_BOLL_N - 1)])];
+        _ARBR_BR = [NSNumber numberWithFloat:[self getBRWithN:kStock_ARBR_N]];
     }
-    return _BOLL_MID;
+    return _ARBR_BR;
 }
 
-- (NSNumber *)BOLL_LOWER {
+#pragma mark OBV
+- (NSNumber *)OBV {
     
-    if (! _BOLL_LOWER) {
+    if (! _OBV) {
         
-        _BOLL_LOWER = [NSNumber numberWithFloat:(self.BOLL_MID.floatValue - kStock_BOLL_K * [self getMDWithN:(kStock_BOLL_N - 1)])];
+        CGFloat VA = ((self.closePrice.floatValue - self.lowPrice.floatValue) - (self.highPrice.floatValue - self.closePrice.floatValue)) * self.volume.floatValue;
+        _OBV = [NSNumber numberWithFloat:VA];
     }
-    return _BOLL_LOWER;
+    return _OBV;
+}
+
+#pragma mark WR
+- (NSNumber *)WR_1 {
+    
+    if (! _WR_1) {
+        
+        CGFloat value = 100 * ([self getMaxHighPriceWithN:kStock_WR_1_N] - self.closePrice.floatValue) / ([self getMaxHighPriceWithN:kStock_WR_1_N] - [self getMinLowPriceWithN:kStock_WR_1_N]);
+        _WR_1 = [NSNumber numberWithFloat:value];
+    }
+    return _WR_1;
+}
+
+- (NSNumber *)WR_2 {
+    
+    if (! _WR_2) {
+        
+        CGFloat value = 100 * ([self getMaxHighPriceWithN:kStock_WR_2_N] - self.closePrice.floatValue) / ([self getMaxHighPriceWithN:kStock_WR_2_N] - [self getMinLowPriceWithN:kStock_WR_2_N]);
+        _WR_2 = [NSNumber numberWithFloat:value];
+    }
+    return _WR_2;
 }
 
 #pragma mark - 计算相关
@@ -411,5 +462,72 @@
     return MD;
 }
 
+- (CGFloat)getARWithN:(NSInteger)N {
+    
+    CGFloat AR = 0;
+    
+    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
+    if (startIndex < 0) {
+        
+        startIndex = 0;
+    }
+    if (startIndex > self.preAllModelArray.count - 1) {
+        
+        startIndex = self.preAllModelArray.count - 1;
+    }
+    
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
+    
+    [tempArray addObject:self];
+    
+    CGFloat sum_HMinusO = 0;
+    CGFloat sum_OMinusL = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        CGFloat HMinusO = model.highPrice.floatValue - model.openPrice.floatValue;
+        CGFloat OMinusL = model.openPrice.floatValue - model.lowPrice.floatValue;
+        
+        sum_HMinusO += HMinusO;
+        sum_OMinusL += OMinusL;
+    }
+    
+    AR = (sum_HMinusO / sum_OMinusL) * 100;
+    
+    return AR;
+}
+
+- (CGFloat)getBRWithN:(NSInteger)N {
+    
+    CGFloat BR = 0;
+    
+    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
+    if (startIndex < 0) {
+        
+        startIndex = 0;
+    }
+    if (startIndex > self.preAllModelArray.count - 1) {
+        
+        startIndex = self.preAllModelArray.count - 1;
+    }
+    
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
+    
+    [tempArray addObject:self];
+    
+    CGFloat sum_HMinusPC = 0;
+    CGFloat sum_PCMinusL = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        CGFloat HMinusPC = model.highPrice.floatValue - model.preModel.closePrice.floatValue;
+        CGFloat PCMinusL = model.preModel.closePrice.floatValue - model.lowPrice.floatValue;
+        
+        sum_HMinusPC += HMinusPC;
+        sum_PCMinusL += PCMinusL;
+    }
+    
+    BR = (sum_HMinusPC / sum_PCMinusL) * 100;
+    
+    return BR;
+}
 
 @end

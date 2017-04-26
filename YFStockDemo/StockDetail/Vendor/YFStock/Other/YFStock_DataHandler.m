@@ -254,6 +254,34 @@
     
     self.RSIMaxValue = MAX(MAX(maxRSI_6, maxRSI_12), maxRSI_24);
     self.RSIMinValue = MIN(MIN(minRSI_6, minRSI_12), minRSI_24);
+    
+    // ARBR
+    CGFloat maxAR = [[[drawKLineModelArray valueForKeyPath:@"ARBR_AR"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxBR = [[[drawKLineModelArray valueForKeyPath:@"ARBR_BR"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minAR = [[[drawKLineModelArray valueForKeyPath:@"ARBR_AR"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minBR = [[[drawKLineModelArray valueForKeyPath:@"ARBR_BR"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.ARBRMaxValue = MAX(maxAR, maxBR);
+    self.ARBRMinValue = MIN(minAR, minBR);
+    
+    // OBV
+    CGFloat maxOBV = [[[drawKLineModelArray valueForKeyPath:@"OBV"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat minOBV = [[[drawKLineModelArray valueForKeyPath:@"OBV"] valueForKeyPath:@"@min.floatValue"] floatValue];
+
+    self.OBVMaxValue = maxOBV;
+    self.OBVMinValue = minOBV;
+    
+    // WR
+    CGFloat maxWR_1 = [[[drawKLineModelArray valueForKeyPath:@"WR_1"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxWR_2 = [[[drawKLineModelArray valueForKeyPath:@"WR_2"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minWR_1 = [[[drawKLineModelArray valueForKeyPath:@"WR_1"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minWR_2 = [[[drawKLineModelArray valueForKeyPath:@"WR_2"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.WRMaxValue = MAX(maxWR_1, maxWR_2);
+    self.WRMinValue = MIN(minWR_1, minWR_2);
+
 
 }
 
@@ -291,6 +319,25 @@
     CGFloat RSILineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
     CGFloat RSILineUnitValue = (self.RSIMaxValue - self.RSIMinValue) / (RSILineMaxY - RSILineMinY);
     if (RSILineUnitValue == 0) RSILineUnitValue = 0.01f;
+    
+    // ARBR
+    CGFloat ARBRLineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat ARBRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
+    CGFloat ARBRLineUnitValue = (self.ARBRMaxValue - self.ARBRMinValue) / (ARBRLineMaxY - ARBRLineMinY);
+    if (ARBRLineUnitValue == 0) ARBRLineUnitValue = 0.01f;
+    
+    // OBV
+    CGFloat OBVLineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat OBVLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY; // 到底部
+    CGFloat OBVLineUnitValue = (self.OBVMaxValue - self.OBVMinValue) / (OBVLineMaxY - OBVLineMinY); // 原始值 / 坐标值
+    if (OBVLineUnitValue == 0) OBVLineUnitValue = 0.01f;
+    
+    // WR
+    CGFloat WRLineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat WRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY; // 到底部
+    CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (WRLineMaxY - WRLineMinY); // 原始值 / 坐标值
+    if (WRLineUnitValue == 0) WRLineUnitValue = 0.01f;
+    
     
     // 便利
     [drawKLineModelArray enumerateObjectsUsingBlock:^(YFStock_KLineModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -382,7 +429,16 @@
         model.BOLL_MidPositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.BOLL_MID.floatValue - self.minKLineValue) / KLineUnitValue));
         model.BOLL_LowerPositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.BOLL_LOWER.floatValue - self.minKLineValue) / KLineUnitValue));
         
+#pragma mark - ARBR
+        model.ARBR_ARPositionPoint = CGPointMake(xPosition, ABS(ARBRLineMaxY - (model.ARBR_AR.floatValue - self.ARBRMinValue) / ARBRLineUnitValue));
+        model.ARBR_BRPositionPoint = CGPointMake(xPosition, ABS(ARBRLineMaxY - (model.ARBR_BR.floatValue - self.ARBRMinValue) / ARBRLineUnitValue));
         
+#pragma mark - OBV
+        model.OBVPositionPoint = CGPointMake(xPosition, ABS(OBVLineMaxY - (model.OBV.floatValue - self.OBVMinValue) / OBVLineUnitValue));
+
+#pragma mark - WR
+        model.WR_1PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_1.floatValue - self.WRMinValue) / WRLineUnitValue));
+        model.WR_2PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_2.floatValue - self.WRMinValue) / WRLineUnitValue));
         
         
         [tempDrawKLineModels addObject:model];

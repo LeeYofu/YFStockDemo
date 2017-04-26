@@ -166,7 +166,7 @@
 
 - (void)createBottomBar {
     
-    self.bottomBar = [[YFStock_TopBar alloc] initWithFrame:CGRectMake(0, self.timeView.maxY + kStockKLineScrollViewTopGap, self.width, kStockBottomBarHeight) titles:@[ @"MACD", @"KDJ", @"RSI", @"BOLL" ] topBarSelectedIndex:0];
+    self.bottomBar = [[YFStock_TopBar alloc] initWithFrame:CGRectMake(0, self.timeView.maxY + kStockKLineScrollViewTopGap, self.width, kStockBottomBarHeight) titles:@[ @"MACD", @"KDJ", @"RSI", @"ARBR", @"OBV", @"WR", @"EMV", @"DMA", @"CCI" ] topBarSelectedIndex:0];
     self.bottomBar.delegate = self;
     [self addSubview:self.bottomBar];
 }
@@ -439,10 +439,10 @@
             CGFloat scalePadding = pinch.scale - self.lastPinchScale;
             if (scalePadding > 0) {
                 
-                newLineWidth = [YFStock_Variable KLineWidth] + 0.4;
+                newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
             } else if (scalePadding < 0) {
                 
-                newLineWidth = [YFStock_Variable KLineWidth] - 0.4;
+                newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
             } else {
                 
                 newLineWidth = [YFStock_Variable KLineWidth];

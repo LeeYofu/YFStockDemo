@@ -93,6 +93,11 @@
 #define kStock_MA_20_N 20
 #define kStock_MA_30_N 30
 
+#define kStock_BOLL_K 2
+#define kStock_BOLL_N 20
+
+// ------  ------
+
 #define kStock_MACD_SHORT 12
 #define kStock_MACD_LONG 26
 #define kStock_MACD_MID 9
@@ -103,8 +108,10 @@
 #define kStock_RSI_12_N 12
 #define kStock_RSI_24_N 24
 
-#define kStock_BOLL_K 2
-#define kStock_BOLL_N 20
+#define kStock_ARBR_N 26
+
+#define kStock_WR_1_N 10
+#define kStock_WR_2_N 6
 
 
 
@@ -137,6 +144,12 @@ typedef NS_ENUM(NSInteger, YFStockBottomBarIndex) {
     YFStockBottomBarIndex_MACD,
     YFStockBottomBarIndex_KDJ,
     YFStockBottomBarIndex_RSI,
+    YFStockBottomBarIndex_ARBR,
+    YFStockBottomBarIndex_OBV,
+    YFStockBottomBarIndex_WR,
+    YFStockBottomBarIndex_EMV,
+    YFStockBottomBarIndex_DMA,
+    YFStockBottomBarIndex_CCI
 };
 
 // MA/BOLL类型

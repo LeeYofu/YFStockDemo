@@ -54,6 +54,17 @@
 @property (nonatomic, strong) NSNumber *BOLL_MID;
 @property (nonatomic, strong) NSNumber *BOLL_LOWER;
 
+// ARBR(26)
+@property (nonatomic, strong) NSNumber *ARBR_AR;
+@property (nonatomic, strong) NSNumber *ARBR_BR;
+
+// OBV
+@property (nonatomic, strong) NSNumber *OBV;
+
+// WR(10, 6)
+@property (nonatomic, strong) NSNumber *WR_1;
+@property (nonatomic, strong) NSNumber *WR_2;
+
 
 // =============================================================
 @property (nonatomic, assign) BOOL isIncrease;
@@ -90,5 +101,13 @@
 @property (nonatomic, assign) CGPoint BOLL_UpperPositionPoint;
 @property (nonatomic, assign) CGPoint BOLL_MidPositionPoint;
 @property (nonatomic, assign) CGPoint BOLL_LowerPositionPoint;
+
+@property (nonatomic, assign) CGPoint ARBR_ARPositionPoint;
+@property (nonatomic, assign) CGPoint ARBR_BRPositionPoint;
+
+@property (nonatomic, assign) CGPoint OBVPositionPoint;
+
+@property (nonatomic, assign) CGPoint WR_1PositionPoint;
+@property (nonatomic, assign) CGPoint WR_2PositionPoint;
 
 @end
