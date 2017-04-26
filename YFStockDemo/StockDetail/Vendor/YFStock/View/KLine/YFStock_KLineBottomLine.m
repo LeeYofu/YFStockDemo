@@ -72,6 +72,11 @@
             [self drawWR];
         }
             break;
+        case YFStockBottomBarIndex_CCI:
+        {
+            [self drawCCI];
+        }
+            break;
             
         default:
             break;
@@ -332,8 +337,8 @@
     
     [self drawVolume];
     
-    // AR
-    CGContextSetStrokeColorWithColor(self.context, kStockMA5LineColor.CGColor);
+    // OBV
+    CGContextSetStrokeColorWithColor(self.context, kStockMA20LineColor.CGColor);
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     CGPoint OBVPoint = [self.drawKLineModels[0] OBVPositionPoint];
@@ -387,6 +392,27 @@
     }
     CGContextStrokePath(self.context);
 
+}
+
+- (void)drawCCI {
+    
+    // CCI
+    CGContextSetStrokeColorWithColor(self.context, kStockMA10LineColor.CGColor);
+    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    
+    // start index
+    NSInteger startIndex_CCI = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_CCI_N];
+    
+    CGPoint CCI_Point = [self.drawKLineModels[startIndex_CCI] CCIPositionPoint];
+    NSAssert(!isnan(CCI_Point.x) && !isnan(CCI_Point.y), @"出现NAN值：MA画线");
+    CGContextMoveToPoint(self.context, CCI_Point.x, CCI_Point.y);
+    
+    for (NSInteger idx = startIndex_CCI + 1; idx < self.drawKLineModels.count; idx++) {
+        
+        CGPoint point = [self.drawKLineModels[idx] CCIPositionPoint];
+        CGContextAddLineToPoint(self.context, point.x, point.y);
+    }
+    CGContextStrokePath(self.context);
 }
 
 @end

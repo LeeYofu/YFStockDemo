@@ -252,7 +252,7 @@
     
     if (! _OBV) {
         
-        CGFloat VA = ((self.closePrice.floatValue - self.lowPrice.floatValue) - (self.highPrice.floatValue - self.closePrice.floatValue)) * self.volume.floatValue;
+        CGFloat VA = ((self.closePrice.floatValue - self.lowPrice.floatValue) - (self.highPrice.floatValue - self.closePrice.floatValue)) / (self.highPrice.floatValue - self.lowPrice.floatValue) * self.volume.floatValue;
         _OBV = [NSNumber numberWithFloat:VA];
     }
     return _OBV;
@@ -277,6 +277,20 @@
         _WR_2 = [NSNumber numberWithFloat:value];
     }
     return _WR_2;
+}
+
+#pragma mark CCI
+- (NSNumber *)CCI {
+    
+    if (! _CCI) {
+        
+        CGFloat TYP = [self getTYP];
+        CGFloat MA_TYP_N = [self getTYP_MAWithN:kStock_CCI_N];
+        CGFloat AVEDEV = [self getAVEDEVWithN:kStock_CCI_N];
+        CGFloat CCI = (TYP - MA_TYP_N)/ AVEDEV / 0.015;
+        _CCI = [NSNumber numberWithFloat:CCI];
+    }
+    return _CCI;
 }
 
 #pragma mark - 计算相关
@@ -528,6 +542,79 @@
     BR = (sum_HMinusPC / sum_PCMinusL) * 100;
     
     return BR;
+}
+
+- (CGFloat)getTYP {
+    
+    CGFloat TYP = 0;
+    
+    TYP = (self.highPrice.floatValue + self.lowPrice.floatValue + self.closePrice.floatValue) / 3.0;
+    
+    return TYP;
+}
+
+- (CGFloat)getTYP_MAWithN:(NSInteger)N {
+    
+    CGFloat MA = 0;
+    
+    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
+    if (startIndex < 0) {
+        
+        startIndex = 0;
+    }
+    if (startIndex > self.preAllModelArray.count - 1) {
+        
+        startIndex = self.preAllModelArray.count - 1;
+    }
+    
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
+    
+    [tempArray addObject:self];
+    
+    CGFloat sumTYP = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sumTYP += [model getTYP];
+    }
+    
+    //
+    //    if (self.index.integerValue <= N - 1 - 1) {
+    //
+    //        MA = 0;
+    //    }
+    
+    MA = sumTYP / (N * 1.0);
+    
+    return MA;
+}
+
+- (CGFloat)getAVEDEVWithN:(NSInteger)N {
+    
+    CGFloat AVEDEV = 0;
+    
+    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
+    if (startIndex < 0) {
+        
+        startIndex = 0;
+    }
+    if (startIndex > self.preAllModelArray.count - 1) {
+        
+        startIndex = self.preAllModelArray.count - 1;
+    }
+    
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
+    
+    [tempArray addObject:self];
+
+    CGFloat sum = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += ABS([model getTYP] - [model getTYP_MAWithN:N]);
+    }
+    
+    AVEDEV = sum / (N * 1.0);
+    
+    return AVEDEV;
 }
 
 @end

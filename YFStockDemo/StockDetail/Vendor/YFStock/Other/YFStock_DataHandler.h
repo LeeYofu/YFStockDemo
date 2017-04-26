@@ -53,6 +53,10 @@
 @property (nonatomic, assign) CGFloat WRMaxValue;
 @property (nonatomic, assign) CGFloat WRMinValue;
 
+// CCI
+@property (nonatomic, assign) CGFloat CCIMaxValue;
+@property (nonatomic, assign) CGFloat CCIMinValue;
+
 
 #pragma mark - method
 // 初始化

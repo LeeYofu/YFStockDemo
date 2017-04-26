@@ -65,6 +65,10 @@
 @property (nonatomic, strong) NSNumber *WR_1;
 @property (nonatomic, strong) NSNumber *WR_2;
 
+// CCI(14)
+@property (nonatomic, strong) NSNumber *CCI;
+
+
 
 // =============================================================
 @property (nonatomic, assign) BOOL isIncrease;
@@ -109,5 +113,7 @@
 
 @property (nonatomic, assign) CGPoint WR_1PositionPoint;
 @property (nonatomic, assign) CGPoint WR_2PositionPoint;
+
+@property (nonatomic, assign) CGPoint CCIPositionPoint;
 
 @end

@@ -113,7 +113,7 @@
 #define kStock_WR_1_N 10
 #define kStock_WR_2_N 6
 
-
+#define kStock_CCI_N 14
 
 
 #pragma mark - 枚举 **********  **********

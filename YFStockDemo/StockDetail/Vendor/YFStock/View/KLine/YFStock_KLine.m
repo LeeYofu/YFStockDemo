@@ -207,7 +207,7 @@
                 // 通知主线程刷新
                 dispatch_async(dispatch_get_main_queue(), ^{
             
-                    // 回调或者说是通知主线程刷新，
+                    // 回调或者说是通知主线程刷新
                     // 更新背景线
                     [self.scrollView drawWithDataHandler:self.dataHandler KLineViewHeight:self.KLineView.height bottomViewY:self.bottomView.y];
                     

@@ -282,7 +282,12 @@
     self.WRMaxValue = MAX(maxWR_1, maxWR_2);
     self.WRMinValue = MIN(minWR_1, minWR_2);
 
-
+    // CCI
+    CGFloat maxCCI = [[[drawKLineModelArray valueForKeyPath:@"CCI"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat minCCI = [[[drawKLineModelArray valueForKeyPath:@"CCI"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.CCIMaxValue = maxCCI;
+    self.CCIMinValue = minCCI;
 }
 
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
@@ -328,15 +333,21 @@
     
     // OBV
     CGFloat OBVLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat OBVLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY; // 到底部
+    CGFloat OBVLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
     CGFloat OBVLineUnitValue = (self.OBVMaxValue - self.OBVMinValue) / (OBVLineMaxY - OBVLineMinY); // 原始值 / 坐标值
     if (OBVLineUnitValue == 0) OBVLineUnitValue = 0.01f;
     
     // WR
     CGFloat WRLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat WRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY; // 到底部
+    CGFloat WRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
     CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (WRLineMaxY - WRLineMinY); // 原始值 / 坐标值
     if (WRLineUnitValue == 0) WRLineUnitValue = 0.01f;
+    
+    // CCI
+    CGFloat CCILineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat CCILineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY; 
+    CGFloat CCILineUnitValue = (self.CCIMaxValue - self.CCIMinValue) / (CCILineMaxY - CCILineMinY); // 原始值 / 坐标值
+    if (CCILineUnitValue == 0) CCILineUnitValue = 0.01f;
     
     
     // 便利
@@ -439,6 +450,13 @@
 #pragma mark - WR
         model.WR_1PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_1.floatValue - self.WRMinValue) / WRLineUnitValue));
         model.WR_2PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_2.floatValue - self.WRMinValue) / WRLineUnitValue));
+       
+#pragma mark - CCI
+        model.CCIPositionPoint = CGPointMake(xPosition, ABS(CCILineMaxY - (model.CCI.floatValue - self.CCIMinValue) / CCILineUnitValue));
+        
+        
+        
+        
         
         
         [tempDrawKLineModels addObject:model];
