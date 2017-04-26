@@ -362,7 +362,7 @@
 
 - (CGFloat)getMinLowPriceWithN:(NSInteger)N {
     
-    CGFloat value = 10000000;
+    CGFloat value = MAXFLOAT;
     
     if (self.preAllModelArray.count >= (N - 1)) {
         
@@ -373,7 +373,7 @@
         
     } else {
         
-        value = 0;
+        value = MAXFLOAT;
     }
     
     return value;

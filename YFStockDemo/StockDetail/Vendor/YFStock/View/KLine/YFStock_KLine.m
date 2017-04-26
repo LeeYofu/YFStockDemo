@@ -15,7 +15,7 @@
 #import "YFStock_DataHandler.h"
 #import "YFStock_TopBar.h"
 
-@interface YFStock_KLine() <UIScrollViewDelegate, YFStock_TopBarDelegate>
+@interface YFStock_KLine() <UIScrollViewDelegate, YFStock_TopBarDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) NSArray *allKLineModels; // 所有的K线模型
 @property (nonatomic, assign) CGFloat lastContentOffsetX; // 上一次scrollView滚动的contentOffsetX（滚动量大于K线的宽度加空隙才记录）
@@ -72,11 +72,12 @@
     
     // 缩放
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(event_pinchAction:)];
+    pinch.delegate = self;
     [self.scrollView addGestureRecognizer:pinch];
     
     // 长按手势
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(event_longPressAction:)];
-    longPress.minimumPressDuration = 0.3f;
+    longPress.minimumPressDuration = 0.2f;
     [self.scrollView addGestureRecognizer:longPress];
 }
 
@@ -94,8 +95,6 @@
     self.bottomView = [[YFStock_KLineBottomView alloc] initWithFrame:CGRectMake(0, self.scrollView.height - volumeViewHeight, self.scrollView.width, volumeViewHeight)];
     self.bottomView.backgroundColor = kClearColor;
     [self.scrollView addSubview:self.bottomView];
-    
-    
 }
 
 - (void)createTimeView {
@@ -492,7 +491,6 @@
             self.scrollView.scrollEnabled = YES;
         }
     }
-    
 }
 
 #pragma mark - 代理方法
@@ -500,11 +498,15 @@
     
     [self setNeedsDisplay];
     
-    
     if (self.scrollView.contentOffset.x <= 0) {
         
         NSLog(@"滚动最左边了，需要请求新的数据");
     }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    
+    return YES;
 }
 
 - (void)YFStock_TopBar:(YFStock_TopBar *)topBar didSelectedItemAtIndex:(NSInteger)index {
