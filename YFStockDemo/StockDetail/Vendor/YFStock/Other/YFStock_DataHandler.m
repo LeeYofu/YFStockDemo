@@ -86,6 +86,8 @@
             [self handleTimeShowActionWithKLineModel:KLineModel topBarIndex:topBarIndex];
         }
         
+        [KLineModel initData];
+        
         [allKLineModelArray addObject:KLineModel];
     }
    

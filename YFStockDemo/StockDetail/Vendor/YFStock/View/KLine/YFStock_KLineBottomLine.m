@@ -406,7 +406,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     // start index
-    NSInteger startIndex_DDD = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_SHORT];
+    NSInteger startIndex_DDD = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_LONG];
     
     CGPoint DDD_Point = [self.drawKLineModels[startIndex_DDD] DDDPositionPoint];
     NSAssert(!isnan(DDD_Point.x) && !isnan(DDD_Point.y), @"出现NAN值：MA画线");
@@ -425,7 +425,7 @@
     CGContextSetLineWidth(self.context, kStockMALineWidth);
     
     // start index
-    NSInteger startIndex_AMA = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_SHORT];
+    NSInteger startIndex_AMA = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_LONG];
     
     CGPoint AMAPoint = [self.drawKLineModels[startIndex_AMA] AMAPositionPoint];
     NSAssert(!isnan(AMAPoint.x) && !isnan(AMAPoint.y), @"出现NAN值：MA画线");

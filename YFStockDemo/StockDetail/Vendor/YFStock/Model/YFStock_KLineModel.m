@@ -17,6 +17,46 @@
 
 @implementation YFStock_KLineModel
 
+- (void)initData {
+    
+        [self preModel];
+        
+        [self MA_5];
+        [self MA_10];
+        [self MA_20];
+        [self MA_30];
+        
+        [self MACD_DIF];
+        [self MACD_DEA];
+        [self MACD_BAR];
+        
+        [self KDJ_K];
+        [self KDJ_D];
+        [self KDJ_J];
+        
+        [self RSI_6];
+        [self RSI_12];
+        [self RSI_24];
+        
+        [self BOLL_UPPER];
+        [self BOLL_MID];
+        [self BOLL_LOWER];
+        
+        [self ARBR_AR];
+        [self ARBR_BR];
+        
+        [self OBV];
+        
+        [self WR_1];
+        [self WR_2];
+        
+        [self CCI];
+        
+        [self DDD];
+        [self AMA];
+
+}
+
 //+ (NSDictionary *)mj_replacedKeyFromPropertyName {
 //    
 //    return @{
@@ -202,8 +242,8 @@
     
     if (! _RSI_6) {
         
-        CGFloat RS = [self getRSWithN:kStock_RSI_6_N];
-        _RSI_6 = [NSNumber numberWithFloat:(100 * RS / (1 + RS))];
+        CGFloat RSI = [self getRSIWithN:kStock_RSI_6_N];
+        _RSI_6 = [NSNumber numberWithFloat:RSI];
     }
     return _RSI_6;
 }
@@ -212,8 +252,8 @@
     
     if (! _RSI_12) {
         
-        CGFloat RS = [self getRSWithN:kStock_RSI_12_N];
-        _RSI_12 = [NSNumber numberWithFloat:(100 * RS / (1 + RS))];
+        CGFloat RSI = [self getRSIWithN:kStock_RSI_12_N];
+        _RSI_12 = [NSNumber numberWithFloat:RSI];
     }
     return _RSI_12;
 }
@@ -222,8 +262,8 @@
     
     if (! _RSI_24) {
         
-        CGFloat RS = [self getRSWithN:kStock_RSI_24_N];
-        _RSI_24 = [NSNumber numberWithFloat:(100 * RS / (1 + RS))];
+        CGFloat RSI = [self getRSIWithN:kStock_RSI_24_N];
+        _RSI_24 = [NSNumber numberWithFloat:RSI];
     }
     return _RSI_24;
 }
@@ -416,15 +456,11 @@
 }
 
 // RS
-/*
- A = N个数字中正数之和 —— N日内收盘涨幅之和
- B = N个数字中负数之和 * (-1) —— N日内收盘跌幅之和（取正值）
- RS = A / B —— 相对强度
- */
-- (CGFloat)getRSWithN:(NSInteger)N {
+- (CGFloat)getRSIWithN:(NSInteger)N {
     
-    CGFloat RS = 0;
+    CGFloat RSI = 0;
     
+    // 先拿到要处理的数组
     NSInteger startIndex = self.preAllModelArray.count - (N - 1);
     if (startIndex < 0) {
         
@@ -439,29 +475,45 @@
     
     [tempArray addObject:self];
 
-    CGFloat A = 0, B = 0;
-    
-    for (YFStock_KLineModel *model in tempArray) {
-        
-        CGFloat closePricePadding = model.closePrice.floatValue - model.preModel.closePrice.floatValue;
 
-        if (closePricePadding >= 0) {
-            
-            A += closePricePadding;
-        } else {
-            
-            B += closePricePadding;
-        }
-    }
+    CGFloat increaseValue = [self getIncreaseAvgWithN:N];
+    CGFloat decreaseValue = [self getDecreaseAvgWithN:N];
     
-    if (B == 0) {
+    // security
+    if (decreaseValue == 0) {
         
-        B = MAXFLOAT;
+        decreaseValue = MAXFLOAT;
     }
     
-    RS = ABS(A / B);
+    CGFloat RS = increaseValue / decreaseValue;
     
-    return RS;
+    RSI = 100 * RS / (1 + RS);
+    
+    return RSI;
+}
+
+- (CGFloat)getIncreaseAvgWithN:(NSInteger)N {
+    
+    CGFloat increaseAvg = 0;
+    
+    CGFloat minusValue = self.closePrice.floatValue - self.preModel.closePrice.floatValue;
+    CGFloat increaseValue = minusValue < 0 ? 0 : minusValue; // 当日下跌，记涨幅数为0
+    
+    increaseAvg = ((N - 1) * [self.preModel getIncreaseAvgWithN:N] + increaseValue) / N;
+    
+    return increaseAvg;
+}
+
+- (CGFloat)getDecreaseAvgWithN:(NSInteger)N {
+    
+    CGFloat decreaseAvg = 0;
+    
+    CGFloat minusValue = self.closePrice.floatValue - self.preModel.closePrice.floatValue;
+    CGFloat decreaseValue = minusValue > 0 ? 0 : ABS(minusValue); // 当日上涨，记跌幅数为0
+    
+    decreaseAvg = ((N - 1) * [self.preModel getDecreaseAvgWithN:N] + decreaseValue) / N;
+    
+    return decreaseAvg;
 }
 
 - (CGFloat)getMDWithN:(NSInteger)N {

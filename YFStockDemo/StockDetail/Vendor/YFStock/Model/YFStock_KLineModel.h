@@ -122,4 +122,7 @@
 
 @property (nonatomic, assign) CGPoint CCIPositionPoint;
 
+// 必须调用，减少卡顿！！！！
+- (void)initData;
+
 @end
