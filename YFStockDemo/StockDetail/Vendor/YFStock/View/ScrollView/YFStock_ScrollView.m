@@ -107,9 +107,6 @@
     self.KLineViewHeight = KLineViewHeight;
     self.bottomViewY = bottomViewY;
     
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        
-//    });
     [self setNeedsDisplay];
 
 }

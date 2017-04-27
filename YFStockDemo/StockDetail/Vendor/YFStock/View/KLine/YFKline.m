@@ -5,69 +5,83 @@
 
 @interface YFKline()
 
-@property (nonatomic, assign) CGContextRef context; // 父视图的上下文
-@property (nonatomic, strong) NSArray <YFStock_KLineModel *>  *drawKLineModels; // 要绘制的K线模型数组
+@property (nonatomic, strong) CAShapeLayer *shapeLayer;
 
 @end
 
 @implementation YFKline
 
-#pragma mark - 初始化
-- (instancetype)initWithContext:(CGContextRef)context drawKLineModels:(NSArray <YFStock_KLineModel *>*)drawKLineModels {
+- (CAShapeLayer *)shapeLayer {
     
-    self = [super init];
-    
-    if (self) {
+    if (_shapeLayer == nil) {
         
-        _context = context;
-        _drawKLineModels = drawKLineModels;
+        _shapeLayer = [CAShapeLayer layer];
+        _shapeLayer.frame = self.layer.bounds;
+        _shapeLayer.backgroundColor = kClearColor.CGColor;
+        [self.layer addSublayer:_shapeLayer];
     }
-    return self;
+    return _shapeLayer;
 }
 
+
 #pragma mark - 绘制
-- (void)draw {
+- (void)drawWithDrawKLineModels:(NSArray<YFStock_KLineModel *> *)drawKLineModels {
     
-    // security
-    if (!self.drawKLineModels || !self.context) return;
+    if (_shapeLayer) {
+        
+        [_shapeLayer removeFromSuperlayer];
+        _shapeLayer = nil;
+    }
     
-    CGContextRef ctx = self.context;
-    
-    // 父视图已经clear
-    
-    [self.drawKLineModels enumerateObjectsUsingBlock:^(YFStock_KLineModel *KLineModel, NSUInteger idx, BOOL * _Nonnull stop) {
+    [drawKLineModels enumerateObjectsUsingBlock:^(YFStock_KLineModel *KLineModel, NSUInteger idx, BOOL * _Nonnull stop) {
         
         UIColor *strokeColor;
+        CGFloat x, y, width, height;
+        CGFloat topLineHeight, bottomLineHeight;
+        CGFloat lineX;
+    
         if (KLineModel.isIncrease) {
             
             strokeColor = kStockIncreaseColor;
+            
+            x = KLineModel.closePricePositionPoint.x - [YFStock_Variable KLineWidth] * 0.5;
+            y = KLineModel.closePricePositionPoint.y;
+            width = [YFStock_Variable KLineWidth];
+            height = ABS(KLineModel.closePricePositionPoint.y - KLineModel.openPricePositionPoint.y);
+            topLineHeight = ABS(KLineModel.highPricePositionPoint.y - KLineModel.closePricePositionPoint.y);
+            bottomLineHeight = ABS(KLineModel.lowPricePositionPoint.y - KLineModel.openPricePositionPoint.y);
         } else {
             
             strokeColor = kStockDecreaseColor;
-        }
-                
-        CGContextSetStrokeColorWithColor(ctx, strokeColor.CGColor);
-        
-        // 蜡烛
-        CGContextSetLineWidth(ctx, [YFStock_Variable KLineWidth]);
-        const CGPoint solidPoints[] = { KLineModel.openPricePositionPoint, KLineModel.closePricePositionPoint };
-        CGContextStrokeLineSegments(ctx, solidPoints, 2);
-        
-        // 竖线
-        CGContextSetLineWidth(ctx, kStockShadowLineWidth);
-        const CGPoint shadowPoints[] = { KLineModel.highPricePositionPoint, KLineModel.lowPricePositionPoint };
-        CGContextStrokeLineSegments(ctx, shadowPoints, 2);
-        
-        // 绘制绿色空心线 - 必须放后面，这样能盖住竖线 - 本质绘制主题色的小一点的蜡烛
-        CGFloat gap = 2.0f;
-        if ([KLineModel openPrice].floatValue <= [KLineModel closePrice].floatValue && ABS(KLineModel.openPricePositionPoint.y - KLineModel.closePricePositionPoint.y) > gap) { // 涨-红色
             
-            CGContextSetStrokeColorWithColor(ctx, kStockThemeColor.CGColor);
-            CGContextSetLineWidth(ctx, [YFStock_Variable KLineWidth] - gap);
-            const CGPoint solidPoints[] = { CGPointMake(KLineModel.openPricePositionPoint.x, KLineModel.openPricePositionPoint.y - gap * 0.5f), CGPointMake(KLineModel.openPricePositionPoint.x, KLineModel.closePricePositionPoint.y + gap * 0.5f)};
-            CGContextStrokeLineSegments(ctx, solidPoints, 2);
+            x = KLineModel.openPricePositionPoint.x - [YFStock_Variable KLineWidth] * 0.5;
+            y = KLineModel.openPricePositionPoint.y;
+            width = [YFStock_Variable KLineWidth];
+            height = ABS(KLineModel.openPricePositionPoint.y - KLineModel.closePricePositionPoint.y);
+            topLineHeight = ABS(KLineModel.highPricePositionPoint.y - KLineModel.openPricePositionPoint.y);
+            bottomLineHeight = ABS(KLineModel.lowPricePositionPoint.y - KLineModel.closePricePositionPoint.y);
         }
+        
+        lineX = KLineModel.openPricePositionPoint.x;
+        
+        CGRect rect = CGRectMake(x, y, width, height);
+        UIBezierPath *path = [UIBezierPath bezierPathWithRect:rect];
+        path.lineWidth = kStockPartLineHeight;
+        [path moveToPoint:CGPointMake(lineX, y)];
+        [path addLineToPoint:CGPointMake(lineX, y - topLineHeight)];
+        [path moveToPoint:CGPointMake(lineX, y + height)];
+        [path addLineToPoint:CGPointMake(lineX, y + height + bottomLineHeight)];
+        
+        CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+        shapeLayer.fillColor = KLineModel.isIncrease ? kWhiteColor.CGColor : strokeColor.CGColor;
+        shapeLayer.strokeColor = strokeColor.CGColor;
+        shapeLayer.path = path.CGPath;
+        shapeLayer.frame = self.shapeLayer.bounds;
+        shapeLayer.backgroundColor = kClearColor.CGColor;
+        [self.shapeLayer addSublayer:shapeLayer];
+        
     }];
 }
+
 
 @end

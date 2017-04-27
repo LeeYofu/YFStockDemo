@@ -205,7 +205,7 @@
                 [self updateDrawKLineModels];
             
                 // 通知主线程刷新
-                dispatch_async(dispatch_get_main_queue(), ^{
+//                dispatch_async(dispatch_get_main_queue(), ^{
             
                     // 回调或者说是通知主线程刷新
                     // 更新背景线
@@ -225,7 +225,7 @@
                     
                     // 绘制左上角展示MA数值的Label
                     [self drawShowMALabelTextWithSelectedKLineModel:self.dataHandler.drawKLineModels.lastObject];
-                });
+//                });
 //            });
         }
     }
@@ -378,15 +378,21 @@
             if (touchIntX == closeIntX || ABS(touchPointX - closePointX) <= ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]) * 0.5f) {
                 
                 selectedKLineModel = KLineModel;
+            } else {
                 
-                // 显示十字线-重置十字线frame等
-                self.maskView.hidden = NO;
-                self.maskView.selectedKLineModel = KLineModel;
-                self.maskView.scrollView = self.scrollView;
-                [self.maskView resetLineFrame];
-                
-                [self drawShowMALabelTextWithSelectedKLineModel:KLineModel];
+                if (touchPointX > self.dataHandler.drawKLineModels.lastObject.closePricePositionPoint.x) {
+                    
+                    selectedKLineModel = self.dataHandler.drawKLineModels.lastObject;
+                }
             }
+            
+            // 显示十字线-重置十字线frame等
+            self.maskView.hidden = NO;
+            self.maskView.selectedKLineModel = selectedKLineModel;
+            self.maskView.scrollView = self.scrollView;
+            [self.maskView resetLineFrame];
+            
+            [self drawShowMALabelTextWithSelectedKLineModel:KLineModel];
         }];
     }
     
@@ -411,10 +417,6 @@
 - (void)event_pinchAction:(UIPinchGestureRecognizer *)pinch {
     
     // 1.获取缩放倍数
-    static CGFloat oldScale = 1.0f;
-    
-    CGFloat difValue = pinch.scale - oldScale;
-    
     if(1) { // ABS(difValue) > kStockKLineScaleBound
         
         BOOL isMinScale = pinch.scale < 1.0 && [YFStock_Variable KLineWidth] == kStockKlineMinWidth;
@@ -431,58 +433,60 @@
             CGFloat oldLeftArrCount = ABS(centerX / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]));
             
             // 4.缩放重绘
-//            CGFloat newLineWidth = [YFStock_Variable KLineWidth] * (difValue > 0 ? (1.03) : (0.97));
             
             CGFloat newLineWidth = 0;
             
             CGFloat scalePadding = pinch.scale - self.lastPinchScale;
-            if (scalePadding > 0) {
+            
+            if (ABS(scalePadding) >= 0.005) {
                 
-                newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
-            } else if (scalePadding < 0) {
+                if (scalePadding > 0) {
+                    
+//                    newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
+                    newLineWidth = [YFStock_Variable KLineWidth] * 1.04;
+                } else if (scalePadding < 0) {
+                    
+//                    newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
+                    newLineWidth = [YFStock_Variable KLineWidth] * 0.96;
+                } else {
+                    
+                    newLineWidth = [YFStock_Variable KLineWidth];
+                }
                 
-                newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
-            } else {
+                [YFStock_Variable setKLineWidth:newLineWidth];
                 
-                newLineWidth = [YFStock_Variable KLineWidth];
+                // 5.计算更新宽度后捏合中心点距离klineView最左侧（x = 0）的距离
+                CGFloat newLeftDistance = oldLeftArrCount * ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]);
+                
+                // 6.设置scrollview的contentoffset = (5) - (2);
+                if (self.allKLineModels.count * [YFStock_Variable KLineWidth] + (self.allKLineModels.count - 1) * [YFStock_Variable KLineGap] > self.scrollView.bounds.size.width) {
+                    
+                    CGFloat newOffsetX = newLeftDistance - (centerX - self.scrollView.contentOffset.x);
+                    self.scrollView.contentOffset = CGPointMake(newOffsetX > 0 ? newOffsetX : 0 , self.scrollView.contentOffset.y);
+                } else {
+                    
+                    self.scrollView.contentOffset = CGPointMake(0 , self.scrollView.contentOffset.y);
+                }
+                
+                // 更新contentsize
+                [self updateScrollViewContentWidth];
+                [self updateKLineViewAndVolumeViewAndTimeViewFrame];
+                
+                // 间接调用重绘方法
+                [self setNeedsDisplay];
+
+                if (pinch.state == UIGestureRecognizerStateChanged) {
+                    
+                    self.lastPinchScale = pinch.scale;
+                }
             }
-            
-            [YFStock_Variable setKLineWidth:newLineWidth];
-            
-//            [self updateScrollViewContentWidth];
-            
-            // 5.计算更新宽度后捏合中心点距离klineView最左侧（x = 0）的距离
-            CGFloat newLeftDistance = oldLeftArrCount * ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]);
-            
-            // 6.设置scrollview的contentoffset = (5) - (2);
-            if (self.allKLineModels.count * [YFStock_Variable KLineWidth] + (self.allKLineModels.count - 1) * [YFStock_Variable KLineGap] > self.scrollView.bounds.size.width) {
-                
-                CGFloat newOffsetX = newLeftDistance - (centerX - self.scrollView.contentOffset.x);
-                self.scrollView.contentOffset = CGPointMake(newOffsetX > 0 ? newOffsetX : 0 , self.scrollView.contentOffset.y);
-            } else {
-                
-                self.scrollView.contentOffset = CGPointMake(0 , self.scrollView.contentOffset.y);
-            }
-            
-            // 更新contentsize
-            [self updateScrollViewContentWidth];
-            [self updateKLineViewAndVolumeViewAndTimeViewFrame];
-            
-            // 间接调用重绘方法
-            [self setNeedsDisplay];
         }
         
-#warning <#message#>
         // scrollView 滚动 0425
         if (pinch.state == UIGestureRecognizerStateBegan) {
             
             self.lastPinchScale = 1.0f;
             self.scrollView.scrollEnabled = NO;
-        }
-        
-        if (pinch.state == UIGestureRecognizerStateChanged) {
-            
-            self.lastPinchScale = pinch.scale;
         }
         
         if (pinch.state == UIGestureRecognizerStateEnded) {
@@ -501,6 +505,18 @@
     if (self.scrollView.contentOffset.x <= 0) {
         
         NSLog(@"滚动最左边了，需要请求新的数据");
+        
+        // test
+        CGFloat lastContentOffsetX = self.scrollView.contentOffset.x;
+        CGFloat lastContentSizeWidth = self.scrollView.contentSize.width;
+        NSMutableArray *tempArray = [self.allKLineModels mutableCopy];
+        [tempArray addObjectsFromArray:self.allKLineModels];
+        [self reDrawWithAllKLineModels:tempArray];
+        
+        [self.scrollView setContentOffset:CGPointMake(lastContentOffsetX + (self.scrollView.contentSize.width - lastContentSizeWidth), self.scrollView.contentOffset.y)];
+        
+        NSLog(@"tempArray.count = %ld", tempArray.count);
+        
     }
 }
 

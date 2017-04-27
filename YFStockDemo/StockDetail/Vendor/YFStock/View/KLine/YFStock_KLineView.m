@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) YFStock_DataHandler *dataHandler; // data handler
 
+@property (nonatomic, strong) YFKline *KLine;
+
 @end
 
 @implementation YFStock_KLineView
@@ -25,7 +27,7 @@
     [super drawRect:rect];
     
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
+
     // clear
     CGContextClearRect(ctx, rect);
     
@@ -35,11 +37,7 @@
     }
     
     if (self.dataHandler.drawKLineModels.count > 0) {
-        
-        // K线
-        YFKline *line = [[YFKline alloc] initWithContext:ctx drawKLineModels:self.dataHandler.drawKLineModels];
-        [line draw];
-        
+
         // MA线或布林线
         YFMA_BOLLLine *MA_BOOLLine = [[YFMA_BOLLLine alloc]initWithContext:ctx];
         [MA_BOOLLine drawWithKLineModels:self.dataHandler.drawKLineModels KLineLineType:YFStockKLineLineType_MA];
@@ -51,11 +49,19 @@
     
     self.dataHandler = dataHandler;
     
-    // 不放到主线程里面，会导致卡顿！！！
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        
-//    });
     [self setNeedsDisplay];
+    [self.KLine drawWithDrawKLineModels:self.dataHandler.drawKLineModels];
+}
+
+- (YFKline *)KLine {
+    
+    if (_KLine == nil) {
+       
+        _KLine = [[YFKline alloc] initWithFrame:self.bounds];
+        [self addSubview:_KLine];
+    }
+    
+    return _KLine;
 }
 
 @end

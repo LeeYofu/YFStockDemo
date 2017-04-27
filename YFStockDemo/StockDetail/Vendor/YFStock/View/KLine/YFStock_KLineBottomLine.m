@@ -224,22 +224,6 @@
     CGContextStrokePath(self.context);
 }
 
-- (NSInteger)getStartIndexWithDrawKLineModels:(NSArray <YFStock_KLineModel *> *)drawKLineModels N:(NSInteger)N {
-    
-    NSInteger startIndex = 0;
-    
-    if ([drawKLineModels.firstObject index].integerValue <= N - 1) {
-        
-        startIndex = N - 1 - [drawKLineModels.firstObject index].integerValue;
-    }
-    if (startIndex > drawKLineModels.count - 1) {
-        
-        startIndex = drawKLineModels.count - 1;
-    }
-    
-    return startIndex;
-}
-
 - (void)drawRSI {
     
     // RSI_6
@@ -459,6 +443,23 @@
         CGContextAddLineToPoint(self.context, point.x, point.y);
     }
     CGContextStrokePath(self.context);
+}
+
+
+- (NSInteger)getStartIndexWithDrawKLineModels:(NSArray <YFStock_KLineModel *> *)drawKLineModels N:(NSInteger)N {
+    
+    NSInteger startIndex = 0;
+    
+    if ([drawKLineModels.firstObject index].integerValue <= N - 1) {
+        
+        startIndex = N - 1 - [drawKLineModels.firstObject index].integerValue;
+    }
+    if (startIndex > drawKLineModels.count - 1) {
+        
+        startIndex = drawKLineModels.count - 1;
+    }
+    
+    return startIndex;
 }
 
 @end

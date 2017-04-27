@@ -22,55 +22,57 @@
 @property (nonatomic, copy) NSString *dataTime;
 @property (nonatomic, copy) NSString *quotationCode;
 
-#pragma mark - 自己计算
+#pragma mark - 计算
 // 自己用算法计算的（如果后台返回相同意义字段，使用后台的覆盖就好，就不会走取值的懒加载方法了）
 @property (nonatomic, strong) NSArray *preAllModelArray; // 必须要赋值！！！！！！【需要用 copy，否则数组还是会跟着改变】
 @property (nonatomic, strong) YFStock_KLineModel *preModel;
 @property (nonatomic, strong) NSNumber *index;
 
-// MA相关(5, 10, 20, 30)
+// MA相关(5, 10, 20)，可配置参数-（移动平均周期），EMA与之类似
 @property (nonatomic, strong) NSNumber *MA_5;
 @property (nonatomic, strong) NSNumber *MA_10;
 @property (nonatomic, strong) NSNumber *MA_20;
 @property (nonatomic, strong) NSNumber *MA_30;
 
-// MACD相关(12, 26, 9)
+// MACD相关(12, 26, 9)，可配置参数-（短周期，长周期，移动平均周期）
 @property (nonatomic, strong) NSNumber *MACD_DIF;
 @property (nonatomic, strong) NSNumber *MACD_DEA;
 @property (nonatomic, strong) NSNumber *MACD_BAR;
 
-// KDJ(9, 3, 3)
+// KDJ(9, 3, 3)，可配置参数-（计算周期，移动平均周期，移动平均周期）
 @property (nonatomic, strong) NSNumber *KDJ_K;
 @property (nonatomic, strong) NSNumber *KDJ_D;
 @property (nonatomic, strong) NSNumber *KDJ_J;
 
-// RSI(6, 12, 24)
+// RSI(6, 12, 24)，可配置参数-（移动平均周期，移动平均周期，移动平均周期）
 @property (nonatomic, strong) NSNumber *RSI_6;
 @property (nonatomic, strong) NSNumber *RSI_12;
 @property (nonatomic, strong) NSNumber *RSI_24;
 
-// BOLL(20, 2)
+// BOLL(20, 2)，可配置参数-（计算周期，股票特性参数）
 @property (nonatomic, strong) NSNumber *BOLL_UPPER;
 @property (nonatomic, strong) NSNumber *BOLL_MID;
 @property (nonatomic, strong) NSNumber *BOLL_LOWER;
 
-// ARBR(26)
+// ARBR(26)，可配置参数-（计算周期）
 @property (nonatomic, strong) NSNumber *ARBR_AR;
 @property (nonatomic, strong) NSNumber *ARBR_BR;
 
-// OBV
+// OBV，不可配置参数
 @property (nonatomic, strong) NSNumber *OBV;
 
-// WR(10, 6)
+// WR(10, 6)，可配置参数-（计算周期，计算周期）
 @property (nonatomic, strong) NSNumber *WR_1;
 @property (nonatomic, strong) NSNumber *WR_2;
 
-// CCI(14)
-@property (nonatomic, strong) NSNumber *CCI;
-
-// DMA(10, 50)
+// DMA(10, 50)，可配置参数-（短周期，长周期）
 @property (nonatomic, strong) NSNumber *DDD;
 @property (nonatomic, strong) NSNumber *AMA;
+
+// CCI(14)，可配置参数-（计算周期）
+@property (nonatomic, strong) NSNumber *CCI;
+
+
 
 
 // =============================================================

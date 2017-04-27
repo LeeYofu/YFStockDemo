@@ -356,31 +356,19 @@
 }
 
 #pragma mark - 计算相关
+#pragma mark MA/EMA
 // MA
 // 最近N日收盘价C的平均值  MA(C, N) = (C1 + C2 + …… +CN) / N
 - (CGFloat)getMAWithN:(NSInteger)N {
     
     CGFloat MA = 0;
     
-    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
-    if (startIndex < 0) {
-        
-        startIndex = 0;
-    }
-    if (startIndex > self.preAllModelArray.count - 1) {
-        
-        startIndex = self.preAllModelArray.count - 1;
-    }
-    
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
-    
-    [tempArray addObject:self];
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
     
     MA = [[[tempArray valueForKeyPath:@"closePrice"] valueForKeyPath:@"@avg.floatValue"] floatValue];
     
     tempArray = nil;
     
-    //
 //    if (self.index.integerValue <= N - 1 - 1) {
 //
 //        MA = 0;
@@ -400,6 +388,7 @@
     return EMA;
 }
 
+#pragma mark KDJ
 // RSV
 - (CGFloat)getRSVWithN:(NSInteger)N {
     
@@ -455,27 +444,12 @@
     return value;
 }
 
-// RS
+#pragma mark RSI
+// RSI
 - (CGFloat)getRSIWithN:(NSInteger)N {
     
     CGFloat RSI = 0;
     
-    // 先拿到要处理的数组
-    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
-    if (startIndex < 0) {
-        
-        startIndex = 0;
-    }
-    if (startIndex > self.preAllModelArray.count - 1) {
-        
-        startIndex = self.preAllModelArray.count - 1;
-    }
-    
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
-    
-    [tempArray addObject:self];
-
-
     CGFloat increaseValue = [self getIncreaseAvgWithN:N];
     CGFloat decreaseValue = [self getDecreaseAvgWithN:N];
     
@@ -516,24 +490,13 @@
     return decreaseAvg;
 }
 
+#pragma mark BOLL
 - (CGFloat)getMDWithN:(NSInteger)N {
     
     CGFloat MD = 0;
     
-    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
-    if (startIndex < 0) {
-        
-        startIndex = 0;
-    }
-    if (startIndex > self.preAllModelArray.count - 1) {
-        
-        startIndex = self.preAllModelArray.count - 1;
-    }
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
     
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
-    
-    [tempArray addObject:self];
-        
     CGFloat sum = 0;
     for (YFStock_KLineModel *model in tempArray) {
         
@@ -550,23 +513,12 @@
     return MD;
 }
 
+#pragma mark ARBR
 - (CGFloat)getARWithN:(NSInteger)N {
     
     CGFloat AR = 0;
     
-    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
-    if (startIndex < 0) {
-        
-        startIndex = 0;
-    }
-    if (startIndex > self.preAllModelArray.count - 1) {
-        
-        startIndex = self.preAllModelArray.count - 1;
-    }
-    
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
-    
-    [tempArray addObject:self];
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
     
     CGFloat sum_HMinusO = 0;
     CGFloat sum_OMinusL = 0;
@@ -588,19 +540,7 @@
     
     CGFloat BR = 0;
     
-    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
-    if (startIndex < 0) {
-        
-        startIndex = 0;
-    }
-    if (startIndex > self.preAllModelArray.count - 1) {
-        
-        startIndex = self.preAllModelArray.count - 1;
-    }
-    
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
-    
-    [tempArray addObject:self];
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
     
     CGFloat sum_HMinusPC = 0;
     CGFloat sum_PCMinusL = 0;
@@ -618,6 +558,7 @@
     return BR;
 }
 
+#pragma mark CCI
 - (CGFloat)getTYP {
     
     CGFloat TYP = 0;
@@ -631,19 +572,7 @@
     
     CGFloat MA = 0;
     
-    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
-    if (startIndex < 0) {
-        
-        startIndex = 0;
-    }
-    if (startIndex > self.preAllModelArray.count - 1) {
-        
-        startIndex = self.preAllModelArray.count - 1;
-    }
-    
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
-    
-    [tempArray addObject:self];
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
     
     CGFloat sumTYP = 0;
     for (YFStock_KLineModel *model in tempArray) {
@@ -651,7 +580,6 @@
         sumTYP += [model getTYP];
     }
     
-    //
     //    if (self.index.integerValue <= N - 1 - 1) {
     //
     //        MA = 0;
@@ -666,19 +594,7 @@
     
     CGFloat AVEDEV = 0;
     
-    NSInteger startIndex = self.preAllModelArray.count - (N - 1);
-    if (startIndex < 0) {
-        
-        startIndex = 0;
-    }
-    if (startIndex > self.preAllModelArray.count - 1) {
-        
-        startIndex = self.preAllModelArray.count - 1;
-    }
-    
-    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
-    
-    [tempArray addObject:self];
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
 
     CGFloat sum = 0;
     for (YFStock_KLineModel *model in tempArray) {
@@ -691,9 +607,31 @@
     return AVEDEV;
 }
 
+#pragma mark DMA
 - (CGFloat)getDDD_MAWithN:(NSInteger)N {
     
     CGFloat MA = 0;
+
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    CGFloat sumDDD = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sumDDD += model.DDD.floatValue;
+    }
+    
+    //    if (self.index.integerValue <= N - 1 - 1) {
+    //
+    //        MA = 0;
+    //    }
+    
+    MA = sumDDD / (N * 1.0);
+    
+    return MA;
+}
+
+#pragma mark Other
+- (NSMutableArray *)getPreviousArrayContainsSelfWithN:(NSInteger)N {
     
     NSInteger startIndex = self.preAllModelArray.count - (N - 1);
     if (startIndex < 0) {
@@ -709,22 +647,7 @@
     
     [tempArray addObject:self];
     
-    CGFloat sumDDD = 0;
-    for (YFStock_KLineModel *model in tempArray) {
-        
-        sumDDD += model.DDD.floatValue;
-    }
-    
-    //
-    //    if (self.index.integerValue <= N - 1 - 1) {
-    //
-    //        MA = 0;
-    //    }
-    
-    MA = sumDDD / (N * 1.0);
-    
-    return MA;
+    return tempArray;
 }
-
 
 @end

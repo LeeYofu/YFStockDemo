@@ -6,9 +6,7 @@
 
 @interface YFKline : UIView
 
-// 初始化
-- (instancetype)initWithContext:(CGContextRef)context drawKLineModels:(NSArray <YFStock_KLineModel *>*)drawKLineModels;
 // 绘制
-- (void)draw;
+- (void)drawWithDrawKLineModels:(NSArray <YFStock_KLineModel *>*)drawKLineModels;
 
 @end
