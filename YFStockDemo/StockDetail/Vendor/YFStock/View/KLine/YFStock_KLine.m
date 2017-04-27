@@ -178,9 +178,9 @@
     [self updateScrollViewContentWidth];
     [self updateKLineViewAndVolumeViewAndTimeViewFrame];
     
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        
-//    });
+    //    dispatch_async(dispatch_get_main_queue(), ^{
+    //
+    //    });
     [self setNeedsDisplay];
     
     if (self.allKLineModels.count > 0) { // scrollView滚动到头
@@ -195,38 +195,30 @@
     
     // security
     if (self.allKLineModels.count > 0) {
-    
+        
         if (!_maskView || _maskView.isHidden) { // 不是 长按 等状态
             
-//            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            // 更新需要绘制的模型
+            [self updateDrawKLineModels];
             
-                // 处理耗时操作的代码块...
-                // 更新需要绘制的模型
-                [self updateDrawKLineModels];
+            // 回调或者说是通知主线程刷新
+            // 更新背景线
+            [self.scrollView drawWithDataHandler:self.dataHandler KLineViewHeight:self.KLineView.height bottomViewY:self.bottomView.y];
             
-                // 通知主线程刷新
-//                dispatch_async(dispatch_get_main_queue(), ^{
+            // 绘制K线上部分
+            [self.KLineView drawWithDataHandler:self.dataHandler];
             
-                    // 回调或者说是通知主线程刷新
-                    // 更新背景线
-                    [self.scrollView drawWithDataHandler:self.dataHandler KLineViewHeight:self.KLineView.height bottomViewY:self.bottomView.y];
-                    
-                    // 绘制K线上部分
-                    [self.KLineView drawWithDataHandler:self.dataHandler];
-                    
-                    // 绘制底部线条
-                    [self.bottomView drawWithDataHandler:self.dataHandler bottomBarSelectedIndex:self.bottomBarIndex];
-                    
-                    // 绘制左边的数值
-                    [self drawRightDesc];
-                    
-                    // 绘制时间
-                    [self.timeView drawWithDataHandler:self.dataHandler];
-                    
-                    // 绘制左上角展示MA数值的Label
-                    [self drawShowMALabelTextWithSelectedKLineModel:self.dataHandler.drawKLineModels.lastObject];
-//                });
-//            });
+            // 绘制底部线条
+            [self.bottomView drawWithDataHandler:self.dataHandler bottomBarSelectedIndex:self.bottomBarIndex];
+            
+            // 绘制左边的数值
+            [self drawRightDesc];
+            
+            // 绘制时间
+            [self.timeView drawWithDataHandler:self.dataHandler];
+            
+            // 绘制左上角展示MA数值的Label
+            [self drawShowMALabelTextWithSelectedKLineModel:self.dataHandler.drawKLineModels.lastObject];
         }
     }
 }
@@ -246,13 +238,13 @@
     
     // Bottom
     // MACD
-//    CGFloat MACDUintValue = (self.dataHandler.MACDMaxValue - self.dataHandler.MACDMinValue) / (self.bottomRightValueLabels.count - 1);
-//    for (int i = 0; i < self.bottomRightValueLabels.count; i ++) {
-//        
-//        NSString *text = [NSString stringWithFormat:@"%.2f",self.dataHandler.MACDMaxValue - MACDUintValue * i];
-//        UILabel *label = self.bottomRightValueLabels[i];
-//        label.text = text;
-//    }
+    //    CGFloat MACDUintValue = (self.dataHandler.MACDMaxValue - self.dataHandler.MACDMinValue) / (self.bottomRightValueLabels.count - 1);
+    //    for (int i = 0; i < self.bottomRightValueLabels.count; i ++) {
+    //
+    //        NSString *text = [NSString stringWithFormat:@"%.2f",self.dataHandler.MACDMaxValue - MACDUintValue * i];
+    //        UILabel *label = self.bottomRightValueLabels[i];
+    //        label.text = text;
+    //    }
     
     // MACD
     CGFloat KDJUintValue = (self.dataHandler.KDJMaxValue - self.dataHandler.KDJMinValue) / (self.bottomRightValueLabels.count - 1);
@@ -291,7 +283,7 @@
     
     // 截取数组长度
     NSInteger length = startIndex + drawKLineCount > self.allKLineModels.count ? self.allKLineModels.count - startIndex : drawKLineCount + 3;
-
+    
     if (length > self.allKLineModels.count - startIndex) {
         
         length = self.allKLineModels.count - startIndex;
@@ -306,7 +298,7 @@
 
 #pragma mark - 获取数组startIndex/scrollView的xPosition
 - (NSInteger)startIndex {
- 
+    
     // 数组startIndex = scrollView左边之前K线个数
     // 获取scrollView的 contentOffsetX值
     CGFloat offsetX = self.scrollView.contentOffset.x < 0 ? 0 : self.scrollView.contentOffset.x;
@@ -358,7 +350,7 @@
 - (void)event_longPressAction:(UILongPressGestureRecognizer *)longPress {
     
     __block YFStock_KLineModel *selectedKLineModel;
-
+    
     // 开始+数值改变状态
     if(UIGestureRecognizerStateChanged == longPress.state || UIGestureRecognizerStateBegan == longPress.state) {
         
@@ -368,7 +360,7 @@
         if (location.x < 0 || location.x > self.scrollView.contentSize.width) return;
         
         [self.dataHandler.drawKLineModels enumerateObjectsUsingBlock:^(YFStock_KLineModel *KLineModel, NSUInteger idx, BOOL * _Nonnull stop) {
-           
+            
             CGPoint closePoint = KLineModel.closePricePositionPoint;
             CGFloat closePointX = closePoint.x;
             CGFloat touchPointX = location.x;
@@ -442,11 +434,11 @@
                 
                 if (scalePadding > 0) {
                     
-//                    newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
+                    //                    newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
                     newLineWidth = [YFStock_Variable KLineWidth] * 1.04;
                 } else if (scalePadding < 0) {
                     
-//                    newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
+                    //                    newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
                     newLineWidth = [YFStock_Variable KLineWidth] * 0.96;
                 } else {
                     
@@ -474,7 +466,7 @@
                 
                 // 间接调用重绘方法
                 [self setNeedsDisplay];
-
+                
                 if (pinch.state == UIGestureRecognizerStateChanged) {
                     
                     self.lastPinchScale = pinch.scale;
