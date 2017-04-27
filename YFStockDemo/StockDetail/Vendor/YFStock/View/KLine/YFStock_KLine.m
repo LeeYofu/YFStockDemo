@@ -202,7 +202,7 @@
             [self updateDrawKLineModels];
             
             // 回调或者说是通知主线程刷新
-            // 更新背景线
+            // 更新背景线（还是调动drawrect方法，但是对整体性能影响不大！！！！）
             [self.scrollView drawWithDataHandler:self.dataHandler KLineViewHeight:self.KLineView.height bottomViewY:self.bottomView.y];
             
             // 绘制K线上部分
@@ -434,12 +434,12 @@
                 
                 if (scalePadding > 0) {
                     
-                    //                    newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
-                    newLineWidth = [YFStock_Variable KLineWidth] * 1.04;
+                    newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
+//                    newLineWidth = [YFStock_Variable KLineWidth] * 1.03;
                 } else if (scalePadding < 0) {
                     
-                    //                    newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
-                    newLineWidth = [YFStock_Variable KLineWidth] * 0.96;
+                    newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
+//                    newLineWidth = [YFStock_Variable KLineWidth] * 0.97;
                 } else {
                     
                     newLineWidth = [YFStock_Variable KLineWidth];
@@ -494,22 +494,22 @@
     
     [self setNeedsDisplay];
     
-    if (self.scrollView.contentOffset.x <= 0) {
-        
-        NSLog(@"滚动最左边了，需要请求新的数据");
-        
-        // test
-        CGFloat lastContentOffsetX = self.scrollView.contentOffset.x;
-        CGFloat lastContentSizeWidth = self.scrollView.contentSize.width;
-        NSMutableArray *tempArray = [self.allKLineModels mutableCopy];
-        [tempArray addObjectsFromArray:self.allKLineModels];
-        [self reDrawWithAllKLineModels:tempArray];
-        
-        [self.scrollView setContentOffset:CGPointMake(lastContentOffsetX + (self.scrollView.contentSize.width - lastContentSizeWidth), self.scrollView.contentOffset.y)];
-        
-        NSLog(@"tempArray.count = %ld", tempArray.count);
-        
-    }
+//    if (self.scrollView.contentOffset.x <= 0) {
+//        
+//        NSLog(@"滚动最左边了，需要请求新的数据");
+//        
+//        // test
+//        CGFloat lastContentOffsetX = self.scrollView.contentOffset.x;
+//        CGFloat lastContentSizeWidth = self.scrollView.contentSize.width;
+//        NSMutableArray *tempArray = [self.allKLineModels mutableCopy];
+//        [tempArray addObjectsFromArray:self.allKLineModels];
+//        [self reDrawWithAllKLineModels:tempArray];
+//        
+//        [self.scrollView setContentOffset:CGPointMake(lastContentOffsetX + (self.scrollView.contentSize.width - lastContentSizeWidth), self.scrollView.contentOffset.y)];
+//        
+//        NSLog(@"tempArray.count = %ld", tempArray.count);
+//        
+//    }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
