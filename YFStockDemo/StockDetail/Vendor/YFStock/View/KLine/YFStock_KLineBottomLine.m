@@ -15,22 +15,24 @@
 @property (nonatomic, strong) NSArray <YFStock_KLineModel *> *drawKLineModels;
 @property (nonatomic, assign) YFStockBottomBarIndex bottomBarSelectedIndex;
 
+@property (nonatomic, strong) CAShapeLayer *shapeLayer;
+
 @end
 
 @implementation YFStock_KLineBottomLine
 
-#pragma mark - 初始化
-- (instancetype)initWithContext:(CGContextRef)context drawKLineModels:(NSArray <YFStock_KLineModel *>*)drawKLineModels {
+- (CAShapeLayer *)shapeLayer {
     
-    self = [super init];
-    
-    if (self) {
+    if (_shapeLayer == nil) {
         
-        _context = context;
-        _drawKLineModels = drawKLineModels;
+        _shapeLayer = [CAShapeLayer layer];
+        _shapeLayer.frame = self.layer.bounds;
+        _shapeLayer.backgroundColor = kClearColor.CGColor;
+        [self.layer addSublayer:_shapeLayer];
     }
-    return self;
+    return _shapeLayer;
 }
+
 
 // draw
 - (void)drawWithBottomBarSelectedIndex:(NSInteger)bottomBarSelectedIndex {
@@ -88,34 +90,100 @@
     }
 }
 
+- (void)drawWithBottomBarSelectedIndex:(NSInteger)bottomBarSelectedIndex drawKLineModels:(NSArray<YFStock_KLineModel *> *)drawKLineModels {
+    
+    self.drawKLineModels = drawKLineModels;
+    
+    if (!self.drawKLineModels || self.drawKLineModels.count == 0) return;
+    
+    if (_shapeLayer) {
+        
+        [_shapeLayer removeFromSuperlayer];
+        _shapeLayer = nil;
+    }
+    
+    self.bottomBarSelectedIndex = bottomBarSelectedIndex;
+        
+    switch (self.bottomBarSelectedIndex) {
+        case YFStockBottomBarIndex_MACD:
+        {
+            [self drawMACD];
+        }
+            break;
+        case YFStockBottomBarIndex_KDJ:
+        {
+            [self drawKDJ];
+        }
+            break;
+        case YFStockBottomBarIndex_RSI:
+        {
+            [self drawRSI];
+        }
+            break;
+        case YFStockBottomBarIndex_ARBR:
+        {
+            [self drawARBR];
+        }
+            break;
+        case YFStockBottomBarIndex_OBV:
+        {
+            [self drawOBV];
+        }
+            break;
+        case YFStockBottomBarIndex_WR:
+        {
+            [self drawWR];
+        }
+            break;
+        case YFStockBottomBarIndex_DMA:
+        {
+            [self drawDMA];
+        }
+            break;
+        case YFStockBottomBarIndex_CCI:
+        {
+            [self drawCCI];
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
 - (void)drawVolume {
     
     [self.drawKLineModels enumerateObjectsUsingBlock:^(YFStock_KLineModel *KLineModel, NSUInteger idx, BOOL * _Nonnull stop) {
         
         UIColor *strokeColor;
+        CGFloat x, y, width, height;
+        
         if (KLineModel.isIncrease) {
             
             strokeColor = kStockIncreaseColor;
+            
         } else {
             
             strokeColor = kStockDecreaseColor;
         }
         
-        CGContextSetStrokeColorWithColor(self.context, strokeColor.CGColor);
-        CGContextSetLineWidth(self.context, [YFStock_Variable KLineWidth]);
-        const CGPoint solidPoints[] = { KLineModel.volumeStartPositionPoint, KLineModel.volumeEndPositionPoint };
-        CGContextStrokeLineSegments(self.context, solidPoints, 2);
+        x = KLineModel.volumeStartPositionPoint.x - [YFStock_Variable KLineWidth] * 0.5;
+        y = KLineModel.volumeStartPositionPoint.y;
+        width = [YFStock_Variable KLineWidth];
+        height = ABS(KLineModel.volumeEndPositionPoint.y - KLineModel.volumeStartPositionPoint.y);
         
-        // 绘制绿色空心线
-        //        CGFloat gap = 2.0f;
-        //
-        //        if ([strokeColor isEqual:kStockDecreaseColor] && ABS(KLineModel.volumeStartPositionPoint.y - KLineModel.volumeEndPositionPoint.y) > gap) {
-        //
-        //            CGContextSetStrokeColorWithColor(ctx, kStockThemeColor.CGColor);
-        //            CGContextSetLineWidth(ctx, [YFStock_Variable KLineWidth] - gap);
-        //            const CGPoint solidPoints[] = {CGPointMake(KLineModel.volumeStartPositionPoint.x, KLineModel.volumeStartPositionPoint.y + gap * 0.5),CGPointMake(KLineModel.volumeStartPositionPoint.x, KLineModel.volumeEndPositionPoint.y - gap * 0.5)};
-        //            CGContextStrokeLineSegments(ctx, solidPoints, 2);
-        //        }
+        CGRect rect = CGRectMake(x, y, width, height);
+        UIBezierPath *path = [UIBezierPath bezierPathWithRect:rect];
+        path.lineWidth = kStockPartLineHeight;
+        
+        CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+        shapeLayer.fillColor = strokeColor.CGColor;
+        shapeLayer.strokeColor = strokeColor.CGColor;
+        shapeLayer.path = path.CGPath;
+        shapeLayer.frame = self.shapeLayer.bounds;
+        shapeLayer.backgroundColor = kClearColor.CGColor;
+        [self.shapeLayer addSublayer:shapeLayer];
+
     }];
 }
 
@@ -125,6 +193,8 @@
     [self.drawKLineModels enumerateObjectsUsingBlock:^(YFStock_KLineModel *KLineModel, NSUInteger idx, BOOL * _Nonnull stop) {
         
         UIColor *strokeColor;
+        CGFloat x, y, width, height;
+
         if (KLineModel.MACD_BAR.floatValue > 0) {
             
             strokeColor = kStockIncreaseColor;
@@ -133,152 +203,171 @@
             strokeColor = kStockDecreaseColor;
         }
         
-        CGContextSetStrokeColorWithColor(self.context, strokeColor.CGColor);
-        CGContextSetLineWidth(self.context, [YFStock_Variable KLineWidth]);
-        const CGPoint solidPoints[] = { KLineModel.MACD_BARStartPositionPoint, KLineModel.MACD_BAREndPositionPoint };
-        CGContextStrokeLineSegments(self.context, solidPoints, 2);
+        x = KLineModel.MACD_BARStartPositionPoint.x - 0.5 * [YFStock_Variable KLineWidth];
+        y = KLineModel.MACD_BARStartPositionPoint.y;
+        width = [YFStock_Variable KLineWidth];
+        height = KLineModel.MACD_BAREndPositionPoint.y - KLineModel.MACD_BARStartPositionPoint.y;
         
-        // 绘制绿色空心线
-        //        CGFloat gap = 2.0f;
-        //
-        //        if ([strokeColor isEqual:kStockDecreaseColor] && ABS(KLineModel.volumeStartPositionPoint.y - KLineModel.volumeEndPositionPoint.y) > gap) {
-        //
-        //            CGContextSetStrokeColorWithColor(ctx, kStockThemeColor.CGColor);
-        //            CGContextSetLineWidth(ctx, [YFStock_Variable KLineWidth] - gap);
-        //            const CGPoint solidPoints[] = {CGPointMake(KLineModel.volumeStartPositionPoint.x, KLineModel.volumeStartPositionPoint.y + gap * 0.5),CGPointMake(KLineModel.volumeStartPositionPoint.x, KLineModel.volumeEndPositionPoint.y - gap * 0.5)};
-        //            CGContextStrokeLineSegments(ctx, solidPoints, 2);
-        //        }
+        CGRect rect = CGRectMake(x, y, width, height);
+        UIBezierPath *path = [UIBezierPath bezierPathWithRect:rect];
+        path.lineWidth = kStockPartLineHeight;
+        
+        [self createShapeLayerWithStrokeColor:strokeColor fillColor:strokeColor path:path frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+
     }];
     
     // DIFF
-    CGContextSetStrokeColorWithColor(self.context, kStockDIFFLineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *diffPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
     CGPoint DIFFFirstPoint = [self.drawKLineModels.firstObject MACD_DIFPositionPoint];
     NSAssert(!isnan(DIFFFirstPoint.x) && !isnan(DIFFFirstPoint.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, DIFFFirstPoint.x, DIFFFirstPoint.y);
+
+    [diffPath moveToPoint:DIFFFirstPoint];
     
     for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] MACD_DIFPositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [diffPath addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    
+    [self createShapeLayerWithStrokeColor:kStockDIFFLineColor fillColor:kClearColor path:diffPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+
     
     // DEA
-    CGContextSetStrokeColorWithColor(self.context, kStockDEALineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *deaPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
     CGPoint DEAFirstPoint = [self.drawKLineModels.firstObject MACD_DEAPositionPoint];
     NSAssert(!isnan(DEAFirstPoint.x) && !isnan(DEAFirstPoint.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, DEAFirstPoint.x, DEAFirstPoint.y);
-    
+
+    [deaPath moveToPoint:DIFFFirstPoint];
+
     for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] MACD_DEAPositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [deaPath addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    
+    [self createShapeLayerWithStrokeColor:kStockDEALineColor fillColor:kClearColor path:deaPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+
 }
 
 - (void)drawKDJ {
     
     // K
-    CGContextSetStrokeColorWithColor(self.context, kStockMA5LineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *KPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
+    KPath.lineWidth = kStockPartLineHeight;
     CGPoint KDJ_KPoint = [self.drawKLineModels.firstObject KDJ_KPositionPoint];
     NSAssert(!isnan(KDJ_KPoint.x) && !isnan(KDJ_KPoint.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, KDJ_KPoint.x, KDJ_KPoint.y);
+
+    [KPath moveToPoint:KDJ_KPoint];
     
     for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] KDJ_KPositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [KPath addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    
+    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:KPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+
     
     // D
-    CGContextSetStrokeColorWithColor(self.context, kStockMA10LineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *DPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
     CGPoint KDJ_DPoint = [self.drawKLineModels.firstObject KDJ_DPositionPoint];
     NSAssert(!isnan(KDJ_DPoint.x) && !isnan(KDJ_DPoint.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, KDJ_DPoint.x, KDJ_DPoint.y);
+    
+    [DPath moveToPoint:KDJ_DPoint];
     
     for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] KDJ_DPositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [DPath addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    
+    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:DPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+
     
     // J
-    CGContextSetStrokeColorWithColor(self.context, kStockMA20LineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *JPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
     CGPoint KDJ_JPoint = [self.drawKLineModels.firstObject KDJ_JPositionPoint];
     NSAssert(!isnan(KDJ_JPoint.x) && !isnan(KDJ_JPoint.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, KDJ_JPoint.x, KDJ_JPoint.y);
+
+    [JPath moveToPoint:KDJ_JPoint];
     
     for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] KDJ_JPositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [JPath addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    
+    [self createShapeLayerWithStrokeColor:kStockMA20LineColor fillColor:kClearColor path:JPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
 }
 
 - (void)drawRSI {
     
     // RSI_6
-    CGContextSetStrokeColorWithColor(self.context, kStockMA5LineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *RSI_6_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
 
     // start index
     NSInteger startIndex_6 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_6_N];
     
     CGPoint RSI_6Point = [self.drawKLineModels[startIndex_6] RSI_6PositionPoint];
     NSAssert(!isnan(RSI_6Point.x) && !isnan(RSI_6Point.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, RSI_6Point.x, RSI_6Point.y);
+
+    [RSI_6_Path moveToPoint:RSI_6Point];
     
     for (NSInteger idx = startIndex_6 + 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] RSI_6PositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [RSI_6_Path addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:RSI_6_Path frame:self.shapeLayer.bounds backgroundColor:kClearColor];
     
     // RSI_12
-    CGContextSetStrokeColorWithColor(self.context, kStockMA10LineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *RSI_12_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
     
     // start index
     NSInteger startIndex_12 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_12_N];
     
     CGPoint RSI_12Point = [self.drawKLineModels[startIndex_12] RSI_12PositionPoint];
     NSAssert(!isnan(RSI_12Point.x) && !isnan(RSI_12Point.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, RSI_12Point.x, RSI_12Point.y);
+
+    [RSI_12_Path moveToPoint:RSI_12Point];
     
     for (NSInteger idx = startIndex_12 + 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] RSI_12PositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [RSI_12_Path addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:RSI_12_Path frame:self.shapeLayer.bounds backgroundColor:kClearColor];
     
     // RSI_24
-    CGContextSetStrokeColorWithColor(self.context, kStockMA20LineColor.CGColor);
-    CGContextSetLineWidth(self.context, kStockMALineWidth);
+    UIBezierPath *RSI_24_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
     
     // start index
     NSInteger startIndex_24 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_24_N];
     
     CGPoint RSI_24Point = [self.drawKLineModels[startIndex_24] RSI_24PositionPoint];
     NSAssert(!isnan(RSI_24Point.x) && !isnan(RSI_24Point.y), @"出现NAN值：MA画线");
-    CGContextMoveToPoint(self.context, RSI_24Point.x, RSI_24Point.y);
-    
+
+    [RSI_24_Path moveToPoint:RSI_24Point];
+
     for (NSInteger idx = startIndex_24 + 1; idx < self.drawKLineModels.count; idx++) {
         
         CGPoint point = [self.drawKLineModels[idx] RSI_24PositionPoint];
-        CGContextAddLineToPoint(self.context, point.x, point.y);
+
+        [RSI_24_Path addLineToPoint:point];
     }
-    CGContextStrokePath(self.context);
+    [self createShapeLayerWithStrokeColor:kStockMA20LineColor fillColor:kClearColor path:RSI_24_Path frame:self.shapeLayer.bounds backgroundColor:kClearColor];
 
 }
 
@@ -445,6 +534,23 @@
     CGContextStrokePath(self.context);
 }
 
+- (UIBezierPath *)createBezierPathWithLineWidth:(CGFloat)lineWidth {
+    
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    path.lineWidth = lineWidth;
+    return path;
+}
+
+- (void)createShapeLayerWithStrokeColor:(UIColor *)strokeColor fillColor:(UIColor *)fillColor path:(UIBezierPath *)path frame:(CGRect)frame backgroundColor:(UIColor *)backGroundColor {
+    
+    CAShapeLayer *layer = [CAShapeLayer layer];
+    layer.fillColor = fillColor.CGColor;
+    layer.strokeColor = strokeColor.CGColor;
+    layer.path = path.CGPath;
+    layer.frame = frame;
+    layer.backgroundColor = backGroundColor.CGColor;
+    [self.shapeLayer addSublayer:layer];
+}
 
 - (NSInteger)getStartIndexWithDrawKLineModels:(NSArray <YFStock_KLineModel *> *)drawKLineModels N:(NSInteger)N {
     

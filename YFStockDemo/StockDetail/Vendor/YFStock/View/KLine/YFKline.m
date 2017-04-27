@@ -27,6 +27,11 @@
 #pragma mark - 绘制
 - (void)drawWithDrawKLineModels:(NSArray<YFStock_KLineModel *> *)drawKLineModels {
     
+    if (! drawKLineModels || drawKLineModels.count == 0) {
+        
+        return;
+    }
+    
     if (_shapeLayer) {
         
         [_shapeLayer removeFromSuperlayer];

@@ -13,9 +13,8 @@
 
 @interface YFStock_KLineBottomLine : UIView
 
-// 初始化
-- (instancetype)initWithContext:(CGContextRef)context drawKLineModels:(NSArray <YFStock_KLineModel *>*)drawKLineModels;
 // draw
-- (void)drawWithBottomBarSelectedIndex:(NSInteger)bottomBarSelectedIndex;
+- (void)drawWithBottomBarSelectedIndex:(NSInteger)bottomBarSelectedIndex drawKLineModels:(NSArray <YFStock_KLineModel *>*)drawKLineModels;
+
 
 @end

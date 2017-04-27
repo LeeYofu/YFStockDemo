@@ -13,44 +13,17 @@
 
 @interface YFStock_KLineView()
 
-@property (nonatomic, strong) YFStock_DataHandler *dataHandler; // data handler
-
 @property (nonatomic, strong) YFKline *KLine;
+@property (nonatomic, strong) YFMA_BOLLLine *MA_BOLLLine;
 
 @end
 
 @implementation YFStock_KLineView
 
-
-- (void)drawRect:(CGRect)rect {
-    
-    [super drawRect:rect];
-    
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-
-    // clear
-    CGContextClearRect(ctx, rect);
-    
-    if (!self.dataHandler.drawKLineModels) {
-        
-        return;
-    }
-    
-    if (self.dataHandler.drawKLineModels.count > 0) {
-
-        // MA线或布林线
-        YFMA_BOLLLine *MA_BOOLLine = [[YFMA_BOLLLine alloc]initWithContext:ctx];
-        [MA_BOOLLine drawWithKLineModels:self.dataHandler.drawKLineModels KLineLineType:YFStockKLineLineType_MA];
-//        [MA_BOOLLine drawWithKLineModels:self.dataHandler.drawKLineModels KLineLineType:YFStockKLineLineType_BOLL];
-    }
-}
-
 - (void)drawWithDataHandler:(YFStock_DataHandler *)dataHandler {
     
-    self.dataHandler = dataHandler;
-    
-    [self setNeedsDisplay];
-    [self.KLine drawWithDrawKLineModels:self.dataHandler.drawKLineModels];
+    [self.KLine drawWithDrawKLineModels:dataHandler.drawKLineModels];
+    [self.MA_BOLLLine drawWithKLineModels:dataHandler.drawKLineModels KLineLineType:YFStockKLineLineType_MA];
 }
 
 - (YFKline *)KLine {
@@ -62,6 +35,16 @@
     }
     
     return _KLine;
+}
+
+- (YFMA_BOLLLine *)MA_BOLLLine {
+    
+    if (_MA_BOLLLine == nil) {
+        
+        _MA_BOLLLine = [[YFMA_BOLLLine alloc] initWithFrame:self.bounds];
+        [self addSubview:_MA_BOLLLine];
+    }
+    return _MA_BOLLLine;
 }
 
 @end
