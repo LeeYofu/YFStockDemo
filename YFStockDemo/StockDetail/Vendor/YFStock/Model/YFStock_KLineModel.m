@@ -386,6 +386,47 @@
     return _BIAS_3;
 }
 
+#pragma mark ROC
+- (NSNumber *)ROC {
+    
+    if (! _ROC) {
+        
+        CGFloat previousNDayClosePrice = [self getPreviousClosePriceWithN:kStock_ROC_N];
+        CGFloat ROC = (self.closePrice.floatValue - previousNDayClosePrice) / previousNDayClosePrice * 100;
+        _ROC = [NSNumber numberWithFloat:ROC];
+    }
+    return _ROC;
+}
+
+- (NSNumber *)ROC_MA {
+    
+    if (! _ROC_MA) {
+        
+        CGFloat ROC_MA = [self getROC_MAWithN:kStock_ROC_MA_N];
+        _ROC_MA = [NSNumber numberWithFloat:ROC_MA];
+    }
+    return _ROC_MA;
+}
+
+#pragma mark MTM
+- (NSNumber *)MTM {
+    
+    if (! _MTM) {
+        
+        CGFloat MTM = self.closePrice.floatValue - [self getPreviousClosePriceWithN:kStock_MTM_N];
+        _MTM = [NSNumber numberWithFloat:MTM];
+    }
+    return _MTM;
+}
+
+- (NSNumber *)MTM_MA {
+    
+    if (! _MTM_MA) {
+        
+        _MTM_MA = [NSNumber numberWithFloat:[self getMTM_MAWithN:kStock_MTM_MA_N]];
+    }
+    return _MTM_MA;
+}
 
 #pragma mark - 计算相关
 #pragma mark MA/EMA
@@ -660,6 +701,67 @@
     MA = sumDDD / (N * 1.0);
     
     return MA;
+}
+
+#pragma mark ROC
+// 获取N天前的收盘价
+- (CGFloat)getPreviousClosePriceWithN:(NSInteger)N {
+    
+    CGFloat closePrice = 0;
+    
+    NSInteger index = self.preAllModelArray.count - 1 - (N - 1);
+    if (index < 0) {
+        
+        index = 0;
+    }
+    
+    if (self.preAllModelArray.count) {
+        
+        YFStock_KLineModel *model = self.preAllModelArray[index];
+        
+        closePrice = model.closePrice.floatValue;
+    } else {
+        
+        closePrice = 99999.0;
+    }
+    
+    
+    return closePrice;
+}
+
+- (CGFloat)getROC_MAWithN:(NSInteger)N {
+
+    CGFloat ROC_MA = 0;
+    
+    CGFloat sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += model.ROC.floatValue;
+    }
+    
+    ROC_MA = sum / (N * 1.0);
+    
+    return ROC_MA;
+}
+
+#pragma mark MTM
+- (CGFloat)getMTM_MAWithN:(NSInteger)N {
+    
+    CGFloat MTM_MA = 0;
+    
+    CGFloat sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += model.MTM.floatValue;
+    }
+    
+    MTM_MA = sum / (N * 1.0);
+    
+    return MTM_MA;
 }
 
 #pragma mark Other

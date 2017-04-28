@@ -120,6 +120,13 @@
 #define kStock_BIAS_2_N 12
 #define kStock_BIAS_3_N 24
 
+#define kStock_ROC_N 12
+#define kStock_ROC_MA_N 6
+
+#define kStock_MTM_N 12
+#define kStock_MTM_MA_N 6
+
+
 
 #pragma mark - 枚举 **********  **********
 

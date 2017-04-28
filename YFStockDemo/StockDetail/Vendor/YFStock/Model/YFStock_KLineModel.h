@@ -77,7 +77,13 @@
 @property (nonatomic, strong) NSNumber *BIAS_2;
 @property (nonatomic, strong) NSNumber *BIAS_3;
 
+// ROC(12, 6),可配置参数（周期）
+@property (nonatomic, strong) NSNumber *ROC;
+@property (nonatomic, strong) NSNumber *ROC_MA;
 
+// MTM(12, 6),可配置参数（周期）
+@property (nonatomic, strong) NSNumber *MTM;
+@property (nonatomic, strong) NSNumber *MTM_MA;
 
 
 // =============================================================
@@ -132,6 +138,12 @@
 @property (nonatomic, assign) CGPoint BIAS_1PositionPoint;
 @property (nonatomic, assign) CGPoint BIAS_2PositionPoint;
 @property (nonatomic, assign) CGPoint BIAS_3PositionPoint;
+
+@property (nonatomic, assign) CGPoint ROCPositionPoint;
+@property (nonatomic, assign) CGPoint ROC_MAPositionPoint;
+
+@property (nonatomic, assign) CGPoint MTMPositionPoint;
+@property (nonatomic, assign) CGPoint MTM_MAPositionPoint;
 
 
 // 必须调用，减少卡顿！！！！

@@ -312,6 +312,26 @@
 
     self.BIASMaxValue = MAX(maxBIAS1, MAX(maxBIAS2, maxBIAS3));
     self.BIASMinValue = MIN(minBIAS1, MIN(minBIAS2, minBIAS3));
+    
+    // ROC
+    CGFloat maxROC = [[[drawKLineModelArray valueForKeyPath:@"ROC"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxROC_MA = [[[drawKLineModelArray valueForKeyPath:@"ROC_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minROC = [[[drawKLineModelArray valueForKeyPath:@"ROC"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minROC_MA = [[[drawKLineModelArray valueForKeyPath:@"ROC_MA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.ROCMaxValue = MAX(maxROC, maxROC_MA);
+    self.ROCMinValue = MIN(minROC, minROC_MA);
+    
+    // MTM
+    CGFloat maxMTM = [[[drawKLineModelArray valueForKeyPath:@"MTM"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxMTM_MA = [[[drawKLineModelArray valueForKeyPath:@"MTM_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minMTM = [[[drawKLineModelArray valueForKeyPath:@"MTM"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minMTM_MA = [[[drawKLineModelArray valueForKeyPath:@"MTM_MA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.MTMMaxValue = MAX(maxMTM, maxMTM_MA);
+    self.MTMMinValue = MIN(minMTM, minMTM_MA);
 }
 
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
@@ -322,13 +342,13 @@
     // k line
     CGFloat KLineMinY = kStockKLineViewKlineMinY;
     CGFloat KLineMaxY = KLineViewHeight - 2 * kStockKLineViewKlineMinY;
-    CGFloat KLineUnitValue = (self.maxKLineValue - self.minKLineValue) / (KLineMaxY - KLineMinY); // 原始值 / 坐标值
+    CGFloat KLineUnitValue = (self.maxKLineValue - self.minKLineValue) / (KLineMaxY - KLineMinY);
     if (KLineUnitValue == 0) KLineUnitValue = 0.01f;
     
     // volume line
     CGFloat volumeLineMinY = kStockVolumeLineViewVolumeLineMinY;
     CGFloat volumeLineMaxY = volumeViewHeight; // 到底部
-    CGFloat volumeLineUnitValue = (self.maxVolumeLineValue - self.minVolumeLineValue) / (volumeLineMaxY - volumeLineMinY); // 原始值 / 坐标值
+    CGFloat volumeLineUnitValue = (self.maxVolumeLineValue - self.minVolumeLineValue) / (volumeLineMaxY - volumeLineMinY);
     if (volumeLineUnitValue == 0) volumeLineUnitValue = 0.01f;
     
     // MACD line
@@ -358,32 +378,45 @@
     // OBV
     CGFloat OBVLineMinY = kStockVolumeLineViewVolumeLineMinY;
     CGFloat OBVLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat OBVLineUnitValue = (self.OBVMaxValue - self.OBVMinValue) / (OBVLineMaxY - OBVLineMinY); // 原始值 / 坐标值
+    CGFloat OBVLineUnitValue = (self.OBVMaxValue - self.OBVMinValue) / (OBVLineMaxY - OBVLineMinY);
     if (OBVLineUnitValue == 0) OBVLineUnitValue = 0.01f;
     
     // WR
     CGFloat WRLineMinY = kStockVolumeLineViewVolumeLineMinY;
     CGFloat WRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (WRLineMaxY - WRLineMinY); // 原始值 / 坐标值
+    CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (WRLineMaxY - WRLineMinY);
     if (WRLineUnitValue == 0) WRLineUnitValue = 0.01f;
     
     // DMA
     CGFloat DMALineMinY = kStockVolumeLineViewVolumeLineMinY;
     CGFloat DMALineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat DMALineUnitValue = (self.DMAMaxValue - self.DMAMinValue) / (DMALineMaxY - DMALineMinY); // 原始值 / 坐标值
+    CGFloat DMALineUnitValue = (self.DMAMaxValue - self.DMAMinValue) / (DMALineMaxY - DMALineMinY);
     if (DMALineUnitValue == 0) DMALineUnitValue = 0.01f;
     
     // CCI
     CGFloat CCILineMinY = kStockVolumeLineViewVolumeLineMinY;
     CGFloat CCILineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY; 
-    CGFloat CCILineUnitValue = (self.CCIMaxValue - self.CCIMinValue) / (CCILineMaxY - CCILineMinY); // 原始值 / 坐标值
+    CGFloat CCILineUnitValue = (self.CCIMaxValue - self.CCIMinValue) / (CCILineMaxY - CCILineMinY);
     if (CCILineUnitValue == 0) CCILineUnitValue = 0.01f;
     
     // BIAS
     CGFloat BIASLineMinY = kStockVolumeLineViewVolumeLineMinY;
     CGFloat BIASLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat BIASLineUnitValue = (self.BIASMaxValue - self.BIASMinValue) / (BIASLineMaxY - BIASLineMinY); // 原始值 / 坐标值
+    CGFloat BIASLineUnitValue = (self.BIASMaxValue - self.BIASMinValue) / (BIASLineMaxY - BIASLineMinY);
     if (BIASLineUnitValue == 0) BIASLineUnitValue = 0.01f;
+    
+    // ROC
+    CGFloat ROCLineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat ROCLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
+    CGFloat ROCLineUnitValue = (self.ROCMaxValue - self.ROCMinValue) / (ROCLineMaxY - ROCLineMinY);
+    if (ROCLineUnitValue == 0) ROCLineUnitValue = 0.01f;
+    
+    // MTM
+    CGFloat MTMLineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat MTMLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
+    CGFloat MTMLineUnitValue = (self.MTMMaxValue - self.MTMMinValue) / (MTMLineMaxY - MTMLineMinY);
+    if (MTMLineUnitValue == 0) MTMLineUnitValue = 0.01f;
+    
     
     
     // 便利
@@ -499,7 +532,14 @@
         model.BIAS_2PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_2.floatValue - self.BIASMinValue) / BIASLineUnitValue));
         model.BIAS_3PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_3.floatValue - self.BIASMinValue) / BIASLineUnitValue));
 
+#pragma mark - ROC
+        model.ROCPositionPoint = CGPointMake(xPosition, ABS(ROCLineMaxY - (model.ROC.floatValue - self.ROCMinValue) / ROCLineUnitValue));
+        model.ROC_MAPositionPoint = CGPointMake(xPosition, ABS(ROCLineMaxY - (model.ROC_MA.floatValue - self.ROCMinValue) / ROCLineUnitValue));
         
+#pragma mark - MTM
+        model.MTMPositionPoint = CGPointMake(xPosition, ABS(MTMLineMaxY - (model.MTM.floatValue - self.MTMMinValue) / MTMLineUnitValue));
+        model.MTM_MAPositionPoint = CGPointMake(xPosition, ABS(MTMLineMaxY - (model.MTM_MA.floatValue - self.MTMMinValue) / MTMLineUnitValue));
+
         
         
         [tempDrawKLineModels addObject:model];
