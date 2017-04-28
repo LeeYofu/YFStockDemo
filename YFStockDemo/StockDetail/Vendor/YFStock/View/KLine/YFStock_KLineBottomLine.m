@@ -33,63 +33,6 @@
     return _shapeLayer;
 }
 
-
-// draw
-- (void)drawWithBottomBarSelectedIndex:(NSInteger)bottomBarSelectedIndex {
-    
-    if (!self.drawKLineModels || !self.context) return;
-    
-    self.bottomBarSelectedIndex = bottomBarSelectedIndex;
-    
-    // 注：已经提前clear
-    
-    switch (self.bottomBarSelectedIndex) {
-        case YFStockBottomBarIndex_MACD:
-        {
-            [self drawMACD];
-        }
-            break;
-        case YFStockBottomBarIndex_KDJ:
-        {
-            [self drawKDJ];
-        }
-            break;
-        case YFStockBottomBarIndex_RSI:
-        {
-            [self drawRSI];
-        }
-            break;
-        case YFStockBottomBarIndex_ARBR:
-        {
-            [self drawARBR];
-        }
-            break;
-        case YFStockBottomBarIndex_OBV:
-        {
-            [self drawOBV];
-        }
-            break;
-        case YFStockBottomBarIndex_WR:
-        {
-            [self drawWR];
-        }
-            break;
-        case YFStockBottomBarIndex_DMA:
-        {
-            [self drawDMA];
-        }
-            break;
-        case YFStockBottomBarIndex_CCI:
-        {
-            [self drawCCI];
-        }
-            break;
-            
-        default:
-            break;
-    }
-}
-
 - (void)drawWithBottomBarSelectedIndex:(NSInteger)bottomBarSelectedIndex drawKLineModels:(NSArray<YFStock_KLineModel *> *)drawKLineModels {
     
     self.drawKLineModels = drawKLineModels;
@@ -143,6 +86,11 @@
         case YFStockBottomBarIndex_CCI:
         {
             [self drawCCI];
+        }
+            break;
+        case YFStockBottomBarIndex_BIAS:
+        {
+            [self drawBIAS];
         }
             break;
             
@@ -539,6 +487,63 @@
         [path addLineToPoint:point];
     }
     [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:path frame:self.shapeLayer.frame backgroundColor:kClearColor];
+}
+
+- (void)drawBIAS {
+    
+    // BIAS_1
+    UIBezierPath *path1 = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
+    NSInteger startIndex1 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_BIAS_1_N];
+    
+    CGPoint BIAS_1_Point = [self.drawKLineModels[startIndex1] BIAS_1PositionPoint];
+    NSAssert(!isnan(BIAS_1_Point.x) && !isnan(BIAS_1_Point.y), @"出现NAN值：MA画线");
+    
+    [path1 moveToPoint:BIAS_1_Point];
+    
+    for (NSInteger idx = startIndex1 + 1; idx < self.drawKLineModels.count; idx++) {
+        
+        CGPoint point = [self.drawKLineModels[idx] BIAS_1PositionPoint];
+        
+        [path1 addLineToPoint:point];
+    }
+    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:path1 frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    
+    // BIAS_2
+    UIBezierPath *path2 = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
+    NSInteger startIndex2 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_BIAS_2_N];
+    
+    CGPoint BIAS_2_Point = [self.drawKLineModels[startIndex2] BIAS_2PositionPoint];
+    NSAssert(!isnan(BIAS_2_Point.x) && !isnan(BIAS_2_Point.y), @"出现NAN值：MA画线");
+    
+    [path2 moveToPoint:BIAS_2_Point];
+    
+    for (NSInteger idx = startIndex2 + 1; idx < self.drawKLineModels.count; idx++) {
+        
+        CGPoint point = [self.drawKLineModels[idx] BIAS_2PositionPoint];
+        
+        [path2 addLineToPoint:point];
+    }
+    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:path2 frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    
+    // BIAS_3
+    UIBezierPath *path3 = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
+    NSInteger startIndex3 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_BIAS_3_N];
+    
+    CGPoint BIAS_3_Point = [self.drawKLineModels[startIndex3] BIAS_3PositionPoint];
+    NSAssert(!isnan(BIAS_3_Point.x) && !isnan(BIAS_3_Point.y), @"出现NAN值：MA画线");
+    
+    [path3 moveToPoint:BIAS_3_Point];
+    
+    for (NSInteger idx = startIndex3 + 1; idx < self.drawKLineModels.count; idx++) {
+        
+        CGPoint point = [self.drawKLineModels[idx] BIAS_3PositionPoint];
+        
+        [path3 addLineToPoint:point];
+    }
+    [self createShapeLayerWithStrokeColor:kStockMA20LineColor fillColor:kClearColor path:path3 frame:self.shapeLayer.frame backgroundColor:kClearColor];
 }
 
 - (UIBezierPath *)createBezierPathWithLineWidth:(CGFloat)lineWidth {

@@ -379,6 +379,12 @@
     CGFloat CCILineUnitValue = (self.CCIMaxValue - self.CCIMinValue) / (CCILineMaxY - CCILineMinY); // 原始值 / 坐标值
     if (CCILineUnitValue == 0) CCILineUnitValue = 0.01f;
     
+    // BIAS
+    CGFloat BIASLineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat BIASLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
+    CGFloat BIASLineUnitValue = (self.BIASMaxValue - self.BIASMinValue) / (BIASLineMaxY - BIASLineMinY); // 原始值 / 坐标值
+    if (BIASLineUnitValue == 0) BIASLineUnitValue = 0.01f;
+    
     
     // 便利
     [drawKLineModelArray enumerateObjectsUsingBlock:^(YFStock_KLineModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -488,8 +494,11 @@
 #pragma mark - CCI
         model.CCIPositionPoint = CGPointMake(xPosition, ABS(CCILineMaxY - (model.CCI.floatValue - self.CCIMinValue) / CCILineUnitValue));
         
-        
-        
+#pragma mark - BIAS
+        model.BIAS_1PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_1.floatValue - self.BIASMinValue) / BIASLineUnitValue));
+        model.BIAS_2PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_2.floatValue - self.BIASMinValue) / BIASLineUnitValue));
+        model.BIAS_3PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_3.floatValue - self.BIASMinValue) / BIASLineUnitValue));
+
         
         
         
