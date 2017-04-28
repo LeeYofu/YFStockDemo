@@ -177,199 +177,43 @@
     }];
     
     // DIFF
-    UIBezierPath *diffPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    CGPoint DIFFFirstPoint = [self.drawKLineModels.firstObject MACD_DIFPositionPoint];
-    NSAssert(!isnan(DIFFFirstPoint.x) && !isnan(DIFFFirstPoint.y), @"出现NAN值：MA画线");
-
-    [diffPath moveToPoint:DIFFFirstPoint];
-    
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] MACD_DIFPositionPoint];
-
-        [diffPath addLineToPoint:point];
-    }
-    
-    [self createShapeLayerWithStrokeColor:kStockDIFFLineColor fillColor:kClearColor path:diffPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
-
+    [self drawWithPositionPointKey:@"MACD_DIFPositionPoint" N:0 strokeColor:kStockDIFFLineColor];
     
     // DEA
-    UIBezierPath *deaPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    CGPoint DEAFirstPoint = [self.drawKLineModels.firstObject MACD_DEAPositionPoint];
-    NSAssert(!isnan(DEAFirstPoint.x) && !isnan(DEAFirstPoint.y), @"出现NAN值：MA画线");
-
-    [deaPath moveToPoint:DIFFFirstPoint];
-
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] MACD_DEAPositionPoint];
-
-        [deaPath addLineToPoint:point];
-    }
-    
-    [self createShapeLayerWithStrokeColor:kStockDEALineColor fillColor:kClearColor path:deaPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
-
+    [self drawWithPositionPointKey:@"MACD_DEAPositionPoint" N:0 strokeColor:kStockDEALineColor];
 }
 
 - (void)drawKDJ {
     
     // K
-    UIBezierPath *KPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    KPath.lineWidth = kStockPartLineHeight;
-    CGPoint KDJ_KPoint = [self.drawKLineModels.firstObject KDJ_KPositionPoint];
-    NSAssert(!isnan(KDJ_KPoint.x) && !isnan(KDJ_KPoint.y), @"出现NAN值：MA画线");
-
-    [KPath moveToPoint:KDJ_KPoint];
-    
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] KDJ_KPositionPoint];
-
-        [KPath addLineToPoint:point];
-    }
-    
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:KPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
-
+    [self drawWithPositionPointKey:@"KDJ_KPositionPoint" N:0 strokeColor:kStockMA5LineColor];
     
     // D
-    UIBezierPath *DPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    CGPoint KDJ_DPoint = [self.drawKLineModels.firstObject KDJ_DPositionPoint];
-    NSAssert(!isnan(KDJ_DPoint.x) && !isnan(KDJ_DPoint.y), @"出现NAN值：MA画线");
-    
-    [DPath moveToPoint:KDJ_DPoint];
-    
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] KDJ_DPositionPoint];
-
-        [DPath addLineToPoint:point];
-    }
-    
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:DPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
-
+    [self drawWithPositionPointKey:@"KDJ_DPositionPoint" N:0 strokeColor:kStockMA10LineColor];
     
     // J
-    UIBezierPath *JPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    CGPoint KDJ_JPoint = [self.drawKLineModels.firstObject KDJ_JPositionPoint];
-    NSAssert(!isnan(KDJ_JPoint.x) && !isnan(KDJ_JPoint.y), @"出现NAN值：MA画线");
-
-    [JPath moveToPoint:KDJ_JPoint];
-    
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] KDJ_JPositionPoint];
-
-        [JPath addLineToPoint:point];
-    }
-    
-    [self createShapeLayerWithStrokeColor:kStockMA20LineColor fillColor:kClearColor path:JPath frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"KDJ_JPositionPoint" N:0 strokeColor:kStockMA20LineColor];
 }
 
 - (void)drawRSI {
     
     // RSI_6
-    UIBezierPath *RSI_6_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-
-    // start index
-    NSInteger startIndex_6 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_6_N];
-    
-    CGPoint RSI_6Point = [self.drawKLineModels[startIndex_6] RSI_6PositionPoint];
-    NSAssert(!isnan(RSI_6Point.x) && !isnan(RSI_6Point.y), @"出现NAN值：MA画线");
-
-    [RSI_6_Path moveToPoint:RSI_6Point];
-    
-    for (NSInteger idx = startIndex_6 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] RSI_6PositionPoint];
-
-        [RSI_6_Path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:RSI_6_Path frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"RSI_6PositionPoint" N:kStock_RSI_6_N strokeColor:kStockMA5LineColor];
     
     // RSI_12
-    UIBezierPath *RSI_12_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_12 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_12_N];
-    
-    CGPoint RSI_12Point = [self.drawKLineModels[startIndex_12] RSI_12PositionPoint];
-    NSAssert(!isnan(RSI_12Point.x) && !isnan(RSI_12Point.y), @"出现NAN值：MA画线");
-
-    [RSI_12_Path moveToPoint:RSI_12Point];
-    
-    for (NSInteger idx = startIndex_12 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] RSI_12PositionPoint];
-
-        [RSI_12_Path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:RSI_12_Path frame:self.shapeLayer.bounds backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"RSI_12PositionPoint" N:kStock_RSI_12_N strokeColor:kStockMA10LineColor];
     
     // RSI_24
-    UIBezierPath *RSI_24_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_24 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_RSI_24_N];
-    
-    CGPoint RSI_24Point = [self.drawKLineModels[startIndex_24] RSI_24PositionPoint];
-    NSAssert(!isnan(RSI_24Point.x) && !isnan(RSI_24Point.y), @"出现NAN值：MA画线");
-
-    [RSI_24_Path moveToPoint:RSI_24Point];
-
-    for (NSInteger idx = startIndex_24 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] RSI_24PositionPoint];
-
-        [RSI_24_Path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA20LineColor fillColor:kClearColor path:RSI_24_Path frame:self.shapeLayer.bounds backgroundColor:kClearColor];
-
+    [self drawWithPositionPointKey:@"RSI_24PositionPoint" N:kStock_RSI_24_N strokeColor:kStockMA20LineColor];
 }
 
 - (void)drawARBR {
     
     // AR
-    UIBezierPath *ARBR_AR_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_AR = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_ARBR_N];
-    
-    CGPoint ARBR_ARPoint = [self.drawKLineModels[startIndex_AR] ARBR_ARPositionPoint];
-    NSAssert(!isnan(ARBR_ARPoint.x) && !isnan(ARBR_ARPoint.y), @"出现NAN值：MA画线");
+    [self drawWithPositionPointKey:@"ARBR_ARPositionPoint" N:kStock_ARBR_N strokeColor:kStockMA5LineColor];
 
-    [ARBR_AR_Path moveToPoint:ARBR_ARPoint];
-    
-    for (NSInteger idx = startIndex_AR + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] ARBR_ARPositionPoint];
-
-        [ARBR_AR_Path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:ARBR_AR_Path frame:self.shapeLayer.frame backgroundColor:kClearColor];
-    
     // BR
-    UIBezierPath *ARBR_BR_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_BR = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_ARBR_N];
-    
-    CGPoint ARBR_BRPoint = [self.drawKLineModels[startIndex_BR] ARBR_BRPositionPoint];
-    NSAssert(!isnan(ARBR_BRPoint.x) && !isnan(ARBR_BRPoint.y), @"出现NAN值：MA画线");
-
-    [ARBR_BR_Path moveToPoint:ARBR_BRPoint];
-
-    for (NSInteger idx = startIndex_BR + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] ARBR_BRPositionPoint];
-
-        [ARBR_BR_Path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:ARBR_BR_Path frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"ARBR_BRPositionPoint" N:kStock_ARBR_N strokeColor:kStockMA10LineColor];
 }
 
 - (void)drawOBV {
@@ -377,272 +221,86 @@
     [self drawVolume];
     
     // OBV
-    UIBezierPath *path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    CGPoint OBVPoint = [self.drawKLineModels[0] OBVPositionPoint];
-    NSAssert(!isnan(OBVPoint.x) && !isnan(OBVPoint.y), @"出现NAN值：MA画线");
-
-    [path moveToPoint:OBVPoint];
-    
-    for (NSInteger idx = 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] OBVPositionPoint];
-
-        [path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:path frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"OBVPositionPoint" N:0 strokeColor:kStockMA5LineColor];
 }
 
 - (void)drawWR {
     
     // WR_1
-    UIBezierPath *WR_1_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_WR_1 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_WR_1_N];
-    
-    CGPoint WR_1Point = [self.drawKLineModels[startIndex_WR_1] WR_1PositionPoint];
-    NSAssert(!isnan(WR_1Point.x) && !isnan(WR_1Point.y), @"出现NAN值：MA画线");
-
-    [WR_1_Path moveToPoint:WR_1Point];
-    
-    for (NSInteger idx = startIndex_WR_1 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] WR_1PositionPoint];
-
-        [WR_1_Path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:WR_1_Path frame:self.shapeLayer.frame backgroundColor:kClearColor];
-    
+    [self drawWithPositionPointKey:@"WR_1PositionPoint" N:kStock_WR_1_N strokeColor:kStockMA5LineColor];
     
     // WR_2
-    UIBezierPath *WR_2_Path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_WR_2 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_WR_2_N];
-    
-    CGPoint WR_2Point = [self.drawKLineModels[startIndex_WR_2] WR_2PositionPoint];
-    NSAssert(!isnan(WR_2Point.x) && !isnan(WR_2Point.y), @"出现NAN值：MA画线");
-
-    [WR_2_Path moveToPoint:WR_2Point];
-
-    for (NSInteger idx = startIndex_WR_2 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] WR_2PositionPoint];
-
-        [WR_2_Path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:WR_2_Path frame:self.shapeLayer.frame backgroundColor:kClearColor];
-
+    [self drawWithPositionPointKey:@"WR_2PositionPoint" N:kStock_WR_2_N strokeColor:kStockMA10LineColor];
 }
 
 - (void)drawDMA {
     
     // DDD
-    UIBezierPath *DDDPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_DDD = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_LONG];
-    
-    CGPoint DDD_Point = [self.drawKLineModels[startIndex_DDD] DDDPositionPoint];
-    NSAssert(!isnan(DDD_Point.x) && !isnan(DDD_Point.y), @"出现NAN值：MA画线");
+    [self drawWithPositionPointKey:@"DDDPositionPoint" N:kStock_DMA_LONG strokeColor:kStockMA5LineColor];
 
-    [DDDPath moveToPoint:DDD_Point];
-    
-    for (NSInteger idx = startIndex_DDD + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] DDDPositionPoint];
-
-        [DDDPath addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:DDDPath frame:self.shapeLayer.frame backgroundColor:kClearColor];
-    
-    
     // AMA
-    UIBezierPath *AMAPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_AMA = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_DMA_LONG];
-    
-    CGPoint AMAPoint = [self.drawKLineModels[startIndex_AMA] AMAPositionPoint];
-    NSAssert(!isnan(AMAPoint.x) && !isnan(AMAPoint.y), @"出现NAN值：MA画线");
-
-    [AMAPath moveToPoint:AMAPoint];
-    
-    for (NSInteger idx = startIndex_AMA + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] AMAPositionPoint];
-
-        [AMAPath addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:AMAPath frame:self.shapeLayer.frame backgroundColor:kClearColor];
-
+    [self drawWithPositionPointKey:@"AMAPositionPoint" N:kStock_DMA_LONG strokeColor:kStockMA10LineColor];
 }
 
 - (void)drawCCI {
     
     // CCI
-    UIBezierPath *path = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_CCI = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_CCI_N];
-    
-    CGPoint CCI_Point = [self.drawKLineModels[startIndex_CCI] CCIPositionPoint];
-    NSAssert(!isnan(CCI_Point.x) && !isnan(CCI_Point.y), @"出现NAN值：MA画线");
-
-    [path moveToPoint:CCI_Point];
-    
-    for (NSInteger idx = startIndex_CCI + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] CCIPositionPoint];
-
-        [path addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:path frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"CCIPositionPoint" N:kStock_CCI_N strokeColor:kStockMA5LineColor];
 }
 
 - (void)drawBIAS {
     
     // BIAS_1
-    UIBezierPath *path1 = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    NSInteger startIndex1 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_BIAS_1_N];
-    
-    CGPoint BIAS_1_Point = [self.drawKLineModels[startIndex1] BIAS_1PositionPoint];
-    NSAssert(!isnan(BIAS_1_Point.x) && !isnan(BIAS_1_Point.y), @"出现NAN值：MA画线");
-    
-    [path1 moveToPoint:BIAS_1_Point];
-    
-    for (NSInteger idx = startIndex1 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] BIAS_1PositionPoint];
-        
-        [path1 addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:path1 frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"BIAS_1PositionPoint" N:kStock_BIAS_1_N strokeColor:kStockMA5LineColor];
     
     // BIAS_2
-    UIBezierPath *path2 = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    NSInteger startIndex2 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_BIAS_2_N];
-    
-    CGPoint BIAS_2_Point = [self.drawKLineModels[startIndex2] BIAS_2PositionPoint];
-    NSAssert(!isnan(BIAS_2_Point.x) && !isnan(BIAS_2_Point.y), @"出现NAN值：MA画线");
-    
-    [path2 moveToPoint:BIAS_2_Point];
-    
-    for (NSInteger idx = startIndex2 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] BIAS_2PositionPoint];
-        
-        [path2 addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:path2 frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"BIAS_2PositionPoint" N:kStock_BIAS_2_N strokeColor:kStockMA10LineColor];
     
     // BIAS_3
-    UIBezierPath *path3 = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    NSInteger startIndex3 = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_BIAS_3_N];
-    
-    CGPoint BIAS_3_Point = [self.drawKLineModels[startIndex3] BIAS_3PositionPoint];
-    NSAssert(!isnan(BIAS_3_Point.x) && !isnan(BIAS_3_Point.y), @"出现NAN值：MA画线");
-    
-    [path3 moveToPoint:BIAS_3_Point];
-    
-    for (NSInteger idx = startIndex3 + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] BIAS_3PositionPoint];
-        
-        [path3 addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA20LineColor fillColor:kClearColor path:path3 frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"BIAS_3PositionPoint" N:kStock_BIAS_3_N strokeColor:kStockMA20LineColor];
 }
 
 - (void)drawROC {
     
     // ROC
-    UIBezierPath *ROCPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_ROC = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_ROC_N];
-    
-    CGPoint ROC_Point = [self.drawKLineModels[startIndex_ROC] ROCPositionPoint];
-    NSAssert(!isnan(ROC_Point.x) && !isnan(ROC_Point.y), @"出现NAN值：MA画线");
-    
-    [ROCPath moveToPoint:ROC_Point];
-    
-    for (NSInteger idx = startIndex_ROC + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] ROCPositionPoint];
-        
-        [ROCPath addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:ROCPath frame:self.shapeLayer.frame backgroundColor:kClearColor];
-    
+    [self drawWithPositionPointKey:@"ROCPositionPoint" N:kStock_ROC_N strokeColor:kStockMA5LineColor];
     
     // ROC_MA
-    UIBezierPath *ROC_MAPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_ROC_MA = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_ROC_MA_N];
-    
-    CGPoint ROC_MAPoint = [self.drawKLineModels[startIndex_ROC_MA] ROC_MAPositionPoint];
-    NSAssert(!isnan(ROC_MAPoint.x) && !isnan(ROC_MAPoint.y), @"出现NAN值：MA画线");
-    
-    [ROC_MAPath moveToPoint:ROC_MAPoint];
-    
-    for (NSInteger idx = startIndex_ROC_MA + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] ROC_MAPositionPoint];
-        
-        [ROC_MAPath addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:ROC_MAPath frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"ROC_MAPositionPoint" N:kStock_ROC_MA_N strokeColor:kStockMA10LineColor];
 }
 
 - (void)drawMTM {
     
     // MTM
-    UIBezierPath *MTMPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_MTM = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_MTM_N];
-    
-    CGPoint MTM_Point = [self.drawKLineModels[startIndex_MTM] MTMPositionPoint];
-    NSAssert(!isnan(MTM_Point.x) && !isnan(MTM_Point.y), @"出现NAN值：MA画线");
-    
-    [MTMPath moveToPoint:MTM_Point];
-    
-    for (NSInteger idx = startIndex_MTM + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] MTMPositionPoint];
-        
-        [MTMPath addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA5LineColor fillColor:kClearColor path:MTMPath frame:self.shapeLayer.frame backgroundColor:kClearColor];
-    
+    [self drawWithPositionPointKey:@"MTMPositionPoint" N:kStock_MTM_N strokeColor:kStockMA5LineColor];
     
     // MTM_MA
-    UIBezierPath *MTM_MAPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
-    
-    // start index
-    NSInteger startIndex_MTM_MA = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:kStock_MTM_MA_N];
-    
-    CGPoint MTM_MAPoint = [self.drawKLineModels[startIndex_MTM_MA] MTM_MAPositionPoint];
-    NSAssert(!isnan(MTM_MAPoint.x) && !isnan(MTM_MAPoint.y), @"出现NAN值：MA画线");
-    
-    [MTM_MAPath moveToPoint:MTM_MAPoint];
-    
-    for (NSInteger idx = startIndex_MTM_MA + 1; idx < self.drawKLineModels.count; idx++) {
-        
-        CGPoint point = [self.drawKLineModels[idx] MTM_MAPositionPoint];
-        
-        [MTM_MAPath addLineToPoint:point];
-    }
-    [self createShapeLayerWithStrokeColor:kStockMA10LineColor fillColor:kClearColor path:MTM_MAPath frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    [self drawWithPositionPointKey:@"MTM_MAPositionPoint" N:kStock_MTM_MA_N strokeColor:kStockMA10LineColor];
 }
 
 #pragma mark - other
+- (void)drawWithPositionPointKey:(NSString *)positionPointKey N:(NSInteger)N strokeColor:(UIColor *)strokeColor {
+    
+    UIBezierPath *bezierPath = [self createBezierPathWithLineWidth:kStockPartLineHeight];
+    
+    // start index
+    NSInteger startIndex = [self getStartIndexWithDrawKLineModels:self.drawKLineModels N:N];
+    
+    CGPoint startPoint = [[self.drawKLineModels[startIndex] valueForKey:positionPointKey] CGPointValue];
+    NSAssert(!isnan(startPoint.x) && !isnan(startPoint.y), @"出现NAN值：MA画线");
+    
+    [bezierPath moveToPoint:startPoint];
+    
+    for (NSInteger idx = startIndex + 1; idx < self.drawKLineModels.count; idx++) {
+        
+        CGPoint point = [[self.drawKLineModels[idx] valueForKey:positionPointKey] CGPointValue];
+        
+        [bezierPath addLineToPoint:point];
+    }
+    [self createShapeLayerWithStrokeColor:strokeColor fillColor:kClearColor path:bezierPath frame:self.shapeLayer.frame backgroundColor:kClearColor];
+    
+}
+
 - (UIBezierPath *)createBezierPathWithLineWidth:(CGFloat)lineWidth {
     
     UIBezierPath *path = [UIBezierPath bezierPath];
