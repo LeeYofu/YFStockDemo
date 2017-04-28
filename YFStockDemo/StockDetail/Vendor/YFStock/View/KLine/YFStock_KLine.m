@@ -171,7 +171,7 @@
 
 - (void)createBottomBar {
     
-    self.bottomBar = [[YFStock_TopBar alloc] initWithFrame:CGRectMake(0, self.timeView.maxY + kStockKLineScrollViewTopGap, self.width, kStockBottomBarHeight) titles:@[ @"MACD", @"KDJ", @"RSI", @"ARBR", @"OBV", @"WR", @"EMV", @"DMA", @"CCI" ] topBarSelectedIndex:0];
+    self.bottomBar = [[YFStock_TopBar alloc] initWithFrame:CGRectMake(0, self.timeView.maxY + kStockKLineScrollViewTopGap, self.width, kStockBottomBarHeight) titles:@[ @"MACD", @"KDJ", @"RSI", @"ARBR", @"OBV", @"WR", @"EMV", @"DMA", @"CCI", @"BIAS", @"ROC", @"MTM", @"CR", @"DMI", @"VR", @"TRIX", @"PSY", @"DPO", @"ASI", @"SAR" ] topBarSelectedIndex:0];
     self.bottomBar.delegate = self;
     [self addSubview:self.bottomBar];
 }

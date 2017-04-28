@@ -355,6 +355,38 @@
     return _CCI;
 }
 
+#pragma mark BIAS
+- (NSNumber *)BIAS_1 {
+    
+    if (! _BIAS_1) {
+        
+        CGFloat BIAS = (self.closePrice.floatValue - [self getMAWithN:kStock_BIAS_1_N]) / [self getMAWithN:kStock_BIAS_1_N] * 100.0f;
+        _BIAS_1 = [NSNumber numberWithFloat:BIAS];
+    }
+    return _BIAS_1;
+}
+
+- (NSNumber *)BIAS_2 {
+    
+    if (! _BIAS_2) {
+        
+        CGFloat BIAS = (self.closePrice.floatValue - [self getMAWithN:kStock_BIAS_2_N]) / [self getMAWithN:kStock_BIAS_2_N] * 100.0f;
+        _BIAS_2 = [NSNumber numberWithFloat:BIAS];
+    }
+    return _BIAS_2;
+}
+
+- (NSNumber *)BIAS_3 {
+    
+    if (! _BIAS_3) {
+        
+        CGFloat BIAS = (self.closePrice.floatValue - [self getMAWithN:kStock_BIAS_3_N]) / [self getMAWithN:kStock_BIAS_3_N] * 100.0f;
+        _BIAS_3 = [NSNumber numberWithFloat:BIAS];
+    }
+    return _BIAS_3;
+}
+
+
 #pragma mark - 计算相关
 #pragma mark MA/EMA
 // MA

@@ -61,6 +61,9 @@
 @property (nonatomic, assign) CGFloat CCIMaxValue;
 @property (nonatomic, assign) CGFloat CCIMinValue;
 
+@property (nonatomic, assign) CGFloat BIASMaxValue;
+@property (nonatomic, assign) CGFloat BIASMinValue;
+
 
 #pragma mark - method
 // 初始化

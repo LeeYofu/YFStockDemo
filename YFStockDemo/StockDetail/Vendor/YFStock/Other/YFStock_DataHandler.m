@@ -300,6 +300,18 @@
     
     self.CCIMaxValue = maxCCI;
     self.CCIMinValue = minCCI;
+    
+    // BIAS
+    CGFloat maxBIAS1 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_1"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxBIAS2 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_2"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxBIAS3 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_3"] valueForKeyPath:@"@max.floatValue"] floatValue];
+
+    CGFloat minBIAS1 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_1"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minBIAS2 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_2"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minBIAS3 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_3"] valueForKeyPath:@"@min.floatValue"] floatValue];
+
+    self.BIASMaxValue = MAX(maxBIAS1, MAX(maxBIAS2, maxBIAS3));
+    self.BIASMinValue = MIN(minBIAS1, MIN(minBIAS2, minBIAS3));
 }
 
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等

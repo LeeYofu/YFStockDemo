@@ -116,6 +116,10 @@
 #define kStock_DMA_SHORT 10
 #define kStock_DMA_LONG 50
 
+#define kStock_BIAS_1_N 6
+#define kStock_BIAS_2_N 12
+#define kStock_BIAS_3_N 24
+
 
 #pragma mark - 枚举 **********  **********
 
@@ -150,7 +154,18 @@ typedef NS_ENUM(NSInteger, YFStockBottomBarIndex) {
     YFStockBottomBarIndex_WR,
     YFStockBottomBarIndex_EMV,
     YFStockBottomBarIndex_DMA,
-    YFStockBottomBarIndex_CCI
+    YFStockBottomBarIndex_CCI,
+    YFStockBottomBarIndex_BIAS,
+    YFStockBottomBarIndex_ROC,
+    YFStockBottomBarIndex_MTM,
+    YFStockBottomBarIndex_CR,
+    YFStockBottomBarIndex_CMI,
+    YFStockBottomBarIndex_VR,
+    YFStockBottomBarIndex_TRXI,
+    YFStockBottomBarIndex_PSY,
+    YFStockBottomBarIndex_DPO,
+    YFStockBottomBarIndex_ASI,
+    YFStockBottomBarIndex_SAR
 };
 
 // MA/BOLL类型

@@ -72,6 +72,11 @@
 // CCI(14)，可配置参数-（计算周期）
 @property (nonatomic, strong) NSNumber *CCI;
 
+// BIAS(6, 12, 24)，可配置参数（周期）
+@property (nonatomic, strong) NSNumber *BIAS_1;
+@property (nonatomic, strong) NSNumber *BIAS_2;
+@property (nonatomic, strong) NSNumber *BIAS_3;
+
 
 
 
@@ -123,6 +128,11 @@
 @property (nonatomic, assign) CGPoint AMAPositionPoint;
 
 @property (nonatomic, assign) CGPoint CCIPositionPoint;
+
+@property (nonatomic, assign) CGPoint BIAS_1PositionPoint;
+@property (nonatomic, assign) CGPoint BIAS_2PositionPoint;
+@property (nonatomic, assign) CGPoint BIAS_3PositionPoint;
+
 
 // 必须调用，减少卡顿！！！！
 - (void)initData;
