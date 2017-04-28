@@ -24,6 +24,8 @@
 @property (nonatomic, strong) YFStock_DataHandler *dataHandler; // dataHandler
 @property (nonatomic, assign) YFStockBottomBarIndex bottomBarIndex;
 @property (nonatomic, assign) CGFloat lastPinchScale;
+@property (nonatomic, assign) CGFloat lastPinchDistance;
+
 
 @property (nonatomic, strong) YFStock_ScrollView *scrollView; // scrollView
 @property (nonatomic, strong) YFStock_KLineView *KLineView; // 真正的K线view
@@ -411,15 +413,28 @@
     // 1.获取缩放倍数
     if(1) { // ABS(difValue) > kStockKLineScaleBound
         
-        BOOL isMinScale = pinch.scale < 1.0 && [YFStock_Variable KLineWidth] == kStockKlineMinWidth;
-        BOOL isMaxScale = pinch.scale > 1.0 && [YFStock_Variable KLineWidth] == kStockKlineMaxWidth;
+//        BOOL isMinScale = pinch.scale < 1.0 && [YFStock_Variable KLineWidth] == kStockKlineMinWidth;
+//        BOOL isMaxScale = pinch.scale > 1.0 && [YFStock_Variable KLineWidth] == kStockKlineMaxWidth;
         
-        if(pinch.numberOfTouches == 2 && !isMinScale && !isMaxScale) { // security
+        if(pinch.numberOfTouches == 2) { // security --  && !isMinScale && !isMaxScale
             
             // 2.获取捏合中心点 -> 捏合中心点距离scrollviewcontent左侧的距离
             CGPoint p1 = [pinch locationOfTouch:0 inView:self.scrollView];
             CGPoint p2 = [pinch locationOfTouch:1 inView:self.scrollView];
             CGFloat centerX = (p1.x + p2.x) / 2;
+            
+            //
+            CGFloat pinchDistance = ABS(p1.x - p2.x);
+            
+            if (pinch.state == UIGestureRecognizerStateBegan) {
+                
+                self.lastPinchDistance = pinchDistance;
+                
+            }
+            
+            CGFloat distanchChanged = pinchDistance - self.lastPinchDistance;
+            
+            distanchChanged /= 18;
             
             // 3.拿到中心点数据源的index  CGFloat!!!
             CGFloat oldLeftArrCount = ABS(centerX / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]));
@@ -434,12 +449,14 @@
                 
                 if (scalePadding > 0) {
                     
-                    newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
+//                    newLineWidth = [YFStock_Variable KLineWidth] + 0.3;
 //                    newLineWidth = [YFStock_Variable KLineWidth] * 1.03;
+                    newLineWidth = [YFStock_Variable KLineWidth] + distanchChanged;
                 } else if (scalePadding < 0) {
                     
                     newLineWidth = [YFStock_Variable KLineWidth] - 0.3;
 //                    newLineWidth = [YFStock_Variable KLineWidth] * 0.97;
+                    newLineWidth = [YFStock_Variable KLineWidth] + distanchChanged;
                 } else {
                     
                     newLineWidth = [YFStock_Variable KLineWidth];
@@ -470,6 +487,7 @@
                 if (pinch.state == UIGestureRecognizerStateChanged) {
                     
                     self.lastPinchScale = pinch.scale;
+                    self.lastPinchDistance = pinchDistance;
                 }
             }
         }
