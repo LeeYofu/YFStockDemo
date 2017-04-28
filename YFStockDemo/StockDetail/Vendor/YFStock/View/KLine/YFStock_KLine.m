@@ -410,9 +410,7 @@
 }
 
 - (void)event_pinchAction:(UIPinchGestureRecognizer *)pinch {
-    
-    NSLog(@"%ld - %ld", pinch.state, pinch.numberOfTouches);
-    
+        
     if (pinch.state == UIGestureRecognizerStateBegan) {
         
         self.longPressGesture.enabled = NO;
@@ -442,8 +440,6 @@
         if (pinch.state == UIGestureRecognizerStateChanged) {
             
             CGFloat distanchChanged = twoTouchDistance - self.lastTowTouchDistance;
-            
-            NSLog(@"distanchChanged = %f", distanchChanged);
             
             distanchChanged /= 15;
             
