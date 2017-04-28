@@ -414,84 +414,67 @@
     
     NSMutableArray *tempDrawKLineModels = [NSMutableArray new];
     
-    // k line
+    // MinY MaxY
     CGFloat KLineMinY = kStockKLineViewKlineMinY;
     CGFloat KLineMaxY = KLineViewHeight - 2 * kStockKLineViewKlineMinY;
+    
+    CGFloat volumeLineMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat volumeLineMaxY = volumeViewHeight; // 到底部
+    
+    CGFloat bottomNormalMinY = kStockVolumeLineViewVolumeLineMinY;
+    CGFloat bottomNormalMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
+    
+    // k line
     CGFloat KLineUnitValue = (self.maxKLineValue - self.minKLineValue) / (KLineMaxY - KLineMinY);
     if (KLineUnitValue == 0) KLineUnitValue = 0.01f;
     
     // volume line
-    CGFloat volumeLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat volumeLineMaxY = volumeViewHeight; // 到底部
     CGFloat volumeLineUnitValue = (self.maxVolumeLineValue - self.minVolumeLineValue) / (volumeLineMaxY - volumeLineMinY);
     if (volumeLineUnitValue == 0) volumeLineUnitValue = 0.01f;
     
     // MACD line
-    CGFloat MACDLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat MACDLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat MACDLineUnitValue = (self.MACDMaxValue - self.MACDMinValue) / (MACDLineMinY - MACDLineMaxY);
+    CGFloat MACDLineUnitValue = (self.MACDMaxValue - self.MACDMinValue) / (bottomNormalMinY - bottomNormalMaxY);
     if (MACDLineUnitValue == 0) MACDLineUnitValue = 0.01f;
     
     // KDJ line
-    CGFloat KDJLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat KDJLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat KDJLineUnitValue = (self.KDJMaxValue - self.KDJMinValue) / (KDJLineMaxY - KDJLineMinY);
+    CGFloat KDJLineUnitValue = (self.KDJMaxValue - self.KDJMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (KDJLineUnitValue == 0) KDJLineUnitValue = 0.01f;
     
     // RSI
-    CGFloat RSILineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat RSILineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat RSILineUnitValue = (self.RSIMaxValue - self.RSIMinValue) / (RSILineMaxY - RSILineMinY);
+    CGFloat RSILineUnitValue = (self.RSIMaxValue - self.RSIMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (RSILineUnitValue == 0) RSILineUnitValue = 0.01f;
     
     // ARBR
-    CGFloat ARBRLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat ARBRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat ARBRLineUnitValue = (self.ARBRMaxValue - self.ARBRMinValue) / (ARBRLineMaxY - ARBRLineMinY);
+    CGFloat ARBRLineUnitValue = (self.ARBRMaxValue - self.ARBRMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (ARBRLineUnitValue == 0) ARBRLineUnitValue = 0.01f;
     
     // OBV
-    CGFloat OBVLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat OBVLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat OBVLineUnitValue = (self.OBVMaxValue - self.OBVMinValue) / (OBVLineMaxY - OBVLineMinY);
+    CGFloat OBVLineUnitValue = (self.OBVMaxValue - self.OBVMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (OBVLineUnitValue == 0) OBVLineUnitValue = 0.01f;
     
     // WR
-    CGFloat WRLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat WRLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (WRLineMaxY - WRLineMinY);
+    CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (WRLineUnitValue == 0) WRLineUnitValue = 0.01f;
     
     // DMA
-    CGFloat DMALineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat DMALineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat DMALineUnitValue = (self.DMAMaxValue - self.DMAMinValue) / (DMALineMaxY - DMALineMinY);
+    CGFloat DMALineUnitValue = (self.DMAMaxValue - self.DMAMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (DMALineUnitValue == 0) DMALineUnitValue = 0.01f;
     
     // CCI
-    CGFloat CCILineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat CCILineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY; 
-    CGFloat CCILineUnitValue = (self.CCIMaxValue - self.CCIMinValue) / (CCILineMaxY - CCILineMinY);
+    CGFloat CCILineUnitValue = (self.CCIMaxValue - self.CCIMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (CCILineUnitValue == 0) CCILineUnitValue = 0.01f;
     
     // BIAS
-    CGFloat BIASLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat BIASLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat BIASLineUnitValue = (self.BIASMaxValue - self.BIASMinValue) / (BIASLineMaxY - BIASLineMinY);
+    CGFloat BIASLineUnitValue = (self.BIASMaxValue - self.BIASMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (BIASLineUnitValue == 0) BIASLineUnitValue = 0.01f;
     
     // ROC
-    CGFloat ROCLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat ROCLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat ROCLineUnitValue = (self.ROCMaxValue - self.ROCMinValue) / (ROCLineMaxY - ROCLineMinY);
+    CGFloat ROCLineUnitValue = (self.ROCMaxValue - self.ROCMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (ROCLineUnitValue == 0) ROCLineUnitValue = 0.01f;
     
     // MTM
-    CGFloat MTMLineMinY = kStockVolumeLineViewVolumeLineMinY;
-    CGFloat MTMLineMaxY = volumeViewHeight - 2 * kStockVolumeLineViewVolumeLineMinY;
-    CGFloat MTMLineUnitValue = (self.MTMMaxValue - self.MTMMinValue) / (MTMLineMaxY - MTMLineMinY);
+    CGFloat MTMLineUnitValue = (self.MTMMaxValue - self.MTMMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (MTMLineUnitValue == 0) MTMLineUnitValue = 0.01f;
-    
     
     
     // 便利
@@ -570,14 +553,14 @@
         model.MACD_BAREndPositionPoint = CGPointMake(xPosition, model.MACD_BAR.floatValue / MACDLineUnitValue + volumeViewHeight * 0.5);
         
 #pragma mark - KDJ
-        model.KDJ_KPositionPoint = CGPointMake(xPosition, KDJLineMaxY - (model.KDJ_K.floatValue - self.KDJMinValue) / KDJLineUnitValue);
-        model.KDJ_DPositionPoint = CGPointMake(xPosition, KDJLineMaxY - (model.KDJ_D.floatValue - self.KDJMinValue) / KDJLineUnitValue);
-        model.KDJ_JPositionPoint = CGPointMake(xPosition, KDJLineMaxY - (model.KDJ_J.floatValue - self.KDJMinValue) / KDJLineUnitValue);
+        model.KDJ_KPositionPoint = CGPointMake(xPosition, bottomNormalMaxY - (model.KDJ_K.floatValue - self.KDJMinValue) / KDJLineUnitValue);
+        model.KDJ_DPositionPoint = CGPointMake(xPosition, bottomNormalMaxY - (model.KDJ_D.floatValue - self.KDJMinValue) / KDJLineUnitValue);
+        model.KDJ_JPositionPoint = CGPointMake(xPosition, bottomNormalMaxY - (model.KDJ_J.floatValue - self.KDJMinValue) / KDJLineUnitValue);
         
 #pragma mark - RSI
-        model.RSI_6PositionPoint = CGPointMake(xPosition, ABS(RSILineMaxY - (model.RSI_6.floatValue - self.RSIMinValue) / RSILineUnitValue));
-        model.RSI_12PositionPoint = CGPointMake(xPosition, ABS(RSILineMaxY - (model.RSI_12.floatValue - self.RSIMinValue) / RSILineUnitValue));
-        model.RSI_24PositionPoint = CGPointMake(xPosition, ABS(RSILineMaxY - (model.RSI_24.floatValue - self.RSIMinValue) / RSILineUnitValue));
+        model.RSI_6PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.RSI_6.floatValue - self.RSIMinValue) / RSILineUnitValue));
+        model.RSI_12PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.RSI_12.floatValue - self.RSIMinValue) / RSILineUnitValue));
+        model.RSI_24PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.RSI_24.floatValue - self.RSIMinValue) / RSILineUnitValue));
         
 #pragma mark - BOLL
         model.BOLL_UpperPositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.BOLL_UPPER.floatValue - self.minKLineValue) / KLineUnitValue));
@@ -585,35 +568,35 @@
         model.BOLL_LowerPositionPoint = CGPointMake(xPosition, ABS(KLineMaxY - (model.BOLL_LOWER.floatValue - self.minKLineValue) / KLineUnitValue));
         
 #pragma mark - ARBR
-        model.ARBR_ARPositionPoint = CGPointMake(xPosition, ABS(ARBRLineMaxY - (model.ARBR_AR.floatValue - self.ARBRMinValue) / ARBRLineUnitValue));
-        model.ARBR_BRPositionPoint = CGPointMake(xPosition, ABS(ARBRLineMaxY - (model.ARBR_BR.floatValue - self.ARBRMinValue) / ARBRLineUnitValue));
+        model.ARBR_ARPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.ARBR_AR.floatValue - self.ARBRMinValue) / ARBRLineUnitValue));
+        model.ARBR_BRPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.ARBR_BR.floatValue - self.ARBRMinValue) / ARBRLineUnitValue));
         
 #pragma mark - OBV
-        model.OBVPositionPoint = CGPointMake(xPosition, ABS(OBVLineMaxY - (model.OBV.floatValue - self.OBVMinValue) / OBVLineUnitValue));
+        model.OBVPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.OBV.floatValue - self.OBVMinValue) / OBVLineUnitValue));
 
 #pragma mark - WR
-        model.WR_1PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_1.floatValue - self.WRMinValue) / WRLineUnitValue));
-        model.WR_2PositionPoint = CGPointMake(xPosition, ABS(WRLineMaxY - (model.WR_2.floatValue - self.WRMinValue) / WRLineUnitValue));
+        model.WR_1PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.WR_1.floatValue - self.WRMinValue) / WRLineUnitValue));
+        model.WR_2PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.WR_2.floatValue - self.WRMinValue) / WRLineUnitValue));
         
 #pragma mark - DMA
-        model.DDDPositionPoint = CGPointMake(xPosition, ABS(DMALineMaxY - (model.DDD.floatValue - self.DMAMinValue) / DMALineUnitValue));
-        model.AMAPositionPoint = CGPointMake(xPosition, ABS(DMALineMaxY - (model.AMA.floatValue - self.DMAMinValue) / DMALineUnitValue));
+        model.DDDPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DDD.floatValue - self.DMAMinValue) / DMALineUnitValue));
+        model.AMAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.AMA.floatValue - self.DMAMinValue) / DMALineUnitValue));
 
 #pragma mark - CCI
-        model.CCIPositionPoint = CGPointMake(xPosition, ABS(CCILineMaxY - (model.CCI.floatValue - self.CCIMinValue) / CCILineUnitValue));
+        model.CCIPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.CCI.floatValue - self.CCIMinValue) / CCILineUnitValue));
         
 #pragma mark - BIAS
-        model.BIAS_1PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_1.floatValue - self.BIASMinValue) / BIASLineUnitValue));
-        model.BIAS_2PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_2.floatValue - self.BIASMinValue) / BIASLineUnitValue));
-        model.BIAS_3PositionPoint = CGPointMake(xPosition, ABS(BIASLineMaxY - (model.BIAS_3.floatValue - self.BIASMinValue) / BIASLineUnitValue));
+        model.BIAS_1PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.BIAS_1.floatValue - self.BIASMinValue) / BIASLineUnitValue));
+        model.BIAS_2PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.BIAS_2.floatValue - self.BIASMinValue) / BIASLineUnitValue));
+        model.BIAS_3PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.BIAS_3.floatValue - self.BIASMinValue) / BIASLineUnitValue));
 
 #pragma mark - ROC
-        model.ROCPositionPoint = CGPointMake(xPosition, ABS(ROCLineMaxY - (model.ROC.floatValue - self.ROCMinValue) / ROCLineUnitValue));
-        model.ROC_MAPositionPoint = CGPointMake(xPosition, ABS(ROCLineMaxY - (model.ROC_MA.floatValue - self.ROCMinValue) / ROCLineUnitValue));
+        model.ROCPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.ROC.floatValue - self.ROCMinValue) / ROCLineUnitValue));
+        model.ROC_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.ROC_MA.floatValue - self.ROCMinValue) / ROCLineUnitValue));
         
 #pragma mark - MTM
-        model.MTMPositionPoint = CGPointMake(xPosition, ABS(MTMLineMaxY - (model.MTM.floatValue - self.MTMMinValue) / MTMLineUnitValue));
-        model.MTM_MAPositionPoint = CGPointMake(xPosition, ABS(MTMLineMaxY - (model.MTM_MA.floatValue - self.MTMMinValue) / MTMLineUnitValue));
+        model.MTMPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.MTM.floatValue - self.MTMMinValue) / MTMLineUnitValue));
+        model.MTM_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.MTM_MA.floatValue - self.MTMMinValue) / MTMLineUnitValue));
 
 
         
@@ -622,6 +605,8 @@
     
     self.drawKLineModels = tempDrawKLineModels;
 }
+
+#pragma mark - other
 
 
 #pragma mark - lazy loading
