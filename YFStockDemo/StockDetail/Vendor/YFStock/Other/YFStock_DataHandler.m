@@ -69,6 +69,7 @@
 }
 
 #pragma mark - KLine
+#pragma mark 处理原始数据
 // 处理原始K线数据转为K线模型数组
 - (NSMutableArray <YFStock_KLineModel *> *)handleAllKLineOriginDataArray:(NSArray *)KLineOriginDataArray topBarIndex:(YFStockTopBarIndex)topBarIndex {
     
@@ -95,6 +96,7 @@
     return allKLineModelArray;
 }
 
+#pragma mark 处理时间显示事件
 - (void)handleTimeShowActionWithKLineModel:(YFStock_KLineModel *)KLineModel topBarIndex:(YFStockTopBarIndex)topBarIndex {
     
     switch (topBarIndex) {
@@ -150,19 +152,62 @@
     }
 }
 
+#pragma mark 处理最大值、最小值和位置
 // 处理需要绘制的K线模型数组(主要是处理position)
 - (void)handleKLineModelDatasWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight {
     
-    [self getMaxValueMinValueWithDrawKlineModelArray:drawKLineModelArray pointStartX:pointStartX KLineViewHeight:KLineViewHeight volumeViewHeight:volumeViewHeight];
+    [self getMaxValueMinValueWithDrawKlineModelArray:drawKLineModelArray];
 
     [self getPositionWithDrawKlineModelArray:drawKLineModelArray pointStartX:pointStartX KLineViewHeight:KLineViewHeight volumeViewHeight:volumeViewHeight];
+}
+
+#pragma mark 处理最大最小值
+// 获取K线的以及成交量线的maxValue、minValue
+- (void)getMaxValueMinValueWithDrawKlineModelArray:(NSArray *)drawKLineModelArray {
+    
+    // K线
+    [self handle_KLine_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // volume线
+    [self handle_Volume_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // MACD
+    [self handle_MACD_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // KDJ
+    [self handle_KDJ_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // RSI
+    [self handle_RSI_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // ARBR
+    [self handle_ARBR_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // OBV
+    [self handle_OBV_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // WR
+    [self handle_WR_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // DMA
+    [self handle_DMA_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+
+    // CCI
+    [self handle_CCI_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // BIAS
+    [self handle_BIAS_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // ROC
+    [self handle_ROC_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // MTM
+    [self handle_MTM_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
     
 }
 
-// 获取K线的以及成交量线的maxValue、minValue
-- (void)getMaxValueMinValueWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight {
+- (void)handle_KLine_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // K线
     CGFloat max =  [[[drawKLineModelArray valueForKeyPath:@"highPrice"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat MA5max =  [[[drawKLineModelArray valueForKeyPath:@"MA_5"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat MA10max =  [[[drawKLineModelArray valueForKeyPath:@"MA_10"] valueForKeyPath:@"@max.floatValue"] floatValue];
@@ -200,25 +245,29 @@
         }
     }];
     
-//    CGFloat BOLL_UPPERmax =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_UPPER"] valueForKeyPath:@"@max.floatValue"] floatValue];
-//    CGFloat BOLL_MIDmax =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_MID"] valueForKeyPath:@"@max.floatValue"] floatValue];
-//    CGFloat BOLL_LOWERmax =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_LOWER"] valueForKeyPath:@"@max.floatValue"] floatValue];
-//
-//    CGFloat BOLL_UPPERmin =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_UPPER"] valueForKeyPath:@"@min.floatValue"] floatValue];
-//    CGFloat BOLL_MIDmin =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_MID"] valueForKeyPath:@"@min.floatValue"] floatValue];
-//    CGFloat BOLL_LOWERmin =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_LOWER"] valueForKeyPath:@"@min.floatValue"] floatValue];
-//    
-//    max = MAX(max, MAX(BOLL_UPPERmax, MAX(BOLL_MIDmax, BOLL_LOWERmax)));
-//    min = MIN(min, MIN(BOLL_UPPERmin, MIN(BOLL_MIDmin, BOLL_LOWERmin)));
-
+    //    CGFloat BOLL_UPPERmax =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_UPPER"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    //    CGFloat BOLL_MIDmax =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_MID"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    //    CGFloat BOLL_LOWERmax =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_LOWER"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    //
+    //    CGFloat BOLL_UPPERmin =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_UPPER"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    //    CGFloat BOLL_MIDmin =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_MID"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    //    CGFloat BOLL_LOWERmin =  [[[drawKLineModelArray valueForKeyPath:@"BOLL_LOWER"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    //
+    //    max = MAX(max, MAX(BOLL_UPPERmax, MAX(BOLL_MIDmax, BOLL_LOWERmax)));
+    //    min = MIN(min, MIN(BOLL_UPPERmin, MIN(BOLL_MIDmin, BOLL_LOWERmin)));
+    
     self.maxKLineValue = max;
     self.minKLineValue = min;
+}
 
-    // volume线
+- (void)handle_Volume_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
     self.minVolumeLineValue =  0;
     self.maxVolumeLineValue =  [[[drawKLineModelArray valueForKeyPath:@"volume"] valueForKeyPath:@"@max.floatValue"] floatValue];
+}
+
+- (void)handle_MACD_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // MACD
     CGFloat maxDIFF = [[[drawKLineModelArray valueForKeyPath:@"MACD_DIF"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxDEA = [[[drawKLineModelArray valueForKeyPath:@"MACD_DEA"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxMACD = [[[drawKLineModelArray valueForKeyPath:@"MACD_BAR"] valueForKeyPath:@"@max.floatValue"] floatValue];
@@ -232,20 +281,24 @@
     
     self.MACDMaxValue = ABS(self.MACDMaxValue) > ABS(self.MACDMinValue) ? ABS(self.MACDMaxValue) : ABS(self.MACDMinValue);
     self.MACDMinValue = -self.MACDMaxValue;
+}
+
+- (void)handle_KDJ_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // KDJ
     CGFloat maxK = [[[drawKLineModelArray valueForKeyPath:@"KDJ_K"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxD = [[[drawKLineModelArray valueForKeyPath:@"KDJ_D"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxJ = [[[drawKLineModelArray valueForKeyPath:@"KDJ_J"] valueForKeyPath:@"@max.floatValue"] floatValue];
-
+    
     CGFloat minK = [[[drawKLineModelArray valueForKeyPath:@"KDJ_K"] valueForKeyPath:@"@min.floatValue"] floatValue];
     CGFloat minD = [[[drawKLineModelArray valueForKeyPath:@"KDJ_D"] valueForKeyPath:@"@min.floatValue"] floatValue];
     CGFloat minJ = [[[drawKLineModelArray valueForKeyPath:@"KDJ_J"] valueForKeyPath:@"@min.floatValue"] floatValue];
-
+    
     self.KDJMaxValue = MAX(MAX(maxK, maxD), maxJ);
     self.KDJMinValue = MIN(MIN(minK, minD), minJ);
+}
+
+- (void)handle_RSI_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // RSI
     CGFloat maxRSI_6 = [[[drawKLineModelArray valueForKeyPath:@"RSI_6"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxRSI_12 = [[[drawKLineModelArray valueForKeyPath:@"RSI_12"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxRSI_24 = [[[drawKLineModelArray valueForKeyPath:@"RSI_24"] valueForKeyPath:@"@max.floatValue"] floatValue];
@@ -256,8 +309,10 @@
     
     self.RSIMaxValue = MAX(MAX(maxRSI_6, maxRSI_12), maxRSI_24);
     self.RSIMinValue = MIN(MIN(minRSI_6, minRSI_12), minRSI_24);
+}
+
+- (void)handle_ARBR_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // ARBR
     CGFloat maxAR = [[[drawKLineModelArray valueForKeyPath:@"ARBR_AR"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxBR = [[[drawKLineModelArray valueForKeyPath:@"ARBR_BR"] valueForKeyPath:@"@max.floatValue"] floatValue];
     
@@ -266,15 +321,19 @@
     
     self.ARBRMaxValue = MAX(maxAR, maxBR);
     self.ARBRMinValue = MIN(minAR, minBR);
+}
+
+- (void)handle_OBV_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // OBV
     CGFloat maxOBV = [[[drawKLineModelArray valueForKeyPath:@"OBV"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat minOBV = [[[drawKLineModelArray valueForKeyPath:@"OBV"] valueForKeyPath:@"@min.floatValue"] floatValue];
-
+    
     self.OBVMaxValue = maxOBV;
     self.OBVMinValue = minOBV;
+}
+
+- (void)handle_WR_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // WR
     CGFloat maxWR_1 = [[[drawKLineModelArray valueForKeyPath:@"WR_1"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxWR_2 = [[[drawKLineModelArray valueForKeyPath:@"WR_2"] valueForKeyPath:@"@max.floatValue"] floatValue];
     
@@ -283,8 +342,15 @@
     
     self.WRMaxValue = MAX(maxWR_1, maxWR_2);
     self.WRMinValue = MIN(minWR_1, minWR_2);
+}
+
+- (void)handle_EMV_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // DMA
+    
+}
+
+- (void)handle_DMA_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
     CGFloat maxDDD = [[[drawKLineModelArray valueForKeyPath:@"DDD"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxAMA = [[[drawKLineModelArray valueForKeyPath:@"AMA"] valueForKeyPath:@"@max.floatValue"] floatValue];
     
@@ -293,27 +359,33 @@
     
     self.DMAMaxValue = MAX(maxDDD, maxAMA);
     self.DMAMinValue = MIN(minDDD, minAMA);
+}
 
-    // CCI
+- (void)handle_CCI_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
     CGFloat maxCCI = [[[drawKLineModelArray valueForKeyPath:@"CCI"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat minCCI = [[[drawKLineModelArray valueForKeyPath:@"CCI"] valueForKeyPath:@"@min.floatValue"] floatValue];
     
     self.CCIMaxValue = maxCCI;
     self.CCIMinValue = minCCI;
+}
+
+- (void)handle_BIAS_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // BIAS
     CGFloat maxBIAS1 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_1"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxBIAS2 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_2"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxBIAS3 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_3"] valueForKeyPath:@"@max.floatValue"] floatValue];
-
+    
     CGFloat minBIAS1 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_1"] valueForKeyPath:@"@min.floatValue"] floatValue];
     CGFloat minBIAS2 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_2"] valueForKeyPath:@"@min.floatValue"] floatValue];
     CGFloat minBIAS3 = [[[drawKLineModelArray valueForKeyPath:@"BIAS_3"] valueForKeyPath:@"@min.floatValue"] floatValue];
-
+    
     self.BIASMaxValue = MAX(maxBIAS1, MAX(maxBIAS2, maxBIAS3));
     self.BIASMinValue = MIN(minBIAS1, MIN(minBIAS2, minBIAS3));
+}
+
+- (void)handle_ROC_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // ROC
     CGFloat maxROC = [[[drawKLineModelArray valueForKeyPath:@"ROC"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxROC_MA = [[[drawKLineModelArray valueForKeyPath:@"ROC_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
     
@@ -322,8 +394,10 @@
     
     self.ROCMaxValue = MAX(maxROC, maxROC_MA);
     self.ROCMinValue = MIN(minROC, minROC_MA);
+}
+
+- (void)handle_MTM_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
-    // MTM
     CGFloat maxMTM = [[[drawKLineModelArray valueForKeyPath:@"MTM"] valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat maxMTM_MA = [[[drawKLineModelArray valueForKeyPath:@"MTM_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
     
@@ -334,6 +408,7 @@
     self.MTMMinValue = MIN(minMTM, minMTM_MA);
 }
 
+#pragma mark - 处理位置
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
 - (void)getPositionWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight {
     
@@ -540,7 +615,7 @@
         model.MTMPositionPoint = CGPointMake(xPosition, ABS(MTMLineMaxY - (model.MTM.floatValue - self.MTMMinValue) / MTMLineUnitValue));
         model.MTM_MAPositionPoint = CGPointMake(xPosition, ABS(MTMLineMaxY - (model.MTM_MA.floatValue - self.MTMMinValue) / MTMLineUnitValue));
 
-        
+
         
         [tempDrawKLineModels addObject:model];
     }];
