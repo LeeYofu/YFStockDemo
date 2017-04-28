@@ -428,6 +428,75 @@
     return _MTM_MA;
 }
 
+#pragma mark CR
+- (NSNumber *)CR {
+    
+    if (! _CR) {
+        
+        CGFloat CR = [self getP_1WithN:kStock_CR_N] / [self getP_2WithN:kStock_CR_N] * 100;
+        _CR = [NSNumber numberWithFloat:CR];
+    }
+    return _CR;
+}
+
+- (NSNumber *)CR_MA_1 {
+    
+    if (! _CR_MA_1) {
+        
+        _CR_MA_1 = [NSNumber numberWithFloat:[self getCR_MAWithN:kStock_CR_MA_1_N]];
+    }
+    return _CR_MA_1;
+}
+
+- (NSNumber *)CR_MA_2 {
+    
+    if (! _CR_MA_2) {
+        
+        _CR_MA_2 = [NSNumber numberWithFloat:[self getCR_MAWithN:kStock_CR_MA_2_N]];
+    }
+    return _CR_MA_2;
+}
+
+#pragma mark DMI
+- (NSNumber *)DMI_PDI {
+    
+    if (! _DMI_PDI) {
+        
+        _DMI_PDI = [NSNumber numberWithFloat:[self getDIPlusWithN:14]];
+    }
+    return _DMI_PDI;
+}
+
+- (NSNumber *)DMI_MDI {
+    
+    if (! _DMI_MDI) {
+        
+        _DMI_MDI = [NSNumber numberWithFloat:[self getDIMinusWithN:14]];
+    }
+    return _DMI_MDI;
+}
+
+- (NSNumber *)DMI_ADX {
+    
+    if (! _DMI_ADX) {
+        
+        _DMI_ADX = [NSNumber numberWithFloat:[self getADXWithN:14]];
+    }
+    return _DMI_ADX;
+}
+
+- (NSNumber *)DMI_ADXR {
+    
+    if (! _DMI_ADXR) {
+        
+        CGFloat ADXR = (self.DMI_ADX.floatValue - [self getPreviousADXWithN:6]) * 0.5;
+        _DMI_ADXR = [NSNumber numberWithFloat:ADXR];
+    }
+    return _DMI_ADXR;
+}
+
+
+
 #pragma mark - 计算相关
 #pragma mark MA/EMA
 // MA
@@ -762,6 +831,248 @@
     MTM_MA = sum / (N * 1.0);
     
     return MTM_MA;
+}
+
+#pragma mark CR
+- (CGFloat)getMiddlePrice {
+    
+    CGFloat middlePrice = 0;
+    
+    /*
+     四种计算方法
+     1、M=（2C+H+L）÷4
+     2、M=（C+H+L+O）÷4
+     3、M=（C+H+L）÷3
+     4、M=（H+L）÷2
+     */
+    
+    middlePrice = (self.highPrice.floatValue + self.lowPrice.floatValue) * 0.5;
+    
+    return middlePrice;
+}
+
+- (CGFloat)getP_1WithN:(NSInteger)N {
+    
+    CGFloat P = 0;
+    
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        P += (model.highPrice.floatValue - [model.preModel getMiddlePrice]);
+    }
+    
+    return P;
+}
+
+- (CGFloat)getP_2WithN:(NSInteger)N {
+    
+    CGFloat P = 0;
+    
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        P += ([model.preModel getMiddlePrice] - model.lowPrice.floatValue);
+    }
+    
+    return P;
+}
+
+- (CGFloat)getCR_MAWithN:(NSInteger)N {
+    
+    CGFloat CR_MA = 0;
+    
+    CGFloat sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += model.CR.floatValue;
+    }
+    
+    CR_MA = sum / (N * 1.0);
+    
+    return CR_MA;
+}
+
+#pragma mark DMI
+- (CGFloat)getDMPlus {
+    
+    CGFloat DMPlus = 0;
+    
+    DMPlus = self.highPrice.floatValue - self.preModel.highPrice.floatValue;
+    if (DMPlus <= 0) {
+        
+        DMPlus = 0;
+    }
+    
+    return DMPlus;
+}
+
+- (CGFloat)getDMMinus {
+    
+    CGFloat DMMinus = 0;
+    
+    DMMinus = self.preModel.lowPrice.floatValue - self.lowPrice.floatValue;
+    if (DMMinus <= 0) {
+        
+        DMMinus = 0;
+    }
+    
+    return DMMinus;
+}
+
+- (CGFloat)getTR {
+    
+    CGFloat TR = 0;
+    
+    CGFloat A = ABS(self.highPrice.floatValue - self.lowPrice.floatValue);
+    CGFloat B = ABS(self.highPrice.floatValue - self.preModel.closePrice.floatValue);
+    CGFloat C = ABS(self.lowPrice.floatValue - self.preModel.closePrice.floatValue);
+    
+    TR = MAX(A, MAX(B, C));
+    
+    return TR;
+}
+
+- (CGFloat)getDIPlusWithN:(NSInteger)N {
+    
+    CGFloat DIPlus = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    CGFloat sumDMPlus = 0;
+    CGFloat sumTR = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        CGFloat DMPlus = [model getDMPlus];
+        CGFloat DMMinus = [model getDMMinus];
+        
+        if (DMPlus > DMMinus) {
+            
+            DMMinus = 0;
+        } else if (DMPlus < DMMinus) {
+            
+            DMPlus = 0;
+        } else {
+            
+            DMPlus = 0;
+            DMMinus = 0;
+        }
+
+        sumDMPlus += DMPlus;
+        sumTR += [model getTR];
+        
+//        CGFloat DMPlus = model.highPrice.floatValue - model.preModel.lowPrice.floatValue;
+//        if (DMPlus <= ABS(model.lowPrice.floatValue - model.preModel.lowPrice.floatValue)) {
+//            
+//            DMPlus = 0;
+//        }
+//        
+//        CGFloat DMMinus = model.lowPrice.floatValue - model.preModel.lowPrice.floatValue;
+//        if (DMMinus <= ABS(model.highPrice.floatValue - model.preModel.lowPrice.floatValue)) {
+//            
+//            DMMinus = 0;
+//        }
+//        
+//        sumDMPlus += DMPlus;
+//        sumTR += [model getTR];
+    }
+    
+    DIPlus = sumDMPlus / sumTR * 100;
+    
+    if (DIPlus < 0) {
+        
+        DIPlus = 0;
+    }
+    if (DIPlus > 100) {
+        
+        DIPlus = 100;
+    }
+    
+    return DIPlus;
+}
+
+- (CGFloat)getDIMinusWithN:(NSInteger)N {
+    
+    CGFloat DIMinus = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    CGFloat sumDMMinus = 0;
+    CGFloat sumTR = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        CGFloat DMPlus = [model getDMPlus];
+        CGFloat DMMinus = [model getDMMinus];
+        
+        if (DMPlus > DMMinus) {
+            
+            DMMinus = 0;
+        } else if (DMPlus < DMMinus) {
+            
+            DMPlus = 0;
+        } else {
+            
+            DMPlus = 0;
+            DMMinus = 0;
+        }
+        
+        sumDMMinus += DMMinus;
+        sumTR += [model getTR];
+    }
+    
+    DIMinus = sumDMMinus / sumTR * 100;
+    
+    if (DIMinus < 0) {
+        
+        DIMinus = 0;
+    }
+    if (DIMinus > 100) {
+        
+        DIMinus = 100;
+    }
+    
+    return DIMinus;
+}
+
+- (CGFloat)getADXWithN:(NSInteger)N {
+    
+    CGFloat ADX = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    CGFloat sum = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        CGFloat DX = (ABS(model.DMI_PDI.floatValue - model.DMI_MDI.floatValue) / (model.DMI_PDI.floatValue + model.DMI_MDI.floatValue)) * 100;
+        sum += DX;
+    }
+    
+    ADX = sum / (N * 1.0);
+    
+    return ADX;
+}
+
+- (CGFloat)getPreviousADXWithN:(NSInteger)N {
+    
+    CGFloat ADX = 0;
+    
+    NSInteger index = self.preAllModelArray.count - 1 - (N - 1);
+    if (index < 0) {
+        
+        index = 0;
+    }
+    
+    if (self.preAllModelArray.count) {
+        
+        YFStock_KLineModel *model = self.preAllModelArray[index];
+        
+        ADX = model.DMI_ADX.floatValue;
+    } else {
+        
+        ADX = 0;
+    }
+    
+    return ADX;
 }
 
 #pragma mark Other

@@ -126,6 +126,9 @@
 #define kStock_MTM_N 12
 #define kStock_MTM_MA_N 6
 
+#define kStock_CR_N 26
+#define kStock_CR_MA_1_N 10
+#define kStock_CR_MA_2_N 20
 
 
 #pragma mark - 枚举 **********  **********
@@ -166,7 +169,7 @@ typedef NS_ENUM(NSInteger, YFStockBottomBarIndex) {
     YFStockBottomBarIndex_ROC,
     YFStockBottomBarIndex_MTM,
     YFStockBottomBarIndex_CR,
-    YFStockBottomBarIndex_CMI,
+    YFStockBottomBarIndex_DMI,
     YFStockBottomBarIndex_VR,
     YFStockBottomBarIndex_TRXI,
     YFStockBottomBarIndex_PSY,

@@ -73,7 +73,13 @@
 @property (nonatomic, assign) CGFloat MTMMaxValue;
 @property (nonatomic, assign) CGFloat MTMMinValue;
 
+// CR
+@property (nonatomic, assign) CGFloat CRMaxValue;
+@property (nonatomic, assign) CGFloat CRMinValue;
 
+// DMI
+@property (nonatomic, assign) CGFloat DMIMaxValue;
+@property (nonatomic, assign) CGFloat DMIMinValue;
 
 
 

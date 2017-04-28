@@ -204,6 +204,12 @@
     // MTM
     [self handle_MTM_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
     
+    // CR
+    [self handle_CR_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
+    // DMI
+    [self handle_DMI_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
 }
 
 - (void)handle_KLine_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
@@ -408,6 +414,37 @@
     self.MTMMinValue = MIN(minMTM, minMTM_MA);
 }
 
+- (void)handle_CR_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
+    CGFloat maxCR = [[[drawKLineModelArray valueForKeyPath:@"CR"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxCR_MA_1 = [[[drawKLineModelArray valueForKeyPath:@"CR_MA_1"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxCR_MA_2 = [[[drawKLineModelArray valueForKeyPath:@"CR_MA_2"] valueForKeyPath:@"@max.floatValue"] floatValue];
+
+    CGFloat minCR = [[[drawKLineModelArray valueForKeyPath:@"CR"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minCR_MA_1 = [[[drawKLineModelArray valueForKeyPath:@"CR_MA_1"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minCR_MA_2 = [[[drawKLineModelArray valueForKeyPath:@"CR_MA_2"] valueForKeyPath:@"@min.floatValue"] floatValue];
+
+    self.CRMaxValue = MAX(maxCR, MAX(maxCR_MA_1, maxCR_MA_2));
+    self.CRMinValue = MIN(minCR, MIN(minCR_MA_1, minCR_MA_2));
+}
+
+- (void)handle_DMI_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
+    CGFloat maxDMI_PDI = [[[drawKLineModelArray valueForKeyPath:@"DMI_PDI"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxDMI_MDI = [[[drawKLineModelArray valueForKeyPath:@"DMI_MDI"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxDMI_ADX = [[[drawKLineModelArray valueForKeyPath:@"DMI_ADX"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxDMI_ADXR = [[[drawKLineModelArray valueForKeyPath:@"DMI_ADXR"] valueForKeyPath:@"@max.floatValue"] floatValue];
+
+    CGFloat minDMI_PDI = [[[drawKLineModelArray valueForKeyPath:@"DMI_PDI"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minDMI_MDI = [[[drawKLineModelArray valueForKeyPath:@"DMI_MDI"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minDMI_ADX = [[[drawKLineModelArray valueForKeyPath:@"DMI_ADX"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minDMI_ADXR = [[[drawKLineModelArray valueForKeyPath:@"DMI_ADXR"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.DMIMaxValue = MAX(maxDMI_PDI, MAX(maxDMI_MDI, MAX(maxDMI_ADX, maxDMI_ADXR)));
+    self.DMIMinValue = MIN(minDMI_PDI, MIN(minDMI_MDI, MIN(minDMI_ADX, minDMI_ADXR)));
+
+}
+
 #pragma mark - 处理位置
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
 - (void)getPositionWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight {
@@ -475,6 +512,15 @@
     // MTM
     CGFloat MTMLineUnitValue = (self.MTMMaxValue - self.MTMMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (MTMLineUnitValue == 0) MTMLineUnitValue = 0.01f;
+    
+    // CR
+    CGFloat CRLineUnitValue = (self.CRMaxValue - self.CRMinValue) / (bottomNormalMaxY - bottomNormalMinY);
+    if (CRLineUnitValue == 0) CRLineUnitValue = 0.01f;
+    
+    // DMI
+    CGFloat DMILineUnitValue = (self.DMIMaxValue - self.DMIMinValue) / (bottomNormalMaxY - bottomNormalMinY);
+    if (DMILineUnitValue == 0) DMILineUnitValue = 0.01f;
+    
     
     
     // 便利
@@ -597,6 +643,17 @@
 #pragma mark - MTM
         model.MTMPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.MTM.floatValue - self.MTMMinValue) / MTMLineUnitValue));
         model.MTM_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.MTM_MA.floatValue - self.MTMMinValue) / MTMLineUnitValue));
+
+#pragma mark - CR
+        model.CRPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.CR.floatValue - self.CRMinValue) / CRLineUnitValue));
+        model.CR_MA_1PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.CR_MA_1.floatValue - self.CRMinValue) / CRLineUnitValue));
+        model.CR_MA_2PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.CR_MA_2.floatValue - self.CRMinValue) / CRLineUnitValue));
+
+#pragma mark - DMI
+        model.DMI_PDIPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_PDI.floatValue - self.DMIMinValue) / DMILineUnitValue));
+        model.DMI_MDIPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_MDI.floatValue - self.DMIMinValue) / DMILineUnitValue));
+        model.DMI_ADXPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_ADX.floatValue - self.DMIMinValue) / DMILineUnitValue));
+        model.DMI_ADXRPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_ADXR.floatValue - self.DMIMinValue) / DMILineUnitValue));
 
 
         

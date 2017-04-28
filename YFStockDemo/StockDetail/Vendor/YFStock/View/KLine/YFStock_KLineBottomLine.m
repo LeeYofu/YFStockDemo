@@ -105,6 +105,16 @@
             [self drawMTM];
         }
             break;
+        case YFStockBottomBarIndex_CR:
+        {
+            [self drawCR];
+        }
+            break;
+        case YFStockBottomBarIndex_DMI:
+        {
+            [self drawDMI];
+        }
+            break;
             
         default:
             break;
@@ -276,6 +286,28 @@
     
     // MTM_MA
     [self drawWithPositionPointKey:@"MTM_MAPositionPoint" N:kStock_MTM_MA_N strokeColor:kStockMA10LineColor];
+}
+
+- (void)drawCR {
+    
+    // cr
+    [self drawWithPositionPointKey:@"CRPositionPoint" N:kStock_CR_N strokeColor:kStockMA5LineColor];
+    
+    // ma1
+    [self drawWithPositionPointKey:@"CR_MA_1PositionPoint" N:kStock_CR_MA_1_N strokeColor:kStockMA10LineColor];
+
+    // ma2
+    [self drawWithPositionPointKey:@"CR_MA_2PositionPoint" N:kStock_CR_MA_2_N strokeColor:kStockMA20LineColor];
+
+}
+
+- (void)drawDMI {
+    
+    [self drawWithPositionPointKey:@"DMI_PDIPositionPoint" N:12 strokeColor:kStockMA5LineColor];
+    [self drawWithPositionPointKey:@"DMI_MDIPositionPoint" N:12 strokeColor:kStockMA10LineColor];
+    [self drawWithPositionPointKey:@"DMI_ADXPositionPoint" N:12 strokeColor:kStockMA20LineColor];
+    [self drawWithPositionPointKey:@"DMI_ADXRPositionPoint" N:12 strokeColor:kStockMA30LineColor];
+
 }
 
 #pragma mark - other

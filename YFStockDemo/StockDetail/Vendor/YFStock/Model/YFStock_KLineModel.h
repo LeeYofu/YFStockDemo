@@ -85,6 +85,17 @@
 @property (nonatomic, strong) NSNumber *MTM;
 @property (nonatomic, strong) NSNumber *MTM_MA;
 
+// CR(26, 10, 20),可配置参数（周期）
+@property (nonatomic, strong) NSNumber *CR;
+@property (nonatomic, strong) NSNumber *CR_MA_1;
+@property (nonatomic, strong) NSNumber *CR_MA_2;
+
+// DMI(14, 6),可配置参数（周期）
+@property (nonatomic, strong) NSNumber *DMI_PDI;
+@property (nonatomic, strong) NSNumber *DMI_MDI;
+@property (nonatomic, strong) NSNumber *DMI_ADX;
+@property (nonatomic, strong) NSNumber *DMI_ADXR;
+
 
 // =============================================================
 @property (nonatomic, assign) BOOL isIncrease;
@@ -144,6 +155,15 @@
 
 @property (nonatomic, assign) CGPoint MTMPositionPoint;
 @property (nonatomic, assign) CGPoint MTM_MAPositionPoint;
+
+@property (nonatomic, assign) CGPoint CRPositionPoint;
+@property (nonatomic, assign) CGPoint CR_MA_1PositionPoint;
+@property (nonatomic, assign) CGPoint CR_MA_2PositionPoint;
+
+@property (nonatomic, assign) CGPoint DMI_PDIPositionPoint;
+@property (nonatomic, assign) CGPoint DMI_MDIPositionPoint;
+@property (nonatomic, assign) CGPoint DMI_ADXPositionPoint;
+@property (nonatomic, assign) CGPoint DMI_ADXRPositionPoint;
 
 
 // 必须调用，减少卡顿！！！！
