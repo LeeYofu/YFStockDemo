@@ -99,6 +99,19 @@
     
     if (! _preModel) {
         
+//        if (self.preAllModelArray.count) {
+//            
+//            _preModel = self.preAllModelArray.lastObject;
+//        } else {
+//            
+//            _preModel = [YFStock_KLineModel new];
+//            _preModel.openPrice = @0;
+//            _preModel.closePrice = @0;
+//            _preModel.highPrice = @0;
+//            _preModel.lowPrice = @0;
+//            _preModel.dataTime = @"";
+//        }
+        
         _preModel = self.preAllModelArray.lastObject;
     }
     
@@ -300,7 +313,7 @@
     
     if (! _ARBR_AR) {
         
-        _ARBR_AR = [NSNumber numberWithFloat:[self getARWithN:kStock_ARBR_N]];
+        _ARBR_AR = @([self getARWithN:kStock_ARBR_N]);
     }
     return _ARBR_AR;
 }
@@ -309,7 +322,7 @@
     
     if (! _ARBR_BR) {
         
-        _ARBR_BR = [NSNumber numberWithFloat:[self getBRWithN:kStock_ARBR_N]];
+        _ARBR_BR = @([self getBRWithN:kStock_ARBR_N]);
     }
     return _ARBR_BR;
 }
@@ -419,7 +432,14 @@
     if (! _ROC) {
         
         CGFloat previousNDayClosePrice = [self getPreviousClosePriceWithN:kStock_ROC_N];
-        CGFloat ROC = (self.closePrice.floatValue - previousNDayClosePrice) / previousNDayClosePrice * 100;
+        CGFloat ROC;
+        if (previousNDayClosePrice == 0) {
+            
+            ROC = 0;
+        } else {
+            
+            ROC = (self.closePrice.floatValue - previousNDayClosePrice) / previousNDayClosePrice * 100;
+        }
         _ROC = [NSNumber numberWithFloat:ROC];
     }
     return _ROC;
@@ -432,6 +452,7 @@
         CGFloat ROC_MA = [self getROC_MAWithN:kStock_ROC_MA_N];
         _ROC_MA = [NSNumber numberWithFloat:ROC_MA];
     }
+    
     return _ROC_MA;
 }
 
@@ -441,8 +462,13 @@
     if (! _MTM) {
         
         CGFloat MTM = self.closePrice.floatValue - [self getPreviousClosePriceWithN:kStock_MTM_N];
+        if ([self getPreviousClosePriceWithN:kStock_MTM_N] == 0) {
+            
+            MTM = 0;
+        }
         _MTM = [NSNumber numberWithFloat:MTM];
     }
+    
     return _MTM;
 }
 
@@ -721,7 +747,6 @@
     CGFloat increaseValue = [self getIncreaseAvgWithN:N];
     CGFloat decreaseValue = [self getDecreaseAvgWithN:N];
     
-    // security
     if (decreaseValue == 0) {
         
         decreaseValue = MAXFLOAT;
@@ -730,6 +755,11 @@
     CGFloat RS = increaseValue / decreaseValue;
     
     RSI = 100 * RS / (1 + RS);
+    
+    if (self.index.integerValue < N) {
+        
+        RSI = 100;
+    }
     
     return RSI;
 }
@@ -801,6 +831,11 @@
     
     AR = (sum_HMinusO / sum_OMinusL) * 100;
     
+    if (self.index.integerValue < N) {
+        
+        AR = 100;
+    }
+    
     return AR;
 }
 
@@ -822,6 +857,11 @@
     }
     
     BR = (sum_HMinusPC / sum_PCMinusL) * 100;
+    
+    if (self.index.integerValue < N) {
+        
+        BR = 100;
+    }
     
     return BR;
 }
@@ -915,9 +955,6 @@
         YFStock_KLineModel *model = self.preAllModelArray[index];
         
         closePrice = model.closePrice.floatValue;
-    } else {
-        
-        closePrice = 99999.0;
     }
     
     return closePrice;
@@ -1398,6 +1435,9 @@
     NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
     
     [tempArray addObject:self];
+    
+////#warning <#message#>
+//    [tempArray removeObjectAtIndex:0];
     
     return tempArray;
 }

@@ -91,8 +91,12 @@
         
         [allKLineModelArray addObject:KLineModel];
     }
-   
     
+    for (YFStock_KLineModel *model in allKLineModelArray) {
+        
+        model.allModelArray = allKLineModelArray;
+    }
+   
     return allKLineModelArray;
 }
 
@@ -163,6 +167,22 @@
 
 #pragma mark 处理最大最小值
 // 获取K线的以及成交量线的maxValue、minValue
+- (NSInteger)getStartIndexWithDrawKLineModels:(NSArray <YFStock_KLineModel *> *)drawKLineModels N:(NSInteger)N {
+    
+    NSInteger startIndex = 0;
+    
+    if ([drawKLineModels.firstObject index].integerValue <= N - 1) {
+        
+        startIndex = N - 1 - [drawKLineModels.firstObject index].integerValue;
+    }
+    if (startIndex > drawKLineModels.count - 1) {
+        
+        startIndex = drawKLineModels.count - 1;
+    }
+    
+    return startIndex;
+}
+
 - (void)getMaxValueMinValueWithDrawKlineModelArray:(NSArray *)drawKLineModelArray {
     
     // K线
