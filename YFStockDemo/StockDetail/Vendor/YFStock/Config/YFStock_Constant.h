@@ -136,6 +136,9 @@
 #define kStock_PSY_N 12
 #define kStock_PSY_MA_N 6
 
+#define kStock_DPO_N 20
+#define kStock_DPO_MA_N 6
+
 
 #pragma mark - 枚举 **********  **********
 

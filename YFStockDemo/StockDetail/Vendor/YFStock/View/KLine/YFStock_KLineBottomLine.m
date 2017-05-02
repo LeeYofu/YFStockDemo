@@ -126,6 +126,11 @@
             [self drawPSY];
         }
             break;
+        case YFStockBottomBarIndex_DPO:
+        {
+            [self drawDPO];
+        }
+            break;
             
         default:
             break;
@@ -331,6 +336,12 @@
     
     [self drawWithPositionPointKey:@"PSYPositionPoint" N:kStock_PSY_N strokeColor:kStockMA5LineColor];
     [self drawWithPositionPointKey:@"PSY_MAPositionPoint" N:kStock_PSY_MA_N strokeColor:kStockMA10LineColor];
+}
+
+- (void)drawDPO {
+    
+    [self drawWithPositionPointKey:@"DPOPositionPoint" N:kStock_DPO_N strokeColor:kStockMA5LineColor];
+    [self drawWithPositionPointKey:@"DPO_MAPositionPoint" N:kStock_DPO_MA_N strokeColor:kStockMA10LineColor];
 }
 
 #pragma mark - other

@@ -216,6 +216,9 @@
     // PSY
     [self handle_PSY_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
     
+    // DPO
+    [self handle_DPO_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
 }
 
 - (void)handle_KLine_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
@@ -475,6 +478,18 @@
     self.PSYMinValue = MIN(minPSY, minPSY_MA);
 }
 
+- (void)handle_DPO_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
+    CGFloat maxDPO = [[[drawKLineModelArray valueForKeyPath:@"DPO"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxDPO_MA = [[[drawKLineModelArray valueForKeyPath:@"DPO_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minDPO = [[[drawKLineModelArray valueForKeyPath:@"DPO"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minDPO_MA = [[[drawKLineModelArray valueForKeyPath:@"DPO_MA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.DPOMaxValue = MAX(maxDPO, maxDPO_MA);
+    self.DPOMinValue = MIN(minDPO, minDPO_MA);
+}
+
 #pragma mark - 处理位置
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
 - (void)getPositionWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight {
@@ -559,6 +574,10 @@
     CGFloat PSYLineUnitValue = (self.PSYMaxValue - self.PSYMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (PSYLineUnitValue == 0) PSYLineUnitValue = 0.01f;
     
+    // PSY
+    CGFloat DPOLineUnitValue = (self.DPOMaxValue - self.DPOMinValue) / (bottomNormalMaxY - bottomNormalMinY);
+    if (DPOLineUnitValue == 0) DPOLineUnitValue = 0.01f;
+
     
     // 便利
     [drawKLineModelArray enumerateObjectsUsingBlock:^(YFStock_KLineModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -700,8 +719,10 @@
         model.PSYPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.PSY.floatValue - self.PSYMinValue) / PSYLineUnitValue));
         model.PSY_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.PSY_MA.floatValue - self.PSYMinValue) / PSYLineUnitValue));
 
-        
-        
+#pragma mark - DPO
+        model.DPOPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DPO.floatValue - self.DPOMinValue) / DPOLineUnitValue));
+        model.DPO_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DPO_MA.floatValue - self.DPOMinValue) / DPOLineUnitValue));
+
         
         [tempDrawKLineModels addObject:model];
     }];

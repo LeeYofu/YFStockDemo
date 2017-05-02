@@ -19,46 +19,73 @@
 
 - (void)initData {
     
-        [self preModel];
-        
-        [self MA_5];
-        [self MA_10];
-        [self MA_20];
-        [self MA_30];
-        
-        [self MACD_DIF];
-        [self MACD_DEA];
-        [self MACD_BAR];
-        
-        [self KDJ_K];
-        [self KDJ_D];
-        [self KDJ_J];
-        
-        [self RSI_6];
-        [self RSI_12];
-        [self RSI_24];
-        
-        [self BOLL_UPPER];
-        [self BOLL_MID];
-        [self BOLL_LOWER];
-        
-        [self ARBR_AR];
-        [self ARBR_BR];
-        
-        [self OBV];
-        
-        [self WR_1];
-        [self WR_2];
-        
-        [self CCI];
-        
-        [self DDD];
-        [self AMA];
-
+//    return;
+    
+    [self preModel];
+    
+    [self MA_5];
+    [self MA_10];
+    [self MA_20];
+    [self MA_30];
+    
+    [self MACD_DIF];
+    [self MACD_DEA];
+    [self MACD_BAR];
+    
+    [self KDJ_K];
+    [self KDJ_D];
+    [self KDJ_J];
+    
+    [self RSI_6];
+    [self RSI_12];
+    [self RSI_24];
+    
+    [self BOLL_UPPER];
+    [self BOLL_MID];
+    [self BOLL_LOWER];
+    
+    [self ARBR_AR];
+    [self ARBR_BR];
+    
+    [self OBV];
+    
+    [self WR_1];
+    [self WR_2];
+    
+    [self CCI];
+    
+    [self DDD];
+    [self AMA];
+    
+    [self BIAS_1];
+    [self BIAS_2];
+    [self BIAS_3];
+    
+    [self ROC];
+    [self ROC_MA];
+    
+    [self MTM];
+    [self MTM_MA];
+    
+    [self CR];
+    [self CR_MA_1];
+    [self CR_MA_2];
+    
+    [self DMI_PDI];
+    [self DMI_MDI];
+    [self DMI_ADX];
+    [self DMI_ADXR];
+    
+    [self TRIX];
+    [self TRIX_MA];
+    
+    [self PSY];
+    [self PSY_MA];
+    
 }
 
 //+ (NSDictionary *)mj_replacedKeyFromPropertyName {
-//    
+//
 //    return @{
 //             @"MA_5" : @"MA5",
 //             @"MA_10" : @"MA10",
@@ -185,7 +212,7 @@
 - (NSNumber *)MACD_DEA {
     
     if (! _MACD_DEA) {
-
+        
         _MACD_DEA = [NSNumber numberWithFloat:(self.MACD_DIF.floatValue * 2 + self.preModel.MACD_DEA.floatValue * (kStock_MACD_MID - 1)) / (kStock_MACD_MID + 1)];
     }
     return _MACD_DEA;
@@ -505,7 +532,10 @@
         
         _TRIX = [NSNumber numberWithFloat:(todayTR - yesterdayTR) / yesterdayTR * 100];
         
-        
+        if (isinf(_TRIX.floatValue)) {
+            
+            _TRIX = @0;
+        }
     }
     return _TRIX;
 }
@@ -540,6 +570,25 @@
     return _PSY_MA;
 }
 
+#pragma mark DPO
+- (NSNumber *)DPO {
+    
+    if (! _DPO) {
+        
+        CGFloat DPO = self.closePrice.floatValue - [self getPreviousMAForDPOWithN:kStock_DPO_N];
+        _DPO = @(DPO);
+    }
+    return _DPO;
+}
+
+- (NSNumber *)DPO_MA {
+    
+    if (! _DPO_MA) {
+        
+        _DPO_MA = @([self getDPO_MAWithN:kStock_DPO_MA_N]);
+    }
+    return _DPO_MA;
+}
 
 
 
@@ -557,10 +606,10 @@
     
     tempArray = nil;
     
-//    if (self.index.integerValue <= N - 1 - 1) {
-//
-//        MA = 0;
-//    }
+    //    if (self.index.integerValue <= N - 1 - 1) {
+    //
+    //        MA = 0;
+    //    }
     
     return MA;
 }
@@ -570,8 +619,8 @@
 - (CGFloat)getEMAWithN:(NSInteger)N {
     
     CGFloat EMA = 0;
-
-//    EMA = (self.closePrice.floatValue * 2 + [self.preModel getEMAWithN:N] * (N - 1)) / (N + 1);
+    
+    //    EMA = (self.closePrice.floatValue * 2 + [self.preModel getEMAWithN:N] * (N - 1)) / (N + 1);
     
     CGFloat lastEMA = 0;
     NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:4 * N];
@@ -795,7 +844,7 @@
     CGFloat AVEDEV = 0;
     
     NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
-
+    
     CGFloat sum = 0;
     for (YFStock_KLineModel *model in tempArray) {
         
@@ -811,7 +860,7 @@
 - (CGFloat)getDDD_MAWithN:(NSInteger)N {
     
     CGFloat MA = 0;
-
+    
     NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
     
     CGFloat sumDDD = 0;
@@ -857,7 +906,7 @@
 }
 
 - (CGFloat)getROC_MAWithN:(NSInteger)N {
-
+    
     CGFloat ROC_MA = 0;
     
     CGFloat sum = 0;
@@ -1017,24 +1066,24 @@
             DMPlus = 0;
             DMMinus = 0;
         }
-
+        
         sumDMPlus += DMPlus;
         sumTR += [model getTR];
         
-//        CGFloat DMPlus = model.highPrice.floatValue - model.preModel.lowPrice.floatValue;
-//        if (DMPlus <= ABS(model.lowPrice.floatValue - model.preModel.lowPrice.floatValue)) {
-//            
-//            DMPlus = 0;
-//        }
-//        
-//        CGFloat DMMinus = model.lowPrice.floatValue - model.preModel.lowPrice.floatValue;
-//        if (DMMinus <= ABS(model.highPrice.floatValue - model.preModel.lowPrice.floatValue)) {
-//            
-//            DMMinus = 0;
-//        }
-//        
-//        sumDMPlus += DMPlus;
-//        sumTR += [model getTR];
+        //        CGFloat DMPlus = model.highPrice.floatValue - model.preModel.lowPrice.floatValue;
+        //        if (DMPlus <= ABS(model.lowPrice.floatValue - model.preModel.lowPrice.floatValue)) {
+        //
+        //            DMPlus = 0;
+        //        }
+        //
+        //        CGFloat DMMinus = model.lowPrice.floatValue - model.preModel.lowPrice.floatValue;
+        //        if (DMMinus <= ABS(model.highPrice.floatValue - model.preModel.lowPrice.floatValue)) {
+        //
+        //            DMMinus = 0;
+        //        }
+        //
+        //        sumDMPlus += DMPlus;
+        //        sumTR += [model getTR];
     }
     
     DIPlus = sumDMPlus / sumTR * 100;
@@ -1138,11 +1187,11 @@
     
     CGFloat AX = 0;
     CGFloat BX = 0;
-    CGFloat TRIX = 0;
+    CGFloat TR = 0;
     
     CGFloat lastAX = 0;
     CGFloat lastBX = 0;
-    CGFloat lastTRIX = 0;
+    CGFloat lastTR = 0;
     NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:4 * N];
     
     for (int i = 0; i < tempArray.count; i ++) {
@@ -1151,14 +1200,14 @@
         
         AX = (currentModel.closePrice.floatValue * 2 + lastAX * (N - 1)) / (N + 1);
         BX = (AX * 2 + lastBX * (N - 1)) / (N + 1);
-        TRIX = (BX * 2 + lastTRIX * (N - 1)) / (N + 1);
+        TR = (BX * 2 + lastTR * (N - 1)) / (N + 1);
         
         lastAX = AX;
         lastBX = BX;
-        lastTRIX = TRIX;
+        lastTR = TR;
     }
     
-    return TRIX;
+    return TR;
 }
 
 - (CGFloat)getTRIX_MAWithN:(NSInteger)N {
@@ -1213,6 +1262,47 @@
     PSY_MA = sum / (N * 1.0);
     
     return PSY_MA;
+}
+
+#pragma mark DPO
+- (CGFloat)getPreviousMAForDPOWithN:(NSInteger)N {
+    
+    CGFloat MA = 0;
+    
+    NSInteger index = self.preAllModelArray.count - 1 - ((N / 2 + 1) - 1);
+    if (index < 0) {
+        
+        index = 0;
+    }
+    
+    if (self.preAllModelArray.count) {
+        
+        YFStock_KLineModel *model = self.preAllModelArray[index];
+        
+        MA = [model getMAWithN:N];
+    } else {
+        
+        MA = 99999.0;
+    }
+    
+    return MA;
+}
+
+- (CGFloat)getDPO_MAWithN:(NSInteger)N {
+    
+    CGFloat DPO_MA = 0;
+    
+    CGFloat sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += model.DPO.floatValue;
+    }
+    
+    DPO_MA = sum / (N * 1.0);
+    
+    return DPO_MA;
 }
 
 #pragma mark Other

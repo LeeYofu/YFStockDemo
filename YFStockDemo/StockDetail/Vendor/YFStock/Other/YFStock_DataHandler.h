@@ -89,6 +89,10 @@
 @property (nonatomic, assign) CGFloat PSYMaxValue;
 @property (nonatomic, assign) CGFloat PSYMinValue;
 
+// DPO
+@property (nonatomic, assign) CGFloat DPOMaxValue;
+@property (nonatomic, assign) CGFloat DPOMinValue;
+
 
 
 #pragma mark - method
