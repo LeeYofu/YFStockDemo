@@ -96,6 +96,10 @@
 @property (nonatomic, strong) NSNumber *DMI_ADX;
 @property (nonatomic, strong) NSNumber *DMI_ADXR;
 
+// TRIX(12, 9)
+@property (nonatomic, strong) NSNumber *TRIX;
+@property (nonatomic, strong) NSNumber *TRIX_MA;
+
 
 // =============================================================
 @property (nonatomic, assign) BOOL isIncrease;
@@ -165,6 +169,8 @@
 @property (nonatomic, assign) CGPoint DMI_ADXPositionPoint;
 @property (nonatomic, assign) CGPoint DMI_ADXRPositionPoint;
 
+@property (nonatomic, assign) CGPoint TRIXPositionPoint;
+@property (nonatomic, assign) CGPoint TRIX_MAPositionPoint;
 
 // 必须调用，减少卡顿！！！！
 - (void)initData;

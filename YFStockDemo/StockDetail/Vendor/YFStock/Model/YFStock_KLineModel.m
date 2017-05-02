@@ -495,6 +495,28 @@
     return _DMI_ADXR;
 }
 
+#pragma mark TRIX
+- (NSNumber *)TRIX {
+    
+    if (! _TRIX) {
+        
+        CGFloat todayTR = [self getTRWithN:kStock_TRIX_N];
+        CGFloat yesterdayTR = [self.preModel getTRWithN:kStock_TRIX_N];
+        
+        _TRIX = [NSNumber numberWithFloat:(todayTR - yesterdayTR) / yesterdayTR * 100];
+    }
+    return _TRIX;
+}
+
+- (NSNumber *)TRIX_MA {
+    
+    if (! _TRIX_MA) {
+        
+        CGFloat TRIX_MA = [self getTRIX_MAWithN:kStock_TRIX_MA_N];
+        _TRIX_MA = [NSNumber numberWithFloat:TRIX_MA];
+    }
+    return _TRIX_MA;
+}
 
 
 #pragma mark - 计算相关
@@ -1073,6 +1095,51 @@
     }
     
     return ADX;
+}
+
+#pragma mark TRIX 
+- (CGFloat)getAXWithN:(NSInteger)N {
+
+    CGFloat AX = 0;
+    
+    AX = (self.closePrice.floatValue * 2 + [self.preModel getAXWithN:N] * (N - 1)) / (N + 1);
+    
+    return AX;
+}
+
+- (CGFloat)getBXWithN:(NSInteger)N {
+    
+    CGFloat BX = 0;
+    
+    BX = ([self getAXWithN:N] * 2 + [self.preModel getBXWithN:N] * (N - 1)) / (N + 1);
+    
+    return BX;
+}
+
+- (CGFloat)getTRWithN:(NSInteger)N {
+    
+    CGFloat TRIX = 0;
+    
+    TRIX = ([self getBXWithN:N] * 2 + [self.preModel getTRWithN:N] * (N - 1)) / (N + 1);
+    
+    return TRIX;
+}
+
+- (CGFloat)getTRIX_MAWithN:(NSInteger)N {
+    
+    CGFloat TRIX_MA = 0;
+    
+    CGFloat sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += model.TRIX.floatValue;
+    }
+    
+    TRIX_MA = sum / (N * 1.0);
+    
+    return TRIX_MA;
 }
 
 #pragma mark Other

@@ -130,6 +130,9 @@
 #define kStock_CR_MA_1_N 10
 #define kStock_CR_MA_2_N 20
 
+#define kStock_TRIX_N 12
+#define kStock_TRIX_MA_N 9
+
 
 #pragma mark - 枚举 **********  **********
 

@@ -210,6 +210,9 @@
     // DMI
     [self handle_DMI_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
     
+    // TRIX
+    [self handle_TRIX_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
 }
 
 - (void)handle_KLine_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
@@ -445,6 +448,18 @@
 
 }
 
+- (void)handle_TRIX_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
+    CGFloat maxTRIX = [[[drawKLineModelArray valueForKeyPath:@"TRIX"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxTRIX_MA = [[[drawKLineModelArray valueForKeyPath:@"TRIX_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minTRIX = [[[drawKLineModelArray valueForKeyPath:@"TRIX"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minTRIX_MA = [[[drawKLineModelArray valueForKeyPath:@"TRIX_MA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.TRIXMaxValue = MAX(maxTRIX, maxTRIX_MA);
+    self.TRIXMinValue = MIN(minTRIX, minTRIX_MA);
+}
+
 #pragma mark - 处理位置
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
 - (void)getPositionWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight {
@@ -521,6 +536,9 @@
     CGFloat DMILineUnitValue = (self.DMIMaxValue - self.DMIMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (DMILineUnitValue == 0) DMILineUnitValue = 0.01f;
     
+    // TRIX
+    CGFloat TRIXLineUnitValue = (self.TRIXMaxValue - self.TRIXMinValue) / (bottomNormalMaxY - bottomNormalMinY);
+    if (TRIXLineUnitValue == 0) TRIXLineUnitValue = 0.01f;
     
     
     // 便利
@@ -655,7 +673,14 @@
         model.DMI_ADXPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_ADX.floatValue - self.DMIMinValue) / DMILineUnitValue));
         model.DMI_ADXRPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_ADXR.floatValue - self.DMIMinValue) / DMILineUnitValue));
 
+#pragma mark - TRIX
+        model.TRIXPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.TRIX.floatValue - self.TRIXMinValue) / TRIXLineUnitValue));
+        model.TRIX_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.TRIX_MA.floatValue - self.TRIXMinValue) / TRIXLineUnitValue));
 
+        
+        
+        
+        
         
         [tempDrawKLineModels addObject:model];
     }];

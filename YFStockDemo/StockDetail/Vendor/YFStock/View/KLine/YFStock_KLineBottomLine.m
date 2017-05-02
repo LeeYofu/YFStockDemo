@@ -116,6 +116,12 @@
         }
             break;
             
+        case YFStockBottomBarIndex_TRXI:
+        {
+            [self drawTRIX];
+        }
+            break;
+            
         default:
             break;
     }
@@ -308,6 +314,12 @@
     [self drawWithPositionPointKey:@"DMI_ADXPositionPoint" N:12 strokeColor:kStockMA20LineColor];
     [self drawWithPositionPointKey:@"DMI_ADXRPositionPoint" N:12 strokeColor:kStockMA30LineColor];
 
+}
+
+- (void)drawTRIX {
+    
+    [self drawWithPositionPointKey:@"TRIXPositionPoint" N:kStock_TRIX_N strokeColor:kStockMA30LineColor];
+    [self drawWithPositionPointKey:@"TRIX_MAPositionPoint" N:kStock_TRIX_MA_N strokeColor:kStockMA10LineColor];
 }
 
 #pragma mark - other

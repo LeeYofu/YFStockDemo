@@ -81,6 +81,10 @@
 @property (nonatomic, assign) CGFloat DMIMaxValue;
 @property (nonatomic, assign) CGFloat DMIMinValue;
 
+// TRIX
+@property (nonatomic, assign) CGFloat TRIXMaxValue;
+@property (nonatomic, assign) CGFloat TRIXMinValue;
+
 
 
 #pragma mark - method
