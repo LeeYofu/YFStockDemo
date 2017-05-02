@@ -590,6 +590,25 @@
     return _DPO_MA;
 }
 
+#pragma mark ASI
+- (NSNumber *)ASI {
+    
+    if (! _ASI) {
+        
+        _ASI = @([self getSIWithN:kStock_ASI_N] + self.preModel.ASI.floatValue);
+    }
+    return _ASI;
+}
+
+- (NSNumber *)ASI_MA {
+    
+    if (! _ASI_MA) {
+        
+        _ASI_MA = @([self getASI_MAWithN:kStock_ASI_MA_N]);
+    }
+    return _ASI_MA;
+}
+
 
 
 #pragma mark - 计算相关
@@ -901,7 +920,6 @@
         closePrice = 99999.0;
     }
     
-    
     return closePrice;
 }
 
@@ -953,7 +971,10 @@
      4、M=（H+L）÷2
      */
     
-    middlePrice = (self.highPrice.floatValue + self.lowPrice.floatValue) * 0.5;
+    middlePrice = (2 * self.closePrice.floatValue + self.highPrice.floatValue + self.lowPrice.floatValue) / 4.0;
+//    middlePrice = (self.closePrice.floatValue + self.highPrice.floatValue + self.lowPrice.floatValue + self.openPrice.floatValue) / 4.0;
+//    middlePrice = (self.closePrice.floatValue + self.highPrice.floatValue + self.lowPrice.floatValue) / 3.0;
+//    middlePrice = (self.highPrice.floatValue + self.lowPrice.floatValue) / 2.0;
     
     return middlePrice;
 }
@@ -1303,6 +1324,62 @@
     DPO_MA = sum / (N * 1.0);
     
     return DPO_MA;
+}
+
+#pragma mark ASI
+- (CGFloat)getSIWithN:(NSInteger)N {
+    
+    
+    CGFloat R = 0;
+    
+    CGFloat A = ABS(self.highPrice.floatValue - self.preModel.closePrice.floatValue);
+    CGFloat B = ABS(self.lowPrice.floatValue - self.preModel.closePrice.floatValue);
+    CGFloat C = ABS(self.highPrice.floatValue - self.preModel.lowPrice.floatValue);
+    CGFloat D = ABS(self.preModel.closePrice.floatValue - self.preModel.openPrice.floatValue);
+    
+    CGFloat maxABC = MAX(A, MAX(B, C));
+    
+    if (maxABC == A) {
+        
+        R = A + 0.5 * B + 0.25 *D;
+    } else if (maxABC == B) {
+        
+        R = B + 0.5 * A + 0.25 * D;
+    } else {
+        
+        R = C + 0.25 * D;
+    }
+    
+    CGFloat E = self.closePrice.floatValue - self.preModel.closePrice.floatValue;
+    CGFloat F = self.closePrice.floatValue - self.openPrice.floatValue;
+    CGFloat G = self.preModel.closePrice.floatValue - self.preModel.openPrice.floatValue;
+    
+    CGFloat X = E + 0.5 * F + G;
+    
+    CGFloat K = MAX(A, B);
+    
+    CGFloat L = 3.0f;
+    
+    CGFloat SI = 50 * X / R * K / L;
+    
+    return SI;
+}
+
+- (CGFloat)getASI_MAWithN:(NSInteger)N {
+    
+    CGFloat ASI_MA = 0;
+    
+    CGFloat sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += model.ASI.floatValue;
+    }
+    
+    ASI_MA = sum / (N * 1.0);
+    
+    return ASI_MA;
 }
 
 #pragma mark Other

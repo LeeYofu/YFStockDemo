@@ -93,6 +93,10 @@
 @property (nonatomic, assign) CGFloat DPOMaxValue;
 @property (nonatomic, assign) CGFloat DPOMinValue;
 
+// ASI
+@property (nonatomic, assign) CGFloat ASIMaxValue;
+@property (nonatomic, assign) CGFloat ASIMinValue;
+
 
 
 #pragma mark - method

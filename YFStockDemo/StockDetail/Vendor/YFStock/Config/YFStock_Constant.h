@@ -139,6 +139,9 @@
 #define kStock_DPO_N 20
 #define kStock_DPO_MA_N 6
 
+#define kStock_ASI_N 6
+#define kStock_ASI_MA_N 6
+
 
 #pragma mark - 枚举 **********  **********
 

@@ -108,6 +108,10 @@
 @property (nonatomic, strong) NSNumber *DPO;
 @property (nonatomic, strong) NSNumber *DPO_MA;
 
+// ASI(6),可配置参数（周期）
+@property (nonatomic, strong) NSNumber *ASI;
+@property (nonatomic, strong) NSNumber *ASI_MA;
+
 
 // =============================================================
 @property (nonatomic, assign) BOOL isIncrease;
@@ -185,6 +189,11 @@
 
 @property (nonatomic, assign) CGPoint DPOPositionPoint;
 @property (nonatomic, assign) CGPoint DPO_MAPositionPoint;
+
+@property (nonatomic, assign) CGPoint ASIPositionPoint;
+@property (nonatomic, assign) CGPoint ASI_MAPositionPoint;
+
+
 
 // 必须调用，减少卡顿！！！！
 - (void)initData;
