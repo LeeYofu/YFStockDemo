@@ -213,6 +213,9 @@
     // TRIX
     [self handle_TRIX_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
     
+    // PSY
+    [self handle_PSY_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+    
 }
 
 - (void)handle_KLine_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
@@ -460,6 +463,18 @@
     self.TRIXMinValue = MIN(minTRIX, minTRIX_MA);
 }
 
+- (void)handle_PSY_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
+    CGFloat maxPSY = [[[drawKLineModelArray valueForKeyPath:@"PSY"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxPSY_MA = [[[drawKLineModelArray valueForKeyPath:@"PSY_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minPSY = [[[drawKLineModelArray valueForKeyPath:@"PSY"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minPSY_MA = [[[drawKLineModelArray valueForKeyPath:@"PSY_MA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.PSYMaxValue = MAX(maxPSY, maxPSY_MA);
+    self.PSYMinValue = MIN(minPSY, minPSY_MA);
+}
+
 #pragma mark - 处理位置
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
 - (void)getPositionWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight {
@@ -539,6 +554,10 @@
     // TRIX
     CGFloat TRIXLineUnitValue = (self.TRIXMaxValue - self.TRIXMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (TRIXLineUnitValue == 0) TRIXLineUnitValue = 0.01f;
+    
+    // PSY
+    CGFloat PSYLineUnitValue = (self.PSYMaxValue - self.PSYMinValue) / (bottomNormalMaxY - bottomNormalMinY);
+    if (PSYLineUnitValue == 0) PSYLineUnitValue = 0.01f;
     
     
     // 便利
@@ -677,8 +696,10 @@
         model.TRIXPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.TRIX.floatValue - self.TRIXMinValue) / TRIXLineUnitValue));
         model.TRIX_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.TRIX_MA.floatValue - self.TRIXMinValue) / TRIXLineUnitValue));
 
-        
-        
+#pragma mark - PSY
+        model.PSYPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.PSY.floatValue - self.PSYMinValue) / PSYLineUnitValue));
+        model.PSY_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.PSY_MA.floatValue - self.PSYMinValue) / PSYLineUnitValue));
+
         
         
         

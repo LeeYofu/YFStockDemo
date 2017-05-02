@@ -100,11 +100,12 @@
     
     [YFNetworkRequest getWithSubUrl:kDayKlineUrl parameters:nil sucess:^(NSURLSessionDataTask *task, id responseObject) {
         
+        NSLog(@"success");
+
         NSArray *resultBeanArray = responseObject[@"resultBean"];
         self.dayDatas = (NSMutableArray *)resultBeanArray;
         
         [self.stock draw];
-        NSLog(@"success");
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
         NSLog(@"error = %@", error);

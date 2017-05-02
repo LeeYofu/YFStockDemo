@@ -133,6 +133,9 @@
 #define kStock_TRIX_N 12
 #define kStock_TRIX_MA_N 9
 
+#define kStock_PSY_N 12
+#define kStock_PSY_MA_N 6
+
 
 #pragma mark - 枚举 **********  **********
 

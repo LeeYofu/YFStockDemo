@@ -504,6 +504,8 @@
         CGFloat yesterdayTR = [self.preModel getTRWithN:kStock_TRIX_N];
         
         _TRIX = [NSNumber numberWithFloat:(todayTR - yesterdayTR) / yesterdayTR * 100];
+        
+        
     }
     return _TRIX;
 }
@@ -517,6 +519,28 @@
     }
     return _TRIX_MA;
 }
+
+#pragma mark PSY
+- (NSNumber *)PSY {
+    
+    if (! _PSY) {
+        
+        NSInteger increaseDays = [self getNumberOfIncreaseDaysWithN:kStock_PSY_N];
+        _PSY = [NSNumber numberWithFloat:(increaseDays * 1.0 / (kStock_PSY_N * 1.0) * 100.0)];
+    }
+    return _PSY;
+}
+
+- (NSNumber *)PSY_MA {
+    
+    if (! _PSY_MA) {
+        
+        _PSY_MA = [NSNumber numberWithFloat:[self getPSY_MAWithN:kStock_PSY_MA_N]];
+    }
+    return _PSY_MA;
+}
+
+
 
 
 #pragma mark - 计算相关
@@ -547,7 +571,19 @@
     
     CGFloat EMA = 0;
 
-    EMA = (self.closePrice.floatValue * 2 + [self.preModel getEMAWithN:N] * (N - 1)) / (N + 1);
+//    EMA = (self.closePrice.floatValue * 2 + [self.preModel getEMAWithN:N] * (N - 1)) / (N + 1);
+    
+    CGFloat lastEMA = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:4 * N];
+    
+    for (int i = 0; i < tempArray.count; i ++) {
+        
+        YFStock_KLineModel *currentModel = tempArray[i];
+        
+        EMA = (currentModel.closePrice.floatValue * 2 + lastEMA * (N - 1)) / (N + 1);
+        
+        lastEMA = EMA;
+    }
     
     return EMA;
 }
@@ -1097,30 +1133,30 @@
     return ADX;
 }
 
-#pragma mark TRIX 
-- (CGFloat)getAXWithN:(NSInteger)N {
-
-    CGFloat AX = 0;
-    
-    AX = (self.closePrice.floatValue * 2 + [self.preModel getAXWithN:N] * (N - 1)) / (N + 1);
-    
-    return AX;
-}
-
-- (CGFloat)getBXWithN:(NSInteger)N {
-    
-    CGFloat BX = 0;
-    
-    BX = ([self getAXWithN:N] * 2 + [self.preModel getBXWithN:N] * (N - 1)) / (N + 1);
-    
-    return BX;
-}
-
+#pragma mark TRIX
 - (CGFloat)getTRWithN:(NSInteger)N {
     
+    CGFloat AX = 0;
+    CGFloat BX = 0;
     CGFloat TRIX = 0;
     
-    TRIX = ([self getBXWithN:N] * 2 + [self.preModel getTRWithN:N] * (N - 1)) / (N + 1);
+    CGFloat lastAX = 0;
+    CGFloat lastBX = 0;
+    CGFloat lastTRIX = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:4 * N];
+    
+    for (int i = 0; i < tempArray.count; i ++) {
+        
+        YFStock_KLineModel *currentModel = tempArray[i];
+        
+        AX = (currentModel.closePrice.floatValue * 2 + lastAX * (N - 1)) / (N + 1);
+        BX = (AX * 2 + lastBX * (N - 1)) / (N + 1);
+        TRIX = (BX * 2 + lastTRIX * (N - 1)) / (N + 1);
+        
+        lastAX = AX;
+        lastBX = BX;
+        lastTRIX = TRIX;
+    }
     
     return TRIX;
 }
@@ -1140,6 +1176,43 @@
     TRIX_MA = sum / (N * 1.0);
     
     return TRIX_MA;
+}
+
+#pragma mark PSY
+- (NSInteger)getNumberOfIncreaseDaysWithN:(NSInteger)N {
+    
+    NSInteger days = 0;
+    
+    NSInteger sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        if (model.isIncrease) {
+            
+            sum += 1;
+        }
+    }
+    
+    days = sum;
+    
+    return days;
+}
+
+- (CGFloat)getPSY_MAWithN:(NSInteger)N {
+    
+    CGFloat PSY_MA = 0;
+    
+    CGFloat sum = 0;
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sum += model.PSY.floatValue;
+    }
+    
+    PSY_MA = sum / (N * 1.0);
+    
+    return PSY_MA;
 }
 
 #pragma mark Other

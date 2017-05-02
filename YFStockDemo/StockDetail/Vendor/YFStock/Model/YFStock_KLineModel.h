@@ -96,9 +96,13 @@
 @property (nonatomic, strong) NSNumber *DMI_ADX;
 @property (nonatomic, strong) NSNumber *DMI_ADXR;
 
-// TRIX(12, 9)
+// TRIX(12, 9)，可配置参数(周期)
 @property (nonatomic, strong) NSNumber *TRIX;
 @property (nonatomic, strong) NSNumber *TRIX_MA;
+
+// PSY(12, 6),可配置参数（周期）
+@property (nonatomic, strong) NSNumber *PSY;
+@property (nonatomic, strong) NSNumber *PSY_MA;
 
 
 // =============================================================
@@ -171,6 +175,9 @@
 
 @property (nonatomic, assign) CGPoint TRIXPositionPoint;
 @property (nonatomic, assign) CGPoint TRIX_MAPositionPoint;
+
+@property (nonatomic, assign) CGPoint PSYPositionPoint;
+@property (nonatomic, assign) CGPoint PSY_MAPositionPoint;
 
 // 必须调用，减少卡顿！！！！
 - (void)initData;
