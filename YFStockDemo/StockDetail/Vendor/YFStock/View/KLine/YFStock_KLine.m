@@ -391,7 +391,7 @@
         }];
     }
     
-    NSLog(@"%@ %@", selectedKLineModel.DDD, selectedKLineModel.AMA);
+//    NSLog(@"%@ %@", selectedKLineModel.DDD, selectedKLineModel.AMA);
     
     // 结束、取消等状态
     if(longPress.state == UIGestureRecognizerStateEnded || longPress.state == UIGestureRecognizerStateCancelled || longPress.state == UIGestureRecognizerStateFailed) {
