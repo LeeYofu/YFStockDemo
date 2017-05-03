@@ -59,7 +59,7 @@
 @property (nonatomic, strong) NSNumber *ARBR_AR;
 @property (nonatomic, strong) NSNumber *ARBR_BR;
 
-// OBV，不可配置参数
+// OBV(12)，不可配置参数
 @property (nonatomic, strong) NSNumber *OBV;
 
 // WR(10, 6)，可配置参数-（计算周期，计算周期）

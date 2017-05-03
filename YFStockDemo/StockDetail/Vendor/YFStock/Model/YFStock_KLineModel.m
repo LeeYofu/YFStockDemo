@@ -171,6 +171,7 @@
     if (! _MA_20) {
         
         _MA_20 = [NSNumber numberWithFloat:[self getMAWithN:kStock_MA_20_N]];
+        
     }
     return _MA_20;
 }
@@ -315,6 +316,17 @@
     if (! _ARBR_AR) {
         
         _ARBR_AR = @([self getARWithN:kStock_ARBR_N]);
+        
+        if (self.index.integerValue < kStock_ARBR_N) {
+            
+            if (self.allModelArray.count > kStock_ARBR_N) {
+                
+                _ARBR_AR = [self.allModelArray[kStock_ARBR_N] ARBR_AR];
+            } else {
+                
+                _ARBR_AR = @0;
+            }
+        }
     }
     return _ARBR_AR;
 }
@@ -324,6 +336,17 @@
     if (! _ARBR_BR) {
         
         _ARBR_BR = @([self getBRWithN:kStock_ARBR_N]);
+        
+        if (self.index.integerValue < kStock_ARBR_N) {
+            
+            if (self.allModelArray.count > kStock_ARBR_N) {
+                
+                _ARBR_BR = [self.allModelArray[kStock_ARBR_N] ARBR_BR];
+            } else {
+                
+                _ARBR_BR = @0;
+            }
+        }
     }
     return _ARBR_BR;
 }
@@ -333,10 +356,40 @@
     
     if (! _OBV) {
         
-        CGFloat VA = ((self.closePrice.floatValue - self.lowPrice.floatValue) - (self.highPrice.floatValue - self.closePrice.floatValue)) / (self.highPrice.floatValue - self.lowPrice.floatValue) * self.volume.floatValue;
-        _OBV = [NSNumber numberWithFloat:VA];
+//        CGFloat VA = ((self.closePrice.floatValue - self.lowPrice.floatValue) - (self.highPrice.floatValue - self.closePrice.floatValue)) / (self.highPrice.floatValue - self.lowPrice.floatValue) * self.volume.floatValue;
+//        _OBV = [NSNumber numberWithFloat:VA];
+        _OBV = @([self.preModel getOBVWithN:12]);
     }
     return _OBV;
+}
+
+- (CGFloat)getOBVWithN:(NSInteger)N {
+    
+    CGFloat OBV = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    NSInteger lastOBV = 0;
+    for (int i = 0; i < tempArray.count; i ++) {
+        
+        YFStock_KLineModel *model = tempArray[i];
+        if (i == 0) {
+            
+            OBV = model.volume.integerValue;
+        } else {
+            
+            if (model.closePrice.floatValue >= model.preModel.closePrice.floatValue) {
+                
+                OBV = lastOBV + model.volume.integerValue;
+            } else {
+                
+                OBV = lastOBV - model.volume.integerValue;
+            }
+        }
+        
+        lastOBV = OBV;
+    }
+    
+    return OBV;
 }
 
 #pragma mark WR
@@ -393,7 +446,8 @@
         
         if (self.index.integerValue < kStock_CCI_N) {
             
-            CCI = [[self.allModelArray[kStock_CCI_N] CCI] floatValue];
+//            CCI = [[self.allModelArray[kStock_CCI_N] CCI] floatValue];
+            CCI = 0;
         }
         
         _CCI = [NSNumber numberWithFloat:CCI];
@@ -496,7 +550,8 @@
         
         if (self.index.integerValue < kStock_CR_N) {
             
-            CR = [[self.allModelArray[kStock_CR_N] CR] floatValue];
+//            CR = [[self.allModelArray[kStock_CR_N] CR] floatValue];
+            CR = 0;
         }
         
         _CR = [NSNumber numberWithFloat:CR];
@@ -577,7 +632,8 @@
         
         if (self.index.integerValue < kStock_TRIX_N) {
             
-            _TRIX = [self.allModelArray[kStock_TRIX_N] TRIX];
+//            _TRIX = [self.allModelArray[kStock_TRIX_N] TRIX];
+            _TRIX = @0;
         }
     }
     return _TRIX;
@@ -623,7 +679,8 @@
         
         if (self.index.integerValue < kStock_DPO_N) {
             
-            _DPO = [self.allModelArray[kStock_DPO_N] DPO];
+//            _DPO = [self.allModelArray[kStock_DPO_N] DPO];
+            _DPO = @0;
         }
     }
     return _DPO;
@@ -647,7 +704,8 @@
         
         if (self.index.integerValue < kStock_ASI_N) {
             
-            _ASI = [self.allModelArray[kStock_ASI_N] ASI];
+//            _ASI = [self.allModelArray[kStock_ASI_N] ASI];
+            _ASI = @0;
         }
     }
     return _ASI;
@@ -675,7 +733,7 @@
     
     MA = [[[tempArray valueForKeyPath:@"closePrice"] valueForKeyPath:@"@avg.floatValue"] floatValue];
     
-//    if (self.index.integerValue <= N - 1 - 1) {
+//    if (self.index.integerValue < N - 1) {
 //
 //        MA = 0;
 //    }
@@ -688,15 +746,21 @@
     
     CGFloat EMA = 0;
     
-    //    EMA = (self.closePrice.floatValue * 2 + [self.preModel getEMAWithN:N] * (N - 1)) / (N + 1);
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:kStock_EMA_PreviousDayScale * N];
     
-    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:4 * N];
-    CGFloat lastEMA = [[tempArray[0] closePrice] floatValue];
+    CGFloat lastEMA = 0;
 
     for (int i = 0; i < tempArray.count; i ++) {
         
         YFStock_KLineModel *currentModel = tempArray[i];
-        EMA = (currentModel.closePrice.floatValue * 2 + lastEMA * (N - 1)) / (N + 1);
+        if (i == 0) { // 这里有个人为规定，规定把首日收盘价当成是首日EMA
+            
+            EMA = currentModel.closePrice.floatValue;
+        } else {
+            
+            EMA = (currentModel.closePrice.floatValue * 2 + lastEMA * (N - 1)) / (N + 1);
+        }
+        
         lastEMA = EMA;
     }
     
@@ -852,11 +916,6 @@
     
     AR = (sum_HMinusO / sum_OMinusL) * 100;
     
-    if (self.index.integerValue < N) {
-        
-        AR = 100;
-    }
-    
     return AR;
 }
 
@@ -878,11 +937,6 @@
     }
     
     BR = (sum_HMinusPC / sum_PCMinusL) * 100;
-    
-    if (self.index.integerValue < N) {
-        
-        BR = 100;
-    }
     
     return BR;
 }
@@ -950,11 +1004,6 @@
     }
     
     MA = sumDDD / (N * 1.0);
-    
-//    if (self.index.integerValue <= N - 1 - 1) {
-//
-//        MA = self.DDD.floatValue;
-//    }
     
     return MA;
 }
@@ -1122,18 +1171,44 @@
     return TR;
 }
 
-- (CGFloat)getDIPlusWithN:(NSInteger)N {
+- (CGFloat)getDMPlus_MAWithN:(NSInteger)N {
     
-    CGFloat DIPlus = 0;
+    CGFloat MA = 0;
     
     NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
-    CGFloat sumDMPlus = 0;
-    CGFloat sumTR = 0;
     for (YFStock_KLineModel *model in tempArray) {
         
         CGFloat DMPlus = [model getDMPlus];
         CGFloat DMMinus = [model getDMMinus];
+        if (DMPlus > DMMinus) {
+            
+            DMMinus = 0;
+        } else if (DMPlus < DMMinus) {
+            
+            DMPlus = 0;
+        } else {
+            
+            DMPlus = 0;
+            DMMinus = 0;
+        }
+
+        MA += DMPlus;
+    }
+    
+    MA /= (tempArray.count * 1.0);
+    
+    return MA;
+}
+
+- (CGFloat)getDMMinus_MAWithN:(NSInteger)N {
+    
+    CGFloat MA = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    for (YFStock_KLineModel *model in tempArray) {
         
+        CGFloat DMPlus = [model getDMPlus];
+        CGFloat DMMinus = [model getDMMinus];
         if (DMPlus > DMMinus) {
             
             DMMinus = 0;
@@ -1146,26 +1221,104 @@
             DMMinus = 0;
         }
         
-        sumDMPlus += DMPlus;
-        sumTR += [model getTR];
-        
-        //        CGFloat DMPlus = model.highPrice.floatValue - model.preModel.lowPrice.floatValue;
-        //        if (DMPlus <= ABS(model.lowPrice.floatValue - model.preModel.lowPrice.floatValue)) {
-        //
-        //            DMPlus = 0;
-        //        }
-        //
-        //        CGFloat DMMinus = model.lowPrice.floatValue - model.preModel.lowPrice.floatValue;
-        //        if (DMMinus <= ABS(model.highPrice.floatValue - model.preModel.lowPrice.floatValue)) {
-        //
-        //            DMMinus = 0;
-        //        }
-        //
-        //        sumDMPlus += DMPlus;
-        //        sumTR += [model getTR];
+        MA += DMMinus;
     }
     
-    DIPlus = sumDMPlus / sumTR * 100;
+    MA /= (tempArray.count * 1.0);
+    
+    return MA;
+}
+
+- (CGFloat)getTR_MAWithN:(NSInteger)N {
+    
+    CGFloat MA = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        MA += [model getTR];
+    }
+    
+    MA /= (tempArray.count * 1.0);
+    
+    return MA;
+}
+
+- (CGFloat)getDIPlusWithN:(NSInteger)N {
+    
+    CGFloat DIPlus = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    CGFloat sumDMPlus = 0;
+    CGFloat sumTR = 0;
+//    for (YFStock_KLineModel *model in tempArray) {
+//        
+//        CGFloat DMPlus = [model getDMPlus];
+//        CGFloat DMMinus = [model getDMMinus];
+//        
+//        if (DMPlus > DMMinus) {
+//            
+//            DMMinus = 0;
+//        } else if (DMPlus < DMMinus) {
+//            
+//            DMPlus = 0;
+//        } else {
+//            
+//            DMPlus = 0;
+//            DMMinus = 0;
+//        }
+////
+////        sumDMPlus += DMPlus;
+////        sumTR += [model getTR];
+//        
+//        CGFloat DMPlus_MA = [model getDMPlus_MAWithN:N];
+//        CGFloat DMMinus_MA = [model getDMMinus_MAWithN:N];
+//        CGFloat DMTR_MA = [model getTR_MAWithN:N];
+//
+//        sumDMPlus += DMPlus_MA;
+//        sumTR += DMTR_MA;
+//    }
+    
+    CGFloat DMPlus_EMA = 0;
+    CGFloat lastDMPlus_EMA = 0;
+    CGFloat TR_EMA = 0;
+    CGFloat lastTR_EMA = 0;
+    
+    for (int i = 0; i < tempArray.count; i ++) {
+        
+        YFStock_KLineModel *currentModel = tempArray[i];
+        
+        CGFloat DMPlus = [currentModel getDMPlus];
+        CGFloat DMMinus = [currentModel getDMMinus];
+
+        if (DMPlus > DMMinus) {
+
+            DMMinus = 0;
+        } else if (DMPlus < DMMinus) {
+
+            DMPlus = 0;
+        } else {
+
+            DMPlus = 0;
+            DMMinus = 0;
+        }
+
+        if (i == 0) { // 这里有个人为规定，规定把首日收盘价当成是首日EMA
+            
+            DMPlus_EMA = DMPlus;
+            TR_EMA = [currentModel getTR];
+        } else {
+            
+            DMPlus_EMA = (DMPlus * 2 + lastDMPlus_EMA * (N - 1)) / (N + 1);
+            TR_EMA = ([currentModel getTR] * 2 + lastTR_EMA * (N - 1)) / (N + 1);
+        }
+        
+        lastDMPlus_EMA = DMPlus_EMA;
+        lastTR_EMA = TR_EMA;
+    }
+    
+//    DIPlus = sumDMPlus / sumTR * 100;
+    DIPlus = DMPlus_EMA / TR_EMA * 100;
     
     if (DIPlus < 0) {
         
@@ -1176,6 +1329,7 @@
         DIPlus = 100;
     }
     
+    NSLog(@"%f", DIPlus);
     return DIPlus;
 }
 
@@ -1186,28 +1340,36 @@
     NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
     CGFloat sumDMMinus = 0;
     CGFloat sumTR = 0;
-    for (YFStock_KLineModel *model in tempArray) {
-        
-        CGFloat DMPlus = [model getDMPlus];
-        CGFloat DMMinus = [model getDMMinus];
-        
-        if (DMPlus > DMMinus) {
-            
-            DMMinus = 0;
-        } else if (DMPlus < DMMinus) {
-            
-            DMPlus = 0;
-        } else {
-            
-            DMPlus = 0;
-            DMMinus = 0;
-        }
-        
-        sumDMMinus += DMMinus;
-        sumTR += [model getTR];
-    }
+//    for (YFStock_KLineModel *model in tempArray) {
+//        
+////        CGFloat DMPlus = [model getDMPlus];
+////        CGFloat DMMinus = [model getDMMinus];
+////        
+////        if (DMPlus > DMMinus) {
+////            
+////            DMMinus = 0;
+////        } else if (DMPlus < DMMinus) {
+////            
+////            DMPlus = 0;
+////        } else {
+////            
+////            DMPlus = 0;
+////            DMMinus = 0;
+////        }
+////        
+////        sumDMMinus += DMMinus;
+////        sumTR += [model getTR];
+//        
+//        CGFloat DMPlus_MA = [model getDMPlus_MAWithN:N];
+//        CGFloat DMMinus_MA = [model getDMMinus_MAWithN:N];
+//        CGFloat DMTR_MA = [model getTR_MAWithN:N];
+//        
+//        sumDMMinus += DMMinus_MA;
+//        sumTR += DMTR_MA;
+//    }
     
     DIMinus = sumDMMinus / sumTR * 100;
+    DIMinus = self.DMI_PDI.floatValue;
     
     if (DIMinus < 0) {
         
@@ -1271,7 +1433,7 @@
     CGFloat lastAX = 0;
     CGFloat lastBX = 0;
     CGFloat lastTR = 0;
-    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:4 * N];
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:kStock_EMA_PreviousDayScale * N];
     
     for (int i = 0; i < tempArray.count; i ++) {
         

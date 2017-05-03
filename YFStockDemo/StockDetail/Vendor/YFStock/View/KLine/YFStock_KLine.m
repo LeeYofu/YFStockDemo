@@ -178,9 +178,7 @@
 
 #pragma mark - 重绘
 - (void)reDrawWithAllKLineModels:(NSArray<YFStock_KLineModel *> *)allKLineModels {
-    
-    NSLog(@"开始重绘");
-    
+        
     self.allKLineModels = allKLineModels;
     
     [self updateScrollViewContentWidth];
@@ -201,10 +199,8 @@
         
         if (!_maskView || _maskView.isHidden) { // 不是 长按 等状态
             
-            NSLog(@"开始更新模型数组");
             // 更新需要绘制的模型
             [self updateDrawKLineModels];
-            NSLog(@"更新模型数组结束");
             
             // 更新背景线（还是调动drawrect方法，但是对整体性能影响不大！！！！）
             [self.scrollView drawWithDataHandler:self.dataHandler KLineViewHeight:self.KLineView.height bottomViewY:self.bottomView.y];
@@ -388,7 +384,7 @@
             self.maskView.scrollView = self.scrollView;
             [self.maskView resetLineFrame];
             
-            [self drawShowMALabelTextWithSelectedKLineModel:KLineModel];
+            [self drawShowMALabelTextWithSelectedKLineModel:selectedKLineModel];
         }];
     }
     

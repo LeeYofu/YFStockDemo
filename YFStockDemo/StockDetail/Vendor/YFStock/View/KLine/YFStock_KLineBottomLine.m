@@ -410,7 +410,7 @@
         startIndex = drawKLineModels.count - 1;
     }
     
-    return startIndex + 0;
+    return startIndex;
 }
 
 @end

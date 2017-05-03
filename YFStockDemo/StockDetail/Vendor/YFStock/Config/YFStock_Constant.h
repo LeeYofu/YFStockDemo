@@ -88,6 +88,8 @@
 
 
 #pragma mark - 参数
+#define kStock_EMA_PreviousDayScale 3.45
+
 #define kStock_MA_5_N 5
 #define kStock_MA_10_N 10
 #define kStock_MA_20_N 20
@@ -235,11 +237,11 @@ typedef NS_ENUM(NSInteger, YFStockKLineLineType) {
 #define kFont_8 [UIFont systemFontOfSize:8]
 
 // 重写NSLog打印函数
-//#ifdef DEBUG
-//#define NSLog(FORMAT, ...) fprintf(stderr,"%s:%d\t%s\n",[[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
-//#else
-//#define NSLog(...)
-//#endif
+#ifdef DEBUG
+#define NSLog(FORMAT, ...) fprintf(stderr,"%s:%d\t%s\n",[[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
+#else
+#define NSLog(...)
+#endif
 
 // 弱引用
 #define kWeakSelf(ClassName) __weak typeof(ClassName *)weakSelf = self
