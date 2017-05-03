@@ -73,6 +73,7 @@
 // 处理原始K线数据转为K线模型数组
 - (NSMutableArray <YFStock_KLineModel *> *)handleAllKLineOriginDataArray:(NSArray *)KLineOriginDataArray topBarIndex:(YFStockTopBarIndex)topBarIndex {
     
+    NSLog(@"orign开始处理原始数据");
     NSMutableArray *allKLineModelArray = [NSMutableArray new];
     
     for (int i = 0; i < KLineOriginDataArray.count; i ++) {
@@ -100,6 +101,7 @@
         [allKLineModelArray replaceObjectAtIndex:i withObject:model];
     }
    
+    NSLog(@"orign处理原始数据完毕");
     return allKLineModelArray;
 }
 
@@ -573,7 +575,6 @@
 // 获取 K线 的以及 volume线 的坐标转换 macd kdj 等
 - (void)getPositionWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight bottomBarIndex:(YFStockBottomBarIndex)bottomBarIndex {
     
-    NSLog(@"position开始");
     
     NSMutableArray *tempDrawKLineModels = [NSMutableArray new];
     
@@ -817,7 +818,6 @@
     
     self.drawKLineModels = tempDrawKLineModels;
     
-    NSLog(@"position结束");
 
     
     
