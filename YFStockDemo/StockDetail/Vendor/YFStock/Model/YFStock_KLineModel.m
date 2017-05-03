@@ -381,7 +381,6 @@
     return _AMA;
 }
 
-
 #pragma mark CCI
 - (NSNumber *)CCI {
     
@@ -391,6 +390,12 @@
         CGFloat MA_TYP_N = [self getTYP_MAWithN:kStock_CCI_N];
         CGFloat AVEDEV = [self getAVEDEVWithN:kStock_CCI_N];
         CGFloat CCI = (TYP - MA_TYP_N)/ AVEDEV / 0.015;
+        
+        if (self.index.integerValue < kStock_CCI_N) {
+            
+            CCI = [[self.allModelArray[kStock_CCI_N] CCI] floatValue];
+        }
+        
         _CCI = [NSNumber numberWithFloat:CCI];
     }
     return _CCI;
@@ -488,6 +493,12 @@
     if (! _CR) {
         
         CGFloat CR = [self getP_1WithN:kStock_CR_N] / [self getP_2WithN:kStock_CR_N] * 100;
+        
+        if (self.index.integerValue < kStock_CR_N) {
+            
+            CR = [[self.allModelArray[kStock_CR_N] CR] floatValue];
+        }
+        
         _CR = [NSNumber numberWithFloat:CR];
     }
     return _CR;
@@ -563,6 +574,11 @@
             
             _TRIX = @0;
         }
+        
+        if (self.index.integerValue < kStock_TRIX_N) {
+            
+            _TRIX = [self.allModelArray[kStock_TRIX_N] TRIX];
+        }
     }
     return _TRIX;
 }
@@ -604,6 +620,11 @@
         
         CGFloat DPO = self.closePrice.floatValue - [self getPreviousMAForDPOWithN:kStock_DPO_N];
         _DPO = @(DPO);
+        
+        if (self.index.integerValue < kStock_DPO_N) {
+            
+            _DPO = [self.allModelArray[kStock_DPO_N] DPO];
+        }
     }
     return _DPO;
 }
@@ -623,6 +644,11 @@
     if (! _ASI) {
         
         _ASI = @([self getSIWithN:kStock_ASI_N] + self.preModel.ASI.floatValue);
+        
+        if (self.index.integerValue < kStock_ASI_N) {
+            
+            _ASI = [self.allModelArray[kStock_ASI_N] ASI];
+        }
     }
     return _ASI;
 }
@@ -649,12 +675,10 @@
     
     MA = [[[tempArray valueForKeyPath:@"closePrice"] valueForKeyPath:@"@avg.floatValue"] floatValue];
     
-    tempArray = nil;
-    
-    //    if (self.index.integerValue <= N - 1 - 1) {
-    //
-    //        MA = 0;
-    //    }
+//    if (self.index.integerValue <= N - 1 - 1) {
+//
+//        MA = 0;
+//    }
     
     return MA;
 }
@@ -925,12 +949,12 @@
         sumDDD += model.DDD.floatValue;
     }
     
-    //    if (self.index.integerValue <= N - 1 - 1) {
-    //
-    //        MA = 0;
-    //    }
-    
     MA = sumDDD / (N * 1.0);
+    
+//    if (self.index.integerValue <= N - 1 - 1) {
+//
+//        MA = self.DDD.floatValue;
+//    }
     
     return MA;
 }
@@ -1411,7 +1435,7 @@
         sum += model.ASI.floatValue;
     }
     
-    ASI_MA = sum / (N * 1.0);
+    ASI_MA = sum / (tempArray.count * 1.0);
     
     return ASI_MA;
 }

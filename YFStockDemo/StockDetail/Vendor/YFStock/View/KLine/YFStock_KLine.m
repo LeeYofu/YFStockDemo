@@ -391,7 +391,7 @@
         }];
     }
     
-    NSLog(@"%f %f %f", selectedKLineModel.MACD_DIF.floatValue, selectedKLineModel.MACD_DEA.floatValue, selectedKLineModel.MACD_BAR.floatValue);
+    NSLog(@"%@ %@", selectedKLineModel.DDD, selectedKLineModel.AMA);
     
     // 结束、取消等状态
     if(longPress.state == UIGestureRecognizerStateEnded || longPress.state == UIGestureRecognizerStateCancelled || longPress.state == UIGestureRecognizerStateFailed) {
