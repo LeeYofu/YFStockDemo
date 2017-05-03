@@ -217,7 +217,8 @@
     
     if (! _MACD_DIF) {
         
-        _MACD_DIF = [NSNumber numberWithFloat:([self getEMAWithN:kStock_MACD_SHORT] - [self getEMAWithN:kStock_MACD_LONG])];
+        _MACD_DIF = @([self getEMAWithN:kStock_MACD_SHORT] - [self getEMAWithN:kStock_MACD_LONG]);
+        
     }
     return _MACD_DIF;
 }
@@ -226,7 +227,7 @@
     
     if (! _MACD_DEA) {
         
-        _MACD_DEA = [NSNumber numberWithFloat:(self.MACD_DIF.floatValue * 2 + self.preModel.MACD_DEA.floatValue * (kStock_MACD_MID - 1)) / (kStock_MACD_MID + 1)];
+        _MACD_DEA = @((self.MACD_DIF.floatValue * 2 + self.preModel.MACD_DEA.floatValue * (kStock_MACD_MID - 1)) / (kStock_MACD_MID + 1));
     }
     return _MACD_DEA;
 }
@@ -235,15 +236,15 @@
     
     if (! _MACD_BAR) {
         
-        _MACD_BAR = [NSNumber numberWithFloat:(2 * (self.MACD_DIF.floatValue - self.MACD_DEA.floatValue))];
+        _MACD_BAR = @(2 * (self.MACD_DIF.floatValue - self.MACD_DEA.floatValue));
         
         if (_MACD_BAR.floatValue < 0.5 && _MACD_BAR.floatValue > 0) {
             
-            _MACD_BAR = [NSNumber numberWithFloat:0.5];
+            _MACD_BAR = @0.5;
         }
         if (_MACD_BAR.floatValue < 0 && _MACD_BAR.floatValue > -0.5) {
             
-            _MACD_BAR = [NSNumber numberWithFloat:-0.5];
+            _MACD_BAR = @(-0.5);
         }
     }
     return _MACD_BAR;
@@ -365,7 +366,7 @@
     if (! _DDD) {
         
         CGFloat DDD = [self getMAWithN:kStock_DMA_SHORT] - [self getMAWithN:kStock_DMA_LONG];
-        _DDD = [NSNumber numberWithFloat:DDD];
+        _DDD = @(DDD);
     }
     return _DDD;
 }
@@ -375,7 +376,7 @@
     if (! _AMA) {
         
         CGFloat DDD_MA = [self getDDD_MAWithN:kStock_DMA_SHORT];
-        _AMA = [NSNumber numberWithFloat:DDD_MA];
+        _AMA = @(DDD_MA);
     }
     return _AMA;
 }
@@ -640,7 +641,6 @@
 #pragma mark - 计算相关
 #pragma mark MA/EMA
 // MA
-// 最近N日收盘价C的平均值  MA(C, N) = (C1 + C2 + …… +CN) / N
 - (CGFloat)getMAWithN:(NSInteger)N {
     
     CGFloat MA = 0;
@@ -660,22 +660,19 @@
 }
 
 // EMA
-// 当日EMA(C, N) = 2 / (N + 1) * (当日C – 前1日EMA) + 前1日EMA
 - (CGFloat)getEMAWithN:(NSInteger)N {
     
     CGFloat EMA = 0;
     
     //    EMA = (self.closePrice.floatValue * 2 + [self.preModel getEMAWithN:N] * (N - 1)) / (N + 1);
     
-    CGFloat lastEMA = 0;
     NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:4 * N];
-    
+    CGFloat lastEMA = [[tempArray[0] closePrice] floatValue];
+
     for (int i = 0; i < tempArray.count; i ++) {
         
         YFStock_KLineModel *currentModel = tempArray[i];
-        
         EMA = (currentModel.closePrice.floatValue * 2 + lastEMA * (N - 1)) / (N + 1);
-        
         lastEMA = EMA;
     }
     
@@ -1435,9 +1432,6 @@
     NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[self.preAllModelArray subarrayWithRange:NSMakeRange(startIndex, self.preAllModelArray.count - startIndex)]];
     
     [tempArray addObject:self];
-    
-////#warning <#message#>
-//    [tempArray removeObjectAtIndex:0];
     
     return tempArray;
 }

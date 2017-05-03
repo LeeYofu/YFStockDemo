@@ -249,8 +249,8 @@
     //        label.text = text;
     //    }
     
-    // MACD
-    CGFloat KDJUintValue = (self.dataHandler.KDJMaxValue - self.dataHandler.KDJMinValue) / (self.bottomRightValueLabels.count - 1);
+    // ????
+    CGFloat KDJUintValue = (self.dataHandler.MACDMaxValue - -self.dataHandler.MACDMinValue) / (self.bottomRightValueLabels.count - 1);
     for (int i = 0; i < self.bottomRightValueLabels.count; i ++) {
         
         NSString *text = [NSString stringWithFormat:@"%.2f",self.dataHandler.KDJMaxValue - KDJUintValue * i];
@@ -390,6 +390,8 @@
             [self drawShowMALabelTextWithSelectedKLineModel:KLineModel];
         }];
     }
+    
+    NSLog(@"%f %f %f", selectedKLineModel.MACD_DIF.floatValue, selectedKLineModel.MACD_DEA.floatValue, selectedKLineModel.MACD_BAR.floatValue);
     
     // 结束、取消等状态
     if(longPress.state == UIGestureRecognizerStateEnded || longPress.state == UIGestureRecognizerStateCancelled || longPress.state == UIGestureRecognizerStateFailed) {

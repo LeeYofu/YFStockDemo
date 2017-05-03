@@ -196,7 +196,6 @@
 
 
 
-// 必须调用，减少卡顿！！！！
-- (void)initData;
+//- (void)initData;
 
 @end

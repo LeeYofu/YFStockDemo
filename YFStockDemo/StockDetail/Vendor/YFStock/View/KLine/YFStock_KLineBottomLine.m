@@ -410,7 +410,6 @@
         startIndex = drawKLineModels.count - 1;
     }
     
-#warning + 1
     return startIndex + 1;
 }
 

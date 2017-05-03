@@ -87,14 +87,16 @@
             [self handleTimeShowActionWithKLineModel:KLineModel topBarIndex:topBarIndex];
         }
         
-        [KLineModel initData];
+//        [KLineModel initData];
         
         [allKLineModelArray addObject:KLineModel];
     }
     
-    for (YFStock_KLineModel *model in allKLineModelArray) {
+    for (int i = 0; i < allKLineModelArray.count; i ++) {
         
-        model.allModelArray = allKLineModelArray;
+        YFStock_KLineModel *model = allKLineModelArray[i];
+        model.allModelArray = [NSArray arrayWithArray:allKLineModelArray];
+        [allKLineModelArray replaceObjectAtIndex:i withObject:model];
     }
    
     return allKLineModelArray;
