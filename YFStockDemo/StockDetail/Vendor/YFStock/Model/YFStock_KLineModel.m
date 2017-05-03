@@ -19,7 +19,7 @@
 
 - (void)initData {
     
-//    return;
+    return;
     
     [self preModel];
     

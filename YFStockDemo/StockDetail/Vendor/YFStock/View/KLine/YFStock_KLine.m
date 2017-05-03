@@ -184,7 +184,7 @@
     [self updateScrollViewContentWidth];
     [self updateKLineViewAndVolumeViewAndTimeViewFrame];
     
-    [self setNeedsDisplay];
+    [self draw];
     
     if (self.allKLineModels.count > 0) { // scrollView滚动到头
         
@@ -192,9 +192,9 @@
     }
 }
 
-- (void)drawRect:(CGRect)rect {
+- (void)draw {
     
-    [super drawRect:rect];
+    NSLog(@"draw");
     
     // security
     if (self.allKLineModels.count > 0) {
@@ -204,7 +204,6 @@
             // 更新需要绘制的模型
             [self updateDrawKLineModels];
             
-            // 回调或者说是通知主线程刷新
             // 更新背景线（还是调动drawrect方法，但是对整体性能影响不大！！！！）
             [self.scrollView drawWithDataHandler:self.dataHandler KLineViewHeight:self.KLineView.height bottomViewY:self.bottomView.y];
             
@@ -296,7 +295,7 @@
     NSArray *drawKLineModels = [self.allKLineModels subarrayWithRange:NSMakeRange(startIndex, length)];
     
     // 处理此数组
-    [self.dataHandler handleKLineModelDatasWithDrawKlineModelArray:drawKLineModels pointStartX:[self xPosition] KLineViewHeight:self.KLineView.height volumeViewHeight:self.bottomView.height];
+    [self.dataHandler handleKLineModelDatasWithDrawKlineModelArray:drawKLineModels pointStartX:[self xPosition] KLineViewHeight:self.KLineView.height volumeViewHeight:self.bottomView.height bottomBarIndex:self.bottomBarIndex];
 }
 
 #pragma mark - 获取数组startIndex/scrollView的xPosition
@@ -391,7 +390,7 @@
         }];
     }
     
-//    NSLog(@"%@ %@", selectedKLineModel.DDD, selectedKLineModel.AMA);
+    //    NSLog(@"%@ %@", selectedKLineModel.DDD, selectedKLineModel.AMA);
     
     // 结束、取消等状态
     if(longPress.state == UIGestureRecognizerStateEnded || longPress.state == UIGestureRecognizerStateCancelled || longPress.state == UIGestureRecognizerStateFailed) {
@@ -412,7 +411,7 @@
 }
 
 - (void)event_pinchAction:(UIPinchGestureRecognizer *)pinch {
-        
+    
     if (pinch.state == UIGestureRecognizerStateBegan) {
         
         self.longPressGesture.enabled = NO;
@@ -473,7 +472,7 @@
             [self updateKLineViewAndVolumeViewAndTimeViewFrame];
             
             // 间接调用重绘方法
-            [self setNeedsDisplay];
+            [self draw];
             
             self.lastTowTouchDistance = twoTouchDistance;
         }
@@ -486,7 +485,7 @@
 #pragma mark - 代理方法
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    [self setNeedsDisplay];
+    [self draw];
     
     //    if (self.scrollView.contentOffset.x <= 0) {
     //

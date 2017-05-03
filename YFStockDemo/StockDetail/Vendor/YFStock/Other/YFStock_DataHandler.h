@@ -107,7 +107,7 @@
 // 处理原始K线相关数据，处理成为K线模型数组
 - (NSArray <YFStock_KLineModel *> *)handleAllKLineOriginDataArray:(NSArray *)KLineOriginDataArray topBarIndex:(YFStockTopBarIndex)topBarIndex;
 // k线模型数据处理(当前绘制部分 drawKLineModels)
-- (void)handleKLineModelDatasWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight;
+- (void)handleKLineModelDatasWithDrawKlineModelArray:(NSArray *)drawKLineModelArray pointStartX:(CGFloat)pointStartX KLineViewHeight:(CGFloat)KLineViewHeight volumeViewHeight:(CGFloat)volumeViewHeight bottomBarIndex:(YFStockBottomBarIndex)bottomBarIndex;
 
 // 分时线
 // 处理原始分时线相关数据，处理成为分时线模型数组

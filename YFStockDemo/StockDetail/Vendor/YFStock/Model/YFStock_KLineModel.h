@@ -196,6 +196,6 @@
 
 
 
-//- (void)initData;
+- (void)initData;
 
 @end
