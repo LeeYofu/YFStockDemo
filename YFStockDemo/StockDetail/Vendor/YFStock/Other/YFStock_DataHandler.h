@@ -85,6 +85,10 @@
 @property (nonatomic, assign) CGFloat DMIMaxValue;
 @property (nonatomic, assign) CGFloat DMIMinValue;
 
+// VR
+@property (nonatomic, assign) CGFloat VRMaxValue;
+@property (nonatomic, assign) CGFloat VRMinValue;
+
 // TRIX
 @property (nonatomic, assign) CGFloat TRIXMaxValue;
 @property (nonatomic, assign) CGFloat TRIXMinValue;

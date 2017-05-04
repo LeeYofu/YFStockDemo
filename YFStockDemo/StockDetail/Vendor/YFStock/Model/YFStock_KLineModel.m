@@ -99,19 +99,6 @@
     
     if (! _preModel) {
         
-//        if (self.preAllModelArray.count) {
-//            
-//            _preModel = self.preAllModelArray.lastObject;
-//        } else {
-//            
-//            _preModel = [YFStock_KLineModel new];
-//            _preModel.openPrice = @0;
-//            _preModel.closePrice = @0;
-//            _preModel.highPrice = @0;
-//            _preModel.lowPrice = @0;
-//            _preModel.dataTime = @"";
-//        }
-        
         _preModel = self.preAllModelArray.lastObject;
     }
     
@@ -600,6 +587,25 @@
         _DMI_ADXR = @([self getADXRWithN:kStock_DMI_ADX_ADXR_N]);
     }
     return _DMI_ADXR;
+}
+
+#pragma mark VR
+- (NSNumber *)VR {
+    
+    if (! _VR) {
+        
+        _VR = @([self getVRWithN:kStock_VR_N]);
+    }
+    return _VR;
+}
+
+- (NSNumber *)VR_MA {
+    
+    if (! _VR_MA) {
+        
+        _VR_MA = @([self getVR_MAWithN:kStock_VR_MA_N]);
+    }
+    return _VR_MA;
 }
 
 #pragma mark TRIX
@@ -1384,6 +1390,50 @@
     }
 
     return ADXR;
+}
+
+#pragma mark VR
+- (CGFloat)getVRWithN:(NSInteger)N {
+    
+    CGFloat VR = 0;
+    
+    CGFloat AVS = 0, BVS = 0, CVS = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        if (model.closePrice.floatValue > model.openPrice.floatValue) { // increase
+            
+            AVS += model.volume.integerValue;
+        } else if (model.closePrice.floatValue < model.openPrice.floatValue) { // decrease
+            
+            BVS += model.volume.integerValue;
+        } else { // equal
+            
+            CVS += model.volume.integerValue;
+        }
+    }
+    
+    VR = (AVS + 0.5 * CVS) / (BVS + 0.5 * CVS);
+    
+    return VR;
+}
+
+- (CGFloat)getVR_MAWithN:(NSInteger)N {
+    
+    CGFloat MA = 0;
+    
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    CGFloat sumEMV = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sumEMV += model.VR.floatValue;
+    }
+    
+    MA = sumEMV / (tempArray.count * 1.0);
+    
+    return MA;
 }
 
 #pragma mark TRIX

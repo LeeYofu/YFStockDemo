@@ -101,6 +101,10 @@
 @property (nonatomic, strong) NSNumber *DMI_ADX;
 @property (nonatomic, strong) NSNumber *DMI_ADXR;
 
+// VR(26,6),可配置参数（周期）
+@property (nonatomic, strong) NSNumber *VR;
+@property (nonatomic, strong) NSNumber *VR_MA;
+
 // TRIX(12, 9)，可配置参数(周期)
 @property (nonatomic, strong) NSNumber *TRIX;
 @property (nonatomic, strong) NSNumber *TRIX_MA;
@@ -188,6 +192,9 @@
 @property (nonatomic, assign) CGPoint DMI_MDIPositionPoint;
 @property (nonatomic, assign) CGPoint DMI_ADXPositionPoint;
 @property (nonatomic, assign) CGPoint DMI_ADXRPositionPoint;
+
+@property (nonatomic, assign) CGPoint VRPositionPoint;
+@property (nonatomic, assign) CGPoint VR_MAPositionPoint;
 
 @property (nonatomic, assign) CGPoint TRIXPositionPoint;
 @property (nonatomic, assign) CGPoint TRIX_MAPositionPoint;

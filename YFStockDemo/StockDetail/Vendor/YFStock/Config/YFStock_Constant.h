@@ -138,6 +138,9 @@
 #define kStock_DMI_PDIMDI_N 14
 #define kStock_DMI_ADX_ADXR_N 6
 
+#define kStock_VR_N 26
+#define kStock_VR_MA_N 6
+
 #define kStock_TRIX_N 12
 #define kStock_TRIX_MA_N 9
 

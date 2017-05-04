@@ -120,6 +120,11 @@
             [self drawDMI];
         }
             break;
+        case YFStockBottomBarIndex_VR:
+        {
+            [self drawVR];
+        }
+            break;
             
         case YFStockBottomBarIndex_TRXI:
         {
@@ -343,6 +348,12 @@
     [self drawWithPositionPointKey:@"DMI_ADXPositionPoint" N:kStock_DMI_ADX_ADXR_N strokeColor:kStockMA20LineColor];
     [self drawWithPositionPointKey:@"DMI_ADXRPositionPoint" N:kStock_DMI_ADX_ADXR_N strokeColor:kStockMA30LineColor];
 
+}
+
+- (void)drawVR {
+    
+    [self drawWithPositionPointKey:@"VRPositionPoint" N:kStock_VR_N strokeColor:kStockMA30LineColor];
+    [self drawWithPositionPointKey:@"VR_MAPositionPoint" N:kStock_VR_MA_N strokeColor:kStockMA10LineColor];
 }
 
 - (void)drawTRIX {

@@ -262,6 +262,12 @@
             [self handle_DMI_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
         }
             break;
+        case YFStockBottomBarIndex_VR:
+        {
+            // DMI
+            [self handle_VR_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+        }
+            break;
             
         case YFStockBottomBarIndex_TRXI:
         {
@@ -533,6 +539,18 @@
 
 }
 
+- (void)handle_VR_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
+    
+    CGFloat maxVR = [[[drawKLineModelArray valueForKeyPath:@"VR"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxVR_MA = [[[drawKLineModelArray valueForKeyPath:@"VR_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    
+    CGFloat minVR = [[[drawKLineModelArray valueForKeyPath:@"VR"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minVR_MA = [[[drawKLineModelArray valueForKeyPath:@"VR_MA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.VRMaxValue = MAX(maxVR, maxVR_MA);
+    self.VRMinValue = MIN(minVR, minVR_MA);
+}
+
 - (void)handle_TRIX_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
     CGFloat maxTRIX = [[[drawKLineModelArray valueForKeyPath:@"TRIX"] valueForKeyPath:@"@max.floatValue"] floatValue];
@@ -662,6 +680,10 @@
     // DMI
     CGFloat DMILineUnitValue = (self.DMIMaxValue - self.DMIMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (DMILineUnitValue == 0) DMILineUnitValue = 0.01f;
+    
+    // VR
+    CGFloat VRLineUnitValue = (self.VRMaxValue - self.VRMinValue) / (bottomNormalMaxY - bottomNormalMinY);
+    if (VRLineUnitValue == 0) VRLineUnitValue = 0.01f;
     
     // TRIX
     CGFloat TRIXLineUnitValue = (self.TRIXMaxValue - self.TRIXMinValue) / (bottomNormalMaxY - bottomNormalMinY);
@@ -814,6 +836,11 @@
         model.DMI_MDIPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_MDI.floatValue - self.DMIMinValue) / DMILineUnitValue));
         model.DMI_ADXPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_ADX.floatValue - self.DMIMinValue) / DMILineUnitValue));
         model.DMI_ADXRPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DMI_ADXR.floatValue - self.DMIMinValue) / DMILineUnitValue));
+        
+#pragma mark - VR
+        model.VRPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.VR.floatValue - self.VRMinValue) / VRLineUnitValue));
+        model.VR_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.VR_MA.floatValue - self.VRMinValue) / VRLineUnitValue));
+
 
 #pragma mark - TRIX
         model.TRIXPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.TRIX.floatValue - self.TRIXMinValue) / TRIXLineUnitValue));
@@ -836,216 +863,6 @@
     }];
     
     self.drawKLineModels = tempDrawKLineModels;
-    
-
-    
-    
-    switch (bottomBarIndex) {
-        case YFStockBottomBarIndex_MACD:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_KDJ:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_RSI:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_ARBR:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_OBV:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_WR:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_DMA:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_CCI:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_BIAS:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_ROC:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_MTM:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_CR:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_DMI:
-        {
-            
-        }
-            break;
-            
-        case YFStockBottomBarIndex_TRXI:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_PSY:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_DPO:
-        {
-            
-        }
-            break;
-        case YFStockBottomBarIndex_ASI:
-        {
-            
-        }
-            break;
-            
-        default:
-            break;
-    }
-}
-
-- (void)handle_KLine_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_MA_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_Volume_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_MACD_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_KDJ_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_RSI_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_ARBR_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_OBV_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_WR_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_EMV_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_DMA_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_CCI_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_BIAS_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_ROC_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_MTM_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_CR_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_DMI_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_VR_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_TRIX_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_PSY_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_DPO_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_ASI_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
-}
-
-- (void)handle_SAR_PositionPointWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
-    
-    
 }
 
 #pragma mark - lazy loading
