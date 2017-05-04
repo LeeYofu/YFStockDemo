@@ -53,6 +53,10 @@
 @property (nonatomic, assign) CGFloat WRMaxValue;
 @property (nonatomic, assign) CGFloat WRMinValue;
 
+// EMV
+@property (nonatomic, assign) CGFloat EMVMaxValue;
+@property (nonatomic, assign) CGFloat EMVMinValue;
+
 // DMA
 @property (nonatomic, assign) CGFloat DMAMaxValue;
 @property (nonatomic, assign) CGFloat DMAMinValue;

@@ -214,6 +214,12 @@
             [self handle_WR_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
         }
             break;
+        case YFStockBottomBarIndex_EMV:
+        {
+            // EMV
+            [self handle_EMV_Max_Min_ValueWithDrawKLineModelArray:drawKLineModelArray];
+        }
+            break;
         case YFStockBottomBarIndex_DMA:
         {
             // DMA
@@ -427,7 +433,14 @@
 
 - (void)handle_EMV_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
     
+    CGFloat maxEMV = [[[drawKLineModelArray valueForKeyPath:@"EMV"] valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat maxEMV_MA = [[[drawKLineModelArray valueForKeyPath:@"EMV_MA"] valueForKeyPath:@"@max.floatValue"] floatValue];
     
+    CGFloat minEMV = [[[drawKLineModelArray valueForKeyPath:@"EMV"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    CGFloat minEMV_MA = [[[drawKLineModelArray valueForKeyPath:@"EMV_MA"] valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    self.EMVMaxValue = MAX(maxEMV, maxEMV_MA);
+    self.EMVMinValue = MIN(minEMV, minEMV_MA);
 }
 
 - (void)handle_DMA_Max_Min_ValueWithDrawKLineModelArray:(NSArray <YFStock_KLineModel *> *)drawKLineModelArray {
@@ -618,6 +631,10 @@
     CGFloat WRLineUnitValue = (self.WRMaxValue - self.WRMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (WRLineUnitValue == 0) WRLineUnitValue = 0.01f;
     
+    // EMV
+    CGFloat EMVLineUnitValue = (self.EMVMaxValue - self.EMVMinValue) / (bottomNormalMaxY - bottomNormalMinY);
+    if (EMVLineUnitValue == 0) EMVLineUnitValue = 0.01f;
+    
     // DMA
     CGFloat DMALineUnitValue = (self.DMAMaxValue - self.DMAMinValue) / (bottomNormalMaxY - bottomNormalMinY);
     if (DMALineUnitValue == 0) DMALineUnitValue = 0.01f;
@@ -763,6 +780,10 @@
         model.WR_1PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.WR_1.floatValue - self.WRMinValue) / WRLineUnitValue));
         model.WR_2PositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.WR_2.floatValue - self.WRMinValue) / WRLineUnitValue));
         
+#pragma mark - EMV
+        model.EMVPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.EMV.floatValue - self.EMVMinValue) / EMVLineUnitValue));
+        model.EMV_MAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.EMV_MA.floatValue - self.EMVMinValue) / EMVLineUnitValue));
+
 #pragma mark - DMA
         model.DDDPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.DDD.floatValue - self.DMAMinValue) / DMALineUnitValue));
         model.AMAPositionPoint = CGPointMake(xPosition, ABS(bottomNormalMaxY - (model.AMA.floatValue - self.DMAMinValue) / DMALineUnitValue));

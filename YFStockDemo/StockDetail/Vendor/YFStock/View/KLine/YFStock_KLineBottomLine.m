@@ -80,6 +80,11 @@
             [self drawWR];
         }
             break;
+        case YFStockBottomBarIndex_EMV:
+        {
+            [self drawEMV];
+        }
+            break;
         case YFStockBottomBarIndex_DMA:
         {
             [self drawDMA];
@@ -264,6 +269,15 @@
     [self drawWithPositionPointKey:@"WR_2PositionPoint" N:kStock_WR_2_N strokeColor:kStockMA10LineColor];
 }
 
+- (void)drawEMV {
+    
+    // EMV
+    [self drawWithPositionPointKey:@"EMVPositionPoint" N:kStock_EMV_N strokeColor:kStockMA5LineColor];
+    
+    // EMV_MA
+    [self drawWithPositionPointKey:@"EMV_MAPositionPoint" N:kStock_EMV_MA_N strokeColor:kStockMA10LineColor];
+}
+
 - (void)drawDMA {
     
     // DDD
@@ -324,10 +338,10 @@
 
 - (void)drawDMI {
     
-    [self drawWithPositionPointKey:@"DMI_PDIPositionPoint" N:12 strokeColor:kStockMA5LineColor];
-    [self drawWithPositionPointKey:@"DMI_MDIPositionPoint" N:12 strokeColor:kStockMA10LineColor];
-    [self drawWithPositionPointKey:@"DMI_ADXPositionPoint" N:12 strokeColor:kStockMA20LineColor];
-    [self drawWithPositionPointKey:@"DMI_ADXRPositionPoint" N:12 strokeColor:kStockMA30LineColor];
+    [self drawWithPositionPointKey:@"DMI_PDIPositionPoint" N:kStock_DMI_PDIMDI_N strokeColor:kStockMA5LineColor];
+    [self drawWithPositionPointKey:@"DMI_MDIPositionPoint" N:kStock_DMI_PDIMDI_N strokeColor:kStockMA10LineColor];
+    [self drawWithPositionPointKey:@"DMI_ADXPositionPoint" N:kStock_DMI_ADX_ADXR_N strokeColor:kStockMA20LineColor];
+    [self drawWithPositionPointKey:@"DMI_ADXRPositionPoint" N:kStock_DMI_ADX_ADXR_N strokeColor:kStockMA30LineColor];
 
 }
 

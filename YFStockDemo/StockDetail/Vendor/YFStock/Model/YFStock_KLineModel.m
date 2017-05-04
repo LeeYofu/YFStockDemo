@@ -356,40 +356,9 @@
     
     if (! _OBV) {
         
-//        CGFloat VA = ((self.closePrice.floatValue - self.lowPrice.floatValue) - (self.highPrice.floatValue - self.closePrice.floatValue)) / (self.highPrice.floatValue - self.lowPrice.floatValue) * self.volume.floatValue;
-//        _OBV = [NSNumber numberWithFloat:VA];
-        _OBV = @([self.preModel getOBVWithN:12]);
+        _OBV = @([self getOBVWithN:12]);
     }
     return _OBV;
-}
-
-- (CGFloat)getOBVWithN:(NSInteger)N {
-    
-    CGFloat OBV = 0;
-    
-    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
-    NSInteger lastOBV = 0;
-    for (int i = 0; i < tempArray.count; i ++) {
-        
-        YFStock_KLineModel *model = tempArray[i];
-        if (i == 0) {
-            
-            OBV = model.volume.integerValue;
-        } else {
-            
-            if (model.closePrice.floatValue >= model.preModel.closePrice.floatValue) {
-                
-                OBV = lastOBV + model.volume.integerValue;
-            } else {
-                
-                OBV = lastOBV - model.volume.integerValue;
-            }
-        }
-        
-        lastOBV = OBV;
-    }
-    
-    return OBV;
 }
 
 #pragma mark WR
@@ -411,6 +380,25 @@
         _WR_2 = [NSNumber numberWithFloat:value];
     }
     return _WR_2;
+}
+
+#pragma mark EMV
+- (NSNumber *)EMV {
+    
+    if (! _EMV) {
+        
+        _EMV = @([self getEMVWithN:kStock_EMV_N]);
+    }
+    return _EMV;
+}
+
+- (NSNumber *)EMV_MA {
+    
+    if (! _EMV_MA) {
+        
+        _EMV_MA = @([self getEMV_MAWithN:kStock_EMV_MA_N]);
+    }
+    return _EMV_MA;
 }
 
 #pragma mark DMA
@@ -582,7 +570,7 @@
     
     if (! _DMI_PDI) {
         
-        _DMI_PDI = @([self getPDIWithN:14]);
+        _DMI_PDI = @([self getPDIWithN:kStock_DMI_PDIMDI_N]);
     }
     return _DMI_PDI;
 }
@@ -591,7 +579,7 @@
     
     if (! _DMI_MDI) {
         
-        _DMI_MDI = @([self getMDIWithN:14]);
+        _DMI_MDI = @([self getMDIWithN:kStock_DMI_PDIMDI_N]);
     }
     return _DMI_MDI;
 }
@@ -600,7 +588,7 @@
     
     if (! _DMI_ADX) {
         
-        _DMI_ADX = @([self getADXWithN:6]);
+        _DMI_ADX = @([self getADXWithN:kStock_DMI_ADX_ADXR_N]);
     }
     return _DMI_ADX;
 }
@@ -609,7 +597,7 @@
     
     if (! _DMI_ADXR) {
         
-        _DMI_ADXR = @([self getADXRWithN:6]);
+        _DMI_ADXR = @([self getADXRWithN:kStock_DMI_ADX_ADXR_N]);
     }
     return _DMI_ADXR;
 }
@@ -940,6 +928,35 @@
     return BR;
 }
 
+- (CGFloat)getOBVWithN:(NSInteger)N {
+    
+    CGFloat OBV = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    NSInteger lastOBV = 0;
+    for (int i = 0; i < tempArray.count; i ++) {
+        
+        YFStock_KLineModel *model = tempArray[i];
+        if (i == 0) {
+            
+            OBV = model.volume.integerValue;
+        } else {
+            
+            if (model.closePrice.floatValue >= model.preModel.closePrice.floatValue) {
+                
+                OBV = lastOBV + model.volume.integerValue;
+            } else {
+                
+                OBV = lastOBV - model.volume.integerValue;
+            }
+        }
+        
+        lastOBV = OBV;
+    }
+    
+    return OBV;
+}
+
 #pragma mark CCI
 - (CGFloat)getTYP {
     
@@ -987,6 +1004,41 @@
     AVEDEV = sum / (N * 1.0);
     
     return AVEDEV;
+}
+
+#pragma mark EMV
+- (CGFloat)getEMVWithN:(NSInteger)N {
+    
+    CGFloat EMV = 0;
+    
+    NSArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    for (YFStock_KLineModel * model in tempArray) {
+        
+        CGFloat A = (model.highPrice.floatValue + model.lowPrice.floatValue) * 0.5;
+        CGFloat B = (model.preModel.highPrice.floatValue + model.preModel.lowPrice.floatValue) * 0.5;
+        CGFloat C = (model.highPrice.floatValue - model.lowPrice.floatValue);
+        CGFloat EM = (A - B) * C / (model.volume.integerValue * 1.0);
+        EMV += EM;
+    }
+    
+    return EMV;
+}
+
+- (CGFloat)getEMV_MAWithN:(NSInteger)N {
+    
+    CGFloat MA = 0;
+    
+    NSMutableArray *tempArray = [self getPreviousArrayContainsSelfWithN:N];
+    
+    CGFloat sumEMV = 0;
+    for (YFStock_KLineModel *model in tempArray) {
+        
+        sumEMV += model.EMV.floatValue;
+    }
+    
+    MA = sumEMV / (tempArray.count * 1.0);
+    
+    return MA;
 }
 
 #pragma mark DMA

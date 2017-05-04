@@ -66,6 +66,10 @@
 @property (nonatomic, strong) NSNumber *WR_1;
 @property (nonatomic, strong) NSNumber *WR_2;
 
+// EMV(14,9),可配置参数-周期
+@property (nonatomic, strong) NSNumber *EMV;
+@property (nonatomic, strong) NSNumber *EMV_MA;
+
 // DMA(10, 50)，可配置参数-（短周期，长周期）
 @property (nonatomic, strong) NSNumber *DDD;
 @property (nonatomic, strong) NSNumber *AMA;
@@ -157,6 +161,9 @@
 
 @property (nonatomic, assign) CGPoint WR_1PositionPoint;
 @property (nonatomic, assign) CGPoint WR_2PositionPoint;
+
+@property (nonatomic, assign) CGPoint EMVPositionPoint;
+@property (nonatomic, assign) CGPoint EMV_MAPositionPoint;
 
 @property (nonatomic, assign) CGPoint DDDPositionPoint;
 @property (nonatomic, assign) CGPoint AMAPositionPoint;

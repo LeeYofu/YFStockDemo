@@ -113,6 +113,9 @@
 #define kStock_WR_1_N 10
 #define kStock_WR_2_N 6
 
+#define kStock_EMV_N 14
+#define kStock_EMV_MA_N 9
+
 #define kStock_CCI_N 14
 
 #define kStock_DMA_SHORT 10
@@ -131,6 +134,9 @@
 #define kStock_CR_N 26
 #define kStock_CR_MA_1_N 10
 #define kStock_CR_MA_2_N 20
+
+#define kStock_DMI_PDIMDI_N 14
+#define kStock_DMI_ADX_ADXR_N 6
 
 #define kStock_TRIX_N 12
 #define kStock_TRIX_MA_N 9
