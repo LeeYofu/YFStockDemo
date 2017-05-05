@@ -445,7 +445,7 @@
             
             CGFloat distanchChanged = twoTouchDistance - self.lastTowTouchDistance;
             
-            distanchChanged /= 25;
+            distanchChanged /= 18;
             
             // 拿到中心点数据源的index  CGFloat!!!
             CGFloat oldLeftArrCount = ABS(centerX / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]));
@@ -470,11 +470,11 @@
                 self.scrollView.contentOffset = CGPointMake(0 , self.scrollView.contentOffset.y);
             }
             
-            // 更新contentsize
+            // 更新contentsize、frame
             [self updateScrollViewContentWidth];
             [self updateKLineViewAndVolumeViewAndTimeViewFrame];
             
-            // 间接调用重绘方法
+            // 重绘
             [self draw];
             
             self.lastTowTouchDistance = twoTouchDistance;
