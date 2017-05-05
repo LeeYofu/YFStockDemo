@@ -24,7 +24,8 @@
 @property (nonatomic, strong) YFStock_DataHandler *dataHandler; // dataHandler
 @property (nonatomic, assign) YFStockBottomBarIndex bottomBarIndex;
 @property (nonatomic, assign) CGFloat lastPinchScale;
-@property (nonatomic, assign) CGFloat lastTowTouchDistance;
+@property (nonatomic, assign) CGFloat lastTwoTouchDistance;
+@property (nonatomic, assign) CGFloat lastTwoTouchCount;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
 
@@ -178,7 +179,7 @@
 
 #pragma mark - 重绘
 - (void)reDrawWithAllKLineModels:(NSArray<YFStock_KLineModel *> *)allKLineModels {
-        
+    
     self.allKLineModels = allKLineModels;
     
     [self updateScrollViewContentWidth];
@@ -419,48 +420,32 @@
         
         self.longPressGesture.enabled = NO;
         self.scrollView.scrollEnabled = NO;
+        
+        self.lastPinchScale = 1;
     }
     
-    if (pinch.state == UIGestureRecognizerStateEnded) {
+    if(pinch.state == UIGestureRecognizerStateChanged) { // 双指
         
-        self.longPressGesture.enabled = YES;
-        self.scrollView.scrollEnabled = YES;
-    }
-    
-    if(pinch.numberOfTouches == 2) {
-        
-        // 获取捏合中心点 -> 捏合中心点距离scrollviewcontent左侧的距离
-        CGPoint p1 = [pinch locationOfTouch:0 inView:self.scrollView];
-        CGPoint p2 = [pinch locationOfTouch:1 inView:self.scrollView];
-        CGFloat centerX = (p1.x + p2.x) / 2;
-        
-        CGFloat twoTouchDistance = ABS(p1.x - p2.x);
-        
-        if (pinch.state == UIGestureRecognizerStateBegan || self.lastTowTouchDistance == -10000) {
+        if (pinch.numberOfTouches == 2) {
+            CGPoint p1 = [pinch locationOfTouch:0 inView:self.scrollView];
+            CGPoint p2 = [pinch locationOfTouch:1 inView:self.scrollView];
+            CGFloat centerX = (p1.x + p2.x) / 2;
             
-            self.lastTowTouchDistance = twoTouchDistance;
-        }
-        
-        if (pinch.state == UIGestureRecognizerStateChanged) {
-            
-            CGFloat distanchChanged = twoTouchDistance - self.lastTowTouchDistance;
-            
-            distanchChanged /= 18;
+            CGFloat scaleChanged = pinch.scale - self.lastPinchScale;
+            BOOL isBigging = scaleChanged > 0;
             
             // 拿到中心点数据源的index  CGFloat!!!
             CGFloat oldLeftArrCount = ABS(centerX / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]));
             
             // 缩放重绘
-            CGFloat newLineWidth = 0;
-            
-            newLineWidth = [YFStock_Variable KLineWidth] + distanchChanged;
+            CGFloat newLineWidth = [YFStock_Variable KLineWidth] * (1 + scaleChanged);
             
             [YFStock_Variable setKLineWidth:newLineWidth];
             
             // 计算更新宽度后捏合中心点距离klineView最左侧（x = 0）的距离
             CGFloat newLeftDistance = oldLeftArrCount * ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]);
             
-            // 设置scrollview的contentoffset = (5) - (2);
+            // 设置scrollview的contentoffset
             if (self.allKLineModels.count * [YFStock_Variable KLineWidth] + (self.allKLineModels.count - 1) * [YFStock_Variable KLineGap] > self.scrollView.bounds.size.width) {
                 
                 CGFloat newOffsetX = newLeftDistance - (centerX - self.scrollView.contentOffset.x);
@@ -477,11 +462,14 @@
             // 重绘
             [self draw];
             
-            self.lastTowTouchDistance = twoTouchDistance;
+            self.lastPinchScale = pinch.scale;
         }
-    } else {
+    }
+    
+    if (pinch.state == UIGestureRecognizerStateEnded) {
         
-        self.lastTowTouchDistance = -10000;
+        self.longPressGesture.enabled = YES;
+        self.scrollView.scrollEnabled = YES;
     }
 }
 
