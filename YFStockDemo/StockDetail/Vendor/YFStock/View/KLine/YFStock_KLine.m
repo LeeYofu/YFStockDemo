@@ -282,7 +282,7 @@
     NSInteger drawKLineCount = self.scrollView.width / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]);
     
     // 截取数组长度
-    NSInteger length = startIndex + drawKLineCount > self.allKLineModels.count ? self.allKLineModels.count - startIndex : drawKLineCount + 3;
+    NSInteger length = startIndex + drawKLineCount > self.allKLineModels.count ? self.allKLineModels.count - startIndex : drawKLineCount + 2; // + 3
     
     if (length > self.allKLineModels.count - startIndex) {
         
@@ -309,6 +309,11 @@
     if (leftCount > self.allKLineModels.count - 1) {
         
         leftCount = self.allKLineModels.count - 1;
+    }
+    
+    if (leftCount < 0) {
+        
+        leftCount = 0;
     }
     return leftCount;
 }
@@ -431,7 +436,7 @@
         
         CGFloat twoTouchDistance = ABS(p1.x - p2.x);
         
-        if (pinch.state == UIGestureRecognizerStateBegan || self.lastTowTouchDistance == -1) {
+        if (pinch.state == UIGestureRecognizerStateBegan || self.lastTowTouchDistance == -10000) {
             
             self.lastTowTouchDistance = twoTouchDistance;
         }
@@ -440,7 +445,7 @@
             
             CGFloat distanchChanged = twoTouchDistance - self.lastTowTouchDistance;
             
-            distanchChanged /= 15;
+            distanchChanged /= 25;
             
             // 拿到中心点数据源的index  CGFloat!!!
             CGFloat oldLeftArrCount = ABS(centerX / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]));
@@ -476,7 +481,7 @@
         }
     } else {
         
-        self.lastTowTouchDistance = -1;
+        self.lastTowTouchDistance = -10000;
     }
 }
 

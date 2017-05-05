@@ -609,7 +609,7 @@
     
     // MinY MaxY
     CGFloat KLineMinY = kStockKLineViewKlineMinY;
-    CGFloat KLineMaxY = KLineViewHeight - 2 * kStockKLineViewKlineMinY;
+    CGFloat KLineMaxY = KLineViewHeight - 1 * kStockKLineViewKlineMinY;
     
     CGFloat volumeLineMinY = kStockVolumeLineViewVolumeLineMinY;
     CGFloat volumeLineMaxY = volumeViewHeight; // 到底部
