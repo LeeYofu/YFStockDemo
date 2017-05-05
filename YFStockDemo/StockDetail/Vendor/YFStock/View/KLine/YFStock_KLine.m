@@ -427,6 +427,7 @@
     if(pinch.state == UIGestureRecognizerStateChanged) { // 双指
         
         if (pinch.numberOfTouches == 2) {
+            
             CGPoint p1 = [pinch locationOfTouch:0 inView:self.scrollView];
             CGPoint p2 = [pinch locationOfTouch:1 inView:self.scrollView];
             CGFloat centerX = (p1.x + p2.x) / 2;
