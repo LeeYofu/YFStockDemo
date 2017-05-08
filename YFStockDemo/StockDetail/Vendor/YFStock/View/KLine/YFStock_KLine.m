@@ -433,7 +433,6 @@
             CGFloat centerX = (p1.x + p2.x) / 2;
             
             CGFloat scaleChanged = pinch.scale - self.lastPinchScale;
-            BOOL isBigging = scaleChanged > 0;
             
             // 拿到中心点数据源的index  CGFloat!!!
             CGFloat oldLeftArrCount = ABS(centerX / ([YFStock_Variable KLineWidth] + [YFStock_Variable KLineGap]));
